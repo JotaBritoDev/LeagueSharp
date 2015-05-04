@@ -117,15 +117,11 @@ namespace KoreanAnnie
             Menu newMenu = new Menu("Lane Clear", string.Format("{0}.laneclear", MenuName));
             RootMenu.AddSubMenu(newMenu);
 
-            MenuItem UseQToLaneclear = new MenuItem(string.Format("{0}.useqtolaneclear", MenuName), "Use Q").SetValue(true);
-            MenuItem UseWToLaneclear = new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true);
-            MenuItem UseEToLaneclear = new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true);
-            newMenu.AddItem(UseQToLaneclear);
-            newMenu.AddItem(UseWToLaneclear);
-            newMenu.AddItem(UseEToLaneclear);
-
-            MenuItem ManaLimitToLaneClear = new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(new Slider(50, 0, 100));
-            newMenu.AddItem(ManaLimitToLaneClear);
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useqtolaneclear", MenuName), "Use Q").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(new Slider(50, 0, 100)));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
 
             return newMenu;
         }

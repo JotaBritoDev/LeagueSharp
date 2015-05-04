@@ -21,6 +21,7 @@ namespace KoreanAnnie
         }
 
         private Obj_AI_Hero Player;
+        private Obj_AI_Base CurrentTarget;
 
         public AnnieTibbers(Obj_AI_Hero player)
         {
@@ -29,21 +30,14 @@ namespace KoreanAnnie
             GameObject.OnCreate += NewTibbers;
             GameObject.OnDelete += DeleteTibbers;
             Game.OnUpdate += ControlTibbers;
-            Obj_AI_Base.OnAggro += Obj_AI_Base_OnAggro;
+            Orbwalking.OnAttack += AttackTurrent;
         }
 
-        void Obj_AI_Base_OnAggro(Obj_AI_Base sender, GameObjectAggroEventArgs args)
+        private void AttackTurrent(AttackableUnit unit, AttackableUnit target)
         {
-            if (sender.SkinName.ToLowerInvariant() == "sru_dragon")
+            if ((_tibbers != null) && (_tibbers.IsValid) && (unit.IsMe) && (target != null) && (target is Obj_AI_Turret))
             {
-                Console.Clear();
-                Console.WriteLine((sender.HealthPercent < 100));
-                Console.WriteLine(sender.IsAttackingPlayer);
-
-                foreach (var x in sender.Buffs)
-                {
-                    Console.WriteLine(x.DisplayName);
-                }
+                CurrentTarget = (Obj_AI_Base)target;
             }
         }
 
@@ -107,6 +101,11 @@ namespace KoreanAnnie
             if (target != null)
                 return target;
 
+            if ((CurrentTarget != null) && (CurrentTarget.IsValidTarget(Player.AttackRange + 200f)))
+                return CurrentTarget;
+            else
+                CurrentTarget = null;
+
             return Player;
         }
 
@@ -136,7 +135,6 @@ namespace KoreanAnnie
                                (obj.IsVisible && obj.HealthPercent < 100) && (obj.HealthPercent > 0) && (obj.IsVisible))).
                 ToList();
 
-            Console.Clear();
             if ((jungleMob != null) && (jungleMob.Count > 0))
             {
                 return jungleMob[0];
@@ -153,7 +151,6 @@ namespace KoreanAnnie
                 Where(obj => ((obj.SkinName.ToLowerInvariant() == "sru_dragon" || obj.SkinName.ToLowerInvariant() == "sru_baron") && obj.IsVisible && obj.HealthPercent < 100 && obj.HealthPercent > 0)).
                 ToList();
 
-            Console.Clear();
             if ((legendaryMonster != null) && (legendaryMonster.Count > 0))
             {
                 return legendaryMonster[0];

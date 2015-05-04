@@ -21,6 +21,7 @@ namespace KoreanAnnie
         private Func<string, int> GetParamInt;
         private Func<string, bool> GetParamKeyBind;
         private Func<string, string> ParamName;
+        private Func<bool> CanFarm;
         private Func<bool> SaveStun;
         private Func<bool> CheckStun;
 
@@ -45,15 +46,25 @@ namespace KoreanAnnie
             SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
             GetParamInt = s => KoreanUtils.GetParamInt(MainMenu, s);
             GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
+            CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
             CheckStun = () => Player.HasBuff("pyromania_particle", true);
             SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
 
             Obj_AI_Base.OnProcessSpellCast += EAgainstEnemyAA;
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
             AntiGapcloser.OnEnemyGapcloser += StunGapCloser;
+            Orbwalking.BeforeAttack += CancelingAAOnSupportMode;
             Game.OnUpdate += StackE;
             Game.OnUpdate += FlashTibbersLogic;
             Game.OnUpdate += OrbwalkerComplementation;
+        }
+
+        private void CancelingAAOnSupportMode(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if ((args.Target is Obj_AI_Base) && (((Obj_AI_Base)args.Target).IsMinion) && (!CanFarm()))
+            {
+                args.Process = false;
+            }
         }
 
         void StunGapCloser(ActiveGapcloser gapcloser)
@@ -109,16 +120,13 @@ namespace KoreanAnnie
 
         private void MixedMode()
         {
-            if (!SaveStun())
-            {
-                QFarmLogic();
-            }
+            LastHitMode();
             Haras();
         }
 
         private void LaneClearMode()
         {
-            if (!SaveStun())
+            if ((!SaveStun()) && (CanFarm()))
             {
                 bool manaLimitReached = Player.ManaPercent < GetParamInt("manalimittolaneclear");
 
@@ -155,7 +163,10 @@ namespace KoreanAnnie
                 }
             }
 
-            Haras();
+            if (GetParamBool("harasonlaneclear"))
+            {
+                Haras();
+            }
         }
 
         private void ComboMode()
@@ -164,7 +175,22 @@ namespace KoreanAnnie
 
             if ((annieSpells.R.IsReady()) && (GetParamBool("usertocombo")) && (target.IsValidTarget(annieSpells.R.Range)) && (!annieSpells.CheckOverkill(target)))
             {
-                annieSpells.R.Cast(target.Position);
+                int minEnemiesToR = GetParamInt("minenemiestor");
+
+                if (minEnemiesToR == 1)
+                {
+                    annieSpells.R.Cast(target.Position);
+                }
+                else
+                {
+                    foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
+                        Where(x => x.IsValidTarget(annieSpells.R.Range)).
+                        Select(x => annieSpells.R.GetPrediction(x, true)).
+                            Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minEnemiesToR))
+                    {
+                        annieSpells.R.Cast(pred.CastPosition);
+                    }
+                }
             }
             if ((annieSpells.W.IsReady()) && (GetParamBool("usewtocombo")) && (target.IsValidTarget(annieSpells.W.Range)))
             {
@@ -178,7 +204,7 @@ namespace KoreanAnnie
 
         private void QFarmLogic()
         {
-            if (!SaveStun())
+            if ((!SaveStun()) && (CanFarm()))
             {
                 if ((annieSpells.Q.IsReady()) && (GetParamBool("useqtofarm")))
                 {
@@ -223,30 +249,22 @@ namespace KoreanAnnie
 
         private void FlashTibbersLogic(EventArgs args)
         {
-            if ((GetParamKeyBind("flashtibbers")) && (CheckStun()))
+            if (GetParamKeyBind("flashtibbers"))
             {
-                if ((annieSpells.R.IsReady()) && (CommonSpells.Flash(Player).IsReady))
+                if ((annieSpells.R.IsReady()) && (CommonSpells.Flash(Player).IsReady) && (CheckStun()))
                 {
-                    var target = TargetSelector.GetTarget(annieSpells.RFlash.Range, TargetSelector.DamageType.Magical);
 
-                    Console.WriteLine("movimenta");
-
-                    if (target != null)
+                    foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
+                        Where(x => x.IsValidTarget(annieSpells.RFlash.Range)).
+                        Select(x => annieSpells.RFlash.GetPrediction(x, true)).
+                            Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= GetParamInt("minenemiestoflashr")))
                     {
-                        var pred = annieSpells.RFlash.GetPrediction(target, true);
-
-                        if (Player.Distance(target.Position) > 600)
-                        {
-                            Player.Spellbook.CastSpell(CommonSpells.Flash(Player).Slot, pred.CastPosition);
-                            Utility.DelayAction.Add(50, () => annieSpells.RFlash.Cast(pred.CastPosition));
-                            Utility.DelayAction.Add(80, () => annieSpells.W.Cast(pred.CastPosition));
-                        }
+                        Player.Spellbook.CastSpell(CommonSpells.Flash(Player).Slot, pred.CastPosition);
+                        Utility.DelayAction.Add(50, () => annieSpells.R.Cast(pred.CastPosition));
                     }
                 }
-                else
-                {
-                    ComboMode();
-                }
+
+                ComboMode();
             }
         }
 
