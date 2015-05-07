@@ -43,6 +43,8 @@ namespace KoreanAnnie
             PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "manalimitforstacking"), "Mana limit for stacking").SetValue(new Slider(30, 0, 100)));
             PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "savestunforcombo"), "Save stun for combo/haras").SetValue(false));
             PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "showeeasybutton"), "Show easy button").SetValue(true));
+            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "easybuttonpositionx"), "Button position X (ReadOnly)").SetValue<int>(0));
+            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "easybuttonpositiony"), "Button position Y (ReadOnly)").SetValue<int>(0));
 
             Menu FlashTibbers = MainMenu.MiscMenu.AddSubMenu(new Menu("Flash + Tibbers", KoreanUtils.ParamName(MainMenu, "flashtibbersmenu")));
             FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "flashtibbers"), "key").SetValue(new KeyBind('T', KeyBindType.Press)));

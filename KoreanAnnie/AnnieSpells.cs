@@ -17,10 +17,10 @@ namespace KoreanAnnie
         public Spell RFlash { get; set; }
 
         private const float QRange = 625;
-        private const float WRange = 550;
+        private const float WRange = 525;
         private const float ERange = 0;
         private const float RRange = 600;
-        private const float RFlashRange = 1000;
+        private const float RFlashRange = 995;
 
         private const float QDelay = 0.25f;
         private const float WDelay = 0.50f;
@@ -40,7 +40,9 @@ namespace KoreanAnnie
         private const float RWidth = 250f;
         private const float RFlashWidth = 250f;
 
-        public AnnieSpells()
+        private Annie annie;
+
+        public AnnieSpells(Annie annie)
         {
             Q = new Spell(SpellSlot.Q, QRange);
             W = new Spell(SpellSlot.W, WRange);
@@ -52,6 +54,10 @@ namespace KoreanAnnie
             W.SetSkillshot(WDelay, WWidth, W.Speed, false, SkillshotType.SkillshotCircle);
             R.SetSkillshot(RDelay, RWidth, R.Speed, false, SkillshotType.SkillshotCircle);
             RFlash.SetSkillshot(RFlashDelay, RFlashWidth, RFlashSpeed, false, SkillshotType.SkillshotCircle);
+
+            this.annie = annie;
+
+            Game.OnUpdate += StackE;
         }
 
         public float MaxRangeForCombo()
@@ -61,13 +67,56 @@ namespace KoreanAnnie
 
         public float MaxRangeForHaras()
         {
-            return Math.Max(Q.Range, W.Range);
+            if ((Q.IsReady()) && (W.IsReady()))
+            {
+                return Math.Max(Q.Range, W.Range);
+            }
+            else if (Q.IsReady())
+            {
+                return Q.Range;
+            }
+            else if (W.IsReady())
+            {
+                return W.Range;
+            }
+            else
+            {
+                return 0f;
+            }
         }
 
         public bool CheckOverkill(Obj_AI_Hero target)
         {
             return ((Q.IsReady()) && (target.IsValidTarget(Q.Range)) && (Q.IsKillable(target))) ||
                    ((W.IsReady()) && (target.IsValidTarget(W.Range)) && (W.IsKillable(target)));
+        }
+
+        private void StackE(EventArgs args)
+        {
+            if ((!annie.Player.IsRecalling()) && (!annie.CheckStun()) && (annie.GetParamBool("useetostack")) && (annie.Player.ManaPercent > annie.GetParamSlider("manalimitforstacking")) &&
+                (E.IsReady()))
+            {
+                E.Cast();
+            }
+        }
+
+        public float GetMaxDamage(Obj_AI_Hero champ)
+        {
+            float maxDamage = 0f;
+
+            if (champ != null)
+            {
+                if (Q.IsReady())
+                    maxDamage += (float)annie.Player.GetSpellDamage(champ, SpellSlot.Q);
+
+                if (W.IsReady())
+                    maxDamage += (float)annie.Player.GetSpellDamage(champ, SpellSlot.W);
+
+                if (R.IsReady())
+                    maxDamage += (float)annie.Player.GetSpellDamage(champ, SpellSlot.R);
+            }
+
+            return maxDamage * 0.97f;
         }
 
     }

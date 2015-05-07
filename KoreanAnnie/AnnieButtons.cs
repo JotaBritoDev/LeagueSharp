@@ -15,29 +15,35 @@ namespace KoreanAnnie
         public Render.Sprite stunButtonOFF { get; set; }
         public bool ShowEasyButton { get; set; }
 
-        private readonly CommonMenu MainMenu;
+        private Annie annie;
 
-        public AnnieButtons(CommonMenu MainMenu)
+        public AnnieButtons(Annie annie)
         {
-            this.MainMenu = MainMenu;
+            this.annie = annie;
 
-            ShowEasyButton = (KoreanUtils.GetParamBool(MainMenu, "showeeasybutton"));
+            ShowEasyButton = (KoreanUtils.GetParamBool(annie.MainMenu, "showeeasybutton"));
 
-            stunButtonON = new Render.Sprite(Properties.Resources.StunON, new Vector2(Drawing.Width * 0.03f, Drawing.Height * 0.80f));
+            int posX = KoreanUtils.GetParamInt(annie.MainMenu, "easybuttonpositionx");
+            posX = (posX == 0) ? 50 : posX;
+            int posY = KoreanUtils.GetParamInt(annie.MainMenu, "easybuttonpositiony");
+            posY = (posY == 0) ? 50 : posY;
+            Vector2 pos = new Vector2(posX, posY);
+
+            stunButtonON = new Render.Sprite(Properties.Resources.StunON, pos);
             stunButtonON.Scale = new Vector2(0.90f, 0.90f);
             stunButtonON.Add();
 
-            stunButtonOFF = new Render.Sprite(Properties.Resources.StunOFF, new Vector2(Drawing.Width * 0.03f, Drawing.Height * 0.80f));
+            stunButtonOFF = new Render.Sprite(Properties.Resources.StunOFF, pos);
             stunButtonOFF.Scale = new Vector2(0.90f, 0.90f);
             stunButtonOFF.Add();
 
             if (ShowEasyButton) 
             {
-                stunButtonON.Visible = KoreanUtils.GetParamBool(MainMenu, "savestunforcombo");
+                stunButtonON.Visible = KoreanUtils.GetParamBool(annie.MainMenu, "savestunforcombo");
                 stunButtonOFF.Visible = !stunButtonON.Visible;
             }
 
-            KoreanUtils.GetParam(MainMenu, "savestunforcombo").ValueChanged += SaveStunForCombo_ValueChanged;
+            KoreanUtils.GetParam(annie.MainMenu, "savestunforcombo").ValueChanged += SaveStunForCombo_ValueChanged;
             Game.OnWndProc += ButtonControl;
         }
 
@@ -47,7 +53,6 @@ namespace KoreanAnnie
 
             return ((pos.X >= button.Position.X) && pos.X <= (button.Position.X + button.Width) &&
                     pos.Y >= button.Position.Y && pos.Y <= (button.Position.Y + button.Height));
-
         }
 
         public void SaveStunForCombo_ValueChanged(object sender, OnValueChangeEventArgs e)
@@ -61,7 +66,7 @@ namespace KoreanAnnie
 
         public void ButtonControl(WndEventArgs args)
         {
-            ShowEasyButton = (KoreanUtils.GetParamBool(MainMenu, "showeeasybutton"));
+            ShowEasyButton = (KoreanUtils.GetParamBool(annie.MainMenu, "showeeasybutton"));
 
             if (ShowEasyButton)
             {
@@ -69,27 +74,19 @@ namespace KoreanAnnie
                 {
                     if (stunButtonON.Visible)
                     {
-                        KoreanUtils.SetValueBool(MainMenu, "savestunforcombo", false);
+                        KoreanUtils.SetValueBool(annie.MainMenu, "savestunforcombo", false);
                     }
                     else if (stunButtonOFF.Visible)
                     {
-                        KoreanUtils.SetValueBool(MainMenu, "savestunforcombo", true);
+                        KoreanUtils.SetValueBool(annie.MainMenu, "savestunforcombo", true);
                     }
                 }
                 else if ((args.Msg == (uint)WindowsMessages.WM_MOUSEMOVE) && (args.WParam == 5) && (MouseOnButton(stunButtonON) || MouseOnButton(stunButtonOFF)))
                 {
-                    Vector2 novaPosicao = new Vector2(Utils.GetCursorPos().X - (stunButtonON.Width / 2), Utils.GetCursorPos().Y - 10);
-
-                    stunButtonON.Position = novaPosicao;
-                    stunButtonON.PositionUpdate = () => novaPosicao;
-                    stunButtonON.PositionUpdate = null;
-
-                    stunButtonOFF.Position = novaPosicao;
-                    stunButtonOFF.PositionUpdate = () => novaPosicao;
-                    stunButtonOFF.PositionUpdate = null;
+                    MoveButtons(new Vector2(Utils.GetCursorPos().X - (stunButtonON.Width / 2), Utils.GetCursorPos().Y - 10));
                 }
 
-                stunButtonON.Visible = KoreanUtils.GetParamBool(MainMenu, "savestunforcombo");
+                stunButtonON.Visible = KoreanUtils.GetParamBool(annie.MainMenu, "savestunforcombo");
                 stunButtonOFF.Visible = !stunButtonON.Visible;
             }
             else
@@ -97,6 +94,20 @@ namespace KoreanAnnie
                 stunButtonOFF.Visible = false;
                 stunButtonON.Visible = false;
             }
+        }
+
+        private void MoveButtons(Vector2 newPosition)
+        {
+            stunButtonON.Position = newPosition;
+            stunButtonON.PositionUpdate = () => newPosition;
+            stunButtonON.PositionUpdate = null;
+
+            stunButtonOFF.Position = newPosition;
+            stunButtonOFF.PositionUpdate = () => newPosition;
+            stunButtonOFF.PositionUpdate = null;
+
+            KoreanUtils.SetValueInt(annie.MainMenu, "easybuttonpositionx", (int)stunButtonON.Position.X);
+            KoreanUtils.SetValueInt(annie.MainMenu, "easybuttonpositiony", (int)stunButtonON.Position.Y);
         }
     }
 }

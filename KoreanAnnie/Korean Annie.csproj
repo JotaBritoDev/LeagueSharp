@@ -61,8 +61,12 @@
     <Compile Include="Annie.cs" />
     <Compile Include="AnnieButtons.cs" />
     <Compile Include="AnnieCustomMenu.cs" />
+    <Compile Include="AnnieDrawings.cs" />
     <Compile Include="AnnieSpells.cs" />
     <Compile Include="AnnieTibbers.cs" />
+    <Compile Include="CommonForceUltimate.cs" />
+    <Compile Include="Common\CommonChamp.cs" />
+    <Compile Include="Common\CommomDamageDrawing.cs" />
     <Compile Include="Common\CommonSpells.cs" />
     <Compile Include="Common\CommonMenu.cs" />
     <Compile Include="Program.cs" />
@@ -78,6 +82,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Mouse1.png" />
+    <None Include="Resources\Mouse2.png" />
+    <None Include="Resources\DenyMouse.png" />
     <Content Include="Resources\StunOFF.bmp" />
     <Content Include="Resources\StunON.bmp" />
   </ItemGroup>

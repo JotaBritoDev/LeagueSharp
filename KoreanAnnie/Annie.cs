@@ -10,53 +10,76 @@ using KoreanAnnie.Properties;
 
 namespace KoreanAnnie
 {
-    class Annie
+    class Annie : CommonChamp
     {
-        private string menuDisplay = "Korean Annie";
-        private Orbwalking.Orbwalker Orbwalker;
-        private Obj_AI_Hero Player;
-        private CommonMenu MainMenu;
-        private Func<string, bool> GetParamBool;
-        private Action<string, bool> SetValueBool;
-        private Func<string, int> GetParamInt;
-        private Func<string, bool> GetParamKeyBind;
-        private Func<string, string> ParamName;
-        private Func<bool> CanFarm;
-        private Func<bool> SaveStun;
-        private Func<bool> CheckStun;
+        public const string menuDisplay = "Korean Annie";
+        public float UltimateRange { get; set; }
+        public Func<string, bool> GetParamBool;
+        public Action<string, bool> SetValueBool;
+        public Func<string, int> GetParamSlider;
+        public Func<string, bool> GetParamKeyBind;
+        public Func<string, string> ParamName;
+        public Func<bool> CanFarm;
+        public Func<bool> SaveStun;
+        public Func<bool> CheckStun;
 
-        AnnieSpells annieSpells;
-        AnnieButtons annieButtons;
-        AnnieTibbers annieTibbers;
+        public CommonMenu MainMenu { get; set; }
+        public AnnieSpells Spells { get; set; }
+        public AnnieButtons Buttons { get; set; }
+        public AnnieTibbers Tibbers { get; set; }
+        public AnnieDrawings Draws { get; set; }
+        public CommonDamageDrawing DrawDamage { get; set; }
+        public CommonForceUltimate ForceUltimate { get; set; }
+        public Orbwalking.Orbwalker Orbwalker { get; set; }
+        public Obj_AI_Hero Player { get; set; }
 
-        public Annie()
+        public Annie() 
         {
             Player = ObjectManager.Player;
             MainMenu = new CommonMenu(menuDisplay, true);
             Orbwalker = MainMenu.Orbwalker;
-
             AnnieCustomMenu.Load(MainMenu);
 
-            annieSpells = new AnnieSpells();
-            annieButtons = new AnnieButtons(MainMenu);
-            annieTibbers = new AnnieTibbers(Player);
+            LoadLambdaExpressions();
 
-            ParamName = s => KoreanUtils.ParamName(MainMenu, s);
-            GetParamBool = s => KoreanUtils.GetParamBool(MainMenu, s);
-            SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
-            GetParamInt = s => KoreanUtils.GetParamInt(MainMenu, s);
-            GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
-            CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
-            CheckStun = () => Player.HasBuff("pyromania_particle", true);
-            SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
+            Spells = new AnnieSpells(this);
+            Buttons = new AnnieButtons(this);
+            Tibbers = new AnnieTibbers(this);
+            Draws = new AnnieDrawings(this);
+            DrawDamage = new CommonDamageDrawing(this);
+            ForceUltimate = new CommonForceUltimate(this);
+            UltimateRange = Spells.R.Range;
+            ForceUltimate.ForceUltimate = Ultimate;
+
+            DrawDamage.AmountOfDamage = Spells.GetMaxDamage;
+            DrawDamage.Active = true;
 
             Obj_AI_Base.OnProcessSpellCast += EAgainstEnemyAA;
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
             AntiGapcloser.OnEnemyGapcloser += StunGapCloser;
             Orbwalking.BeforeAttack += CancelingAAOnSupportMode;
-            Game.OnUpdate += StackE;
-            Game.OnUpdate += FlashTibbersLogic;
             Game.OnUpdate += OrbwalkerComplementation;
+        }
+
+        private void Ultimate()
+        {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.R.Range, TargetSelector.DamageType.Magical);
+            if (target != null)
+            {
+                Spells.R.Cast(target.Position);
+            }
+        }
+
+        private void LoadLambdaExpressions()
+        {
+            ParamName = s => KoreanUtils.ParamName(MainMenu, s);
+            GetParamBool = s => KoreanUtils.GetParamBool(MainMenu, s);
+            SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
+            GetParamSlider = s => KoreanUtils.GetParamSlider(MainMenu, s);
+            GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
+            CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
+            CheckStun = () => Player.HasBuff("pyromania_particle", true);
+            SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
         }
 
         private void CancelingAAOnSupportMode(Orbwalking.BeforeAttackEventArgs args)
@@ -71,13 +94,13 @@ namespace KoreanAnnie
         {
             if (GetParamBool("antigapcloser") && (CheckStun()))
             {
-                if ((annieSpells.Q.IsReady()) && (gapcloser.Sender.IsValidTarget(annieSpells.Q.Range)))
+                if ((Spells.Q.IsReady()) && (gapcloser.Sender.IsValidTarget(Spells.Q.Range)))
                 {
-                    annieSpells.Q.Cast(gapcloser.Sender);
+                    Spells.Q.Cast(gapcloser.Sender);
                 }
-                else if ((annieSpells.W.IsReady()) && (gapcloser.Sender.IsValidTarget(annieSpells.W.Range)))
+                else if ((Spells.W.IsReady()) && (gapcloser.Sender.IsValidTarget(Spells.W.Range)))
                 {
-                    annieSpells.W.Cast(gapcloser.Sender);
+                    Spells.W.Cast(gapcloser.Sender);
                 }
             }
         }
@@ -87,13 +110,13 @@ namespace KoreanAnnie
             if ((GetParamBool("interruptspells")) && (CheckStun()) && (sender.IsEnemy) && 
                 (args.DangerLevel > Interrupter2.DangerLevel.Medium))
             {
-                if ((annieSpells.Q.IsReady()) && (sender.IsValidTarget(annieSpells.Q.Range)))
+                if ((Spells.Q.IsReady()) && (sender.IsValidTarget(Spells.Q.Range)))
                 {
-                    annieSpells.Q.Cast(sender);
+                    Spells.Q.Cast(sender);
                 }
-                if ((annieSpells.W.IsReady()) && (sender.IsValidTarget(annieSpells.W.Range)))
+                if ((Spells.W.IsReady()) && (sender.IsValidTarget(Spells.W.Range)))
                 {
-                    annieSpells.W.Cast(sender);
+                    Spells.W.Cast(sender);
                 }
             }
         }
@@ -106,11 +129,11 @@ namespace KoreanAnnie
                 (Player.Distance(args.End) < 440) &&
                 (args.SData.Name.ToLowerInvariant().Contains("attack")))
             {
-                annieSpells.E.Cast();
+                Spells.E.Cast();
             }
         }
 
-        private void LastHitMode()
+        public void LastHitMode()
         {
             if (!SaveStun())
             {
@@ -118,19 +141,19 @@ namespace KoreanAnnie
             }
         }
 
-        private void MixedMode()
+        public void MixedMode()
         {
             LastHitMode();
             Haras();
         }
 
-        private void LaneClearMode()
+        public void LaneClearMode()
         {
             if ((!SaveStun()) && (CanFarm()))
             {
-                bool manaLimitReached = Player.ManaPercent < GetParamInt("manalimittolaneclear");
+                bool manaLimitReached = Player.ManaPercent < GetParamSlider("manalimittolaneclear");
 
-                if ((GetParamBool("useqtolaneclear")) && (annieSpells.Q.IsReady()))
+                if ((GetParamBool("useqtolaneclear")) && (Spells.Q.IsReady()))
                 {
                     if (GetParamBool("saveqtofarm"))
                     {
@@ -138,26 +161,26 @@ namespace KoreanAnnie
                     }
                     else if (!manaLimitReached)
                     {
-                        List<Obj_AI_Base> minions = MinionManager.GetMinions(Player.Position, annieSpells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth);
+                        List<Obj_AI_Base> minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth);
 
                         if ((minions != null) && (minions.Count > 0))
                         {
-                            annieSpells.Q.Cast(minions[0]);
+                            Spells.Q.Cast(minions[0]);
                         }
                     }
                 }
 
                 if (!manaLimitReached)
                 {
-                    if ((GetParamBool("usewtolaneclear")) && (annieSpells.W.IsReady()))
+                    if ((GetParamBool("usewtolaneclear")) && (Spells.W.IsReady()))
                     {
-                        List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, annieSpells.W.Range);
+                        List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, Spells.W.Range);
 
-                        MinionManager.FarmLocation WFarmLocation = annieSpells.W.GetCircularFarmLocation(Minions, annieSpells.W.Width);
+                        MinionManager.FarmLocation WFarmLocation = Spells.W.GetCircularFarmLocation(Minions, Spells.W.Width);
 
-                        if (WFarmLocation.MinionsHit >= GetParamInt("minminionstow"))
+                        if (WFarmLocation.MinionsHit >= GetParamSlider("minminionstow"))
                         {
-                            annieSpells.W.Cast(WFarmLocation.Position);
+                            Spells.W.Cast(WFarmLocation.Position);
                         }
                     }
                 }
@@ -169,36 +192,43 @@ namespace KoreanAnnie
             }
         }
 
-        private void ComboMode()
+        public void ComboMode()
         {
-            Obj_AI_Hero target = TargetSelector.GetTarget(annieSpells.MaxRangeForCombo(), TargetSelector.DamageType.Magical);
+            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForCombo(), TargetSelector.DamageType.Magical);
 
-            if ((annieSpells.R.IsReady()) && (GetParamBool("usertocombo")) && (target.IsValidTarget(annieSpells.R.Range)) && (!annieSpells.CheckOverkill(target)))
+            if (target == null)
+                return;
+
+            if ((Spells.R.IsReady()) && (GetParamBool("usertocombo")) && (target.IsValidTarget(Spells.R.Range)) && (!Spells.CheckOverkill(target)))
             {
-                int minEnemiesToR = GetParamInt("minenemiestor");
+                int minEnemiesToR = GetParamSlider("minenemiestor");
 
                 if (minEnemiesToR == 1)
                 {
-                    annieSpells.R.Cast(target.Position);
+                    Spells.R.Cast(target.Position);
                 }
                 else
                 {
                     foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
-                        Where(x => x.IsValidTarget(annieSpells.R.Range)).
-                        Select(x => annieSpells.R.GetPrediction(x, true)).
+                        Where(x => x.IsValidTarget(Spells.R.Range)).
+                        Select(x => Spells.R.GetPrediction(x, true)).
                             Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minEnemiesToR))
                     {
-                        annieSpells.R.Cast(pred.CastPosition);
+                        Spells.R.Cast(pred.CastPosition);
                     }
                 }
             }
-            if ((annieSpells.W.IsReady()) && (GetParamBool("usewtocombo")) && (target.IsValidTarget(annieSpells.W.Range)))
+            if ((Spells.W.IsReady()) && (GetParamBool("usewtocombo")) && (target.IsValidTarget(Spells.W.Range)))
             {
-                annieSpells.W.Cast(target.Position);
+                Spells.W.Cast(target);
             }
-            if ((annieSpells.Q.IsReady()) && (GetParamBool("useqtocombo")) && (target.IsValidTarget(annieSpells.Q.Range)))
+            if ((Spells.Q.IsReady()) && (GetParamBool("useqtocombo")) && (target.IsValidTarget(Spells.Q.Range)))
             {
-                annieSpells.Q.Cast(target);
+                Spells.Q.Cast(target);
+            }
+            if ((!GetParamBool("supportmode")) && (Spells.GetMaxDamage(target) > target.Health * 1.02f))
+            {
+                Ultimate();
             }
         }
 
@@ -206,14 +236,14 @@ namespace KoreanAnnie
         {
             if ((!SaveStun()) && (CanFarm()))
             {
-                if ((annieSpells.Q.IsReady()) && (GetParamBool("useqtofarm")))
+                if ((Spells.Q.IsReady()) && (GetParamBool("useqtofarm")))
                 {
-                    List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, annieSpells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth)
-                        .Where(x => annieSpells.Q.IsKillable(x)).ToList();
+                    List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth)
+                        .Where(x => Spells.Q.IsKillable(x)).ToList();
 
                     if ((Minions != null) && (Minions.Count > 0))
                     {
-                        annieSpells.Q.Cast(Minions[0]);
+                        Spells.Q.Cast(Minions[0]);
                     }
                 }
             }
@@ -221,50 +251,20 @@ namespace KoreanAnnie
 
         private void Haras()
         {
-            bool manaLimitReached = Player.ManaPercent < GetParamInt("manalimittoharas");
+            bool manaLimitReached = Player.ManaPercent < GetParamSlider("manalimittoharas");
             if (!manaLimitReached)
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(annieSpells.MaxRangeForHaras(), TargetSelector.DamageType.Magical);
+                Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForHaras(), TargetSelector.DamageType.Magical);
 
-                if ((annieSpells.Q.IsReady()) && (GetParamBool("useqtoharas")) && (target.IsValidTarget(annieSpells.Q.Range)))
+                if ((Spells.Q.IsReady()) && (GetParamBool("useqtoharas")) && (target.IsValidTarget(Spells.Q.Range)))
                 {
-                    annieSpells.Q.Cast(target);
+                    Spells.Q.Cast(target);
                 }
 
-                if ((annieSpells.W.IsReady()) && (GetParamBool("usewtoharas")) && (target.IsValidTarget(annieSpells.W.Range)))
+                if ((Spells.W.IsReady()) && (GetParamBool("usewtoharas")) && (target.IsValidTarget(Spells.W.Range)))
                 {
-                    annieSpells.W.Cast(target.Position);
+                    Spells.W.Cast(target.Position);
                 }
-            }
-        }
-
-        private void StackE(EventArgs args)
-        {
-            if ((!Player.IsRecalling()) && (!CheckStun()) && (GetParamBool("useetostack")) && (Player.ManaPercent > GetParamInt("manalimitforstacking")) && 
-                (annieSpells.E.IsReady()))
-            {
-                annieSpells.E.Cast();
-            }
-        }
-
-        private void FlashTibbersLogic(EventArgs args)
-        {
-            if (GetParamKeyBind("flashtibbers"))
-            {
-                if ((annieSpells.R.IsReady()) && (CommonSpells.Flash(Player).IsReady) && (CheckStun()))
-                {
-
-                    foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
-                        Where(x => x.IsValidTarget(annieSpells.RFlash.Range)).
-                        Select(x => annieSpells.RFlash.GetPrediction(x, true)).
-                            Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= GetParamInt("minenemiestoflashr")))
-                    {
-                        Player.Spellbook.CastSpell(CommonSpells.Flash(Player).Slot, pred.CastPosition);
-                        Utility.DelayAction.Add(50, () => annieSpells.R.Cast(pred.CastPosition));
-                    }
-                }
-
-                ComboMode();
             }
         }
 

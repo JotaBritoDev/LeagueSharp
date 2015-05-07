@@ -20,17 +20,49 @@ namespace KoreanAnnie
             get { return _tibbers; }
         }
 
-        private Obj_AI_Hero Player;
         private Obj_AI_Base CurrentTarget;
+        private Annie annie;
 
-        public AnnieTibbers(Obj_AI_Hero player)
+        public AnnieTibbers(Annie annie)
         {
-            Player = player;
+            this.annie = annie;
 
             GameObject.OnCreate += NewTibbers;
             GameObject.OnDelete += DeleteTibbers;
             Game.OnUpdate += ControlTibbers;
             Orbwalking.OnAttack += AttackTurrent;
+            Game.OnUpdate += FlashTibbersLogic;
+        }
+
+        private void FlashTibbersLogic(EventArgs args)
+        {
+            if (annie.GetParamKeyBind("flashtibbers"))
+            {
+                if ((annie.Spells.R.IsReady()) && (CommonSpells.Flash(annie.Player).IsReady) && (annie.CheckStun()))
+                {
+                    int minToCast = annie.GetParamSlider("minenemiestoflashr");
+
+                    if (minToCast > 1)
+                    {
+                        foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
+                            Where(x => x.IsValidTarget(annie.Spells.RFlash.Range)).
+                            Select(x => annie.Spells.RFlash.GetPrediction(x, true)).
+                                Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minToCast))
+                        {
+                            annie.Player.Spellbook.CastSpell(CommonSpells.Flash(annie.Player).Slot, pred.CastPosition);
+                            Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(pred.CastPosition));
+                        }
+                    }
+                    else
+                    {
+                        Obj_AI_Hero target = TargetSelector.GetTarget(annie.Spells.RFlash.Range, TargetSelector.DamageType.Magical);
+                        annie.Player.Spellbook.CastSpell(CommonSpells.Flash(annie.Player).Slot, target.Position);
+                        Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(target.Position));
+                    }
+                }
+
+                annie.ComboMode();
+            }
         }
 
         private void AttackTurrent(AttackableUnit unit, AttackableUnit target)
@@ -70,7 +102,7 @@ namespace KoreanAnnie
 
                 if ((target != null))
                 {
-                    Player.IssueOrder(_tibbers.Distance(target.Position) > 200 ? 
+                    annie.Player.IssueOrder(_tibbers.Distance(target.Position) > 200 ? 
                         GameObjectOrder.MovePet : 
                         GameObjectOrder.AutoAttackPet, target);
                 }
@@ -101,12 +133,12 @@ namespace KoreanAnnie
             if (target != null)
                 return target;
 
-            if ((CurrentTarget != null) && (CurrentTarget.IsValidTarget(Player.AttackRange + 200f)))
+            if ((CurrentTarget != null) && (CurrentTarget.IsValidTarget(annie.Player.AttackRange + 200f)))
                 return CurrentTarget;
             else
                 CurrentTarget = null;
 
-            return Player;
+            return annie.Player;
         }
 
         private Obj_AI_Base GetMinion()
