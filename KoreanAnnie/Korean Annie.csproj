@@ -66,7 +66,7 @@
     <Compile Include="AnnieTibbers.cs" />
     <Compile Include="CommonForceUltimate.cs" />
     <Compile Include="Common\CommonChamp.cs" />
-    <Compile Include="Common\CommomDamageDrawing.cs" />
+    <Compile Include="Common\CommonDamageDrawing.cs" />
     <Compile Include="Common\CommonSpells.cs" />
     <Compile Include="Common\CommonMenu.cs" />
     <Compile Include="Program.cs" />
