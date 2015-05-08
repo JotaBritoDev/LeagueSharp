@@ -27,11 +27,13 @@ namespace KoreanAnnie
         public AnnieSpells Spells { get; set; }
         public AnnieButtons Buttons { get; set; }
         public AnnieTibbers Tibbers { get; set; }
+        public AnnieOrbwalkComplementation AnnieOrbwalker { get; set; }
         public AnnieDrawings Draws { get; set; }
         public CommonDamageDrawing DrawDamage { get; set; }
         public CommonForceUltimate ForceUltimate { get; set; }
         public Orbwalking.Orbwalker Orbwalker { get; set; }
         public Obj_AI_Hero Player { get; set; }
+        public CommonDisableAA DisableAA { get; set; }
 
         public Annie() 
         {
@@ -45,29 +47,22 @@ namespace KoreanAnnie
             Spells = new AnnieSpells(this);
             Buttons = new AnnieButtons(this);
             Tibbers = new AnnieTibbers(this);
+            AnnieOrbwalker = new AnnieOrbwalkComplementation(this);
+
             Draws = new AnnieDrawings(this);
             DrawDamage = new CommonDamageDrawing(this);
             ForceUltimate = new CommonForceUltimate(this);
             UltimateRange = Spells.R.Range;
-            ForceUltimate.ForceUltimate = Ultimate;
 
+            ForceUltimate.ForceUltimate = AnnieOrbwalker.Ultimate;
             DrawDamage.AmountOfDamage = Spells.GetMaxDamage;
             DrawDamage.Active = true;
+
+            DisableAA = new CommonDisableAA(this);
 
             Obj_AI_Base.OnProcessSpellCast += EAgainstEnemyAA;
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
             AntiGapcloser.OnEnemyGapcloser += StunGapCloser;
-            Orbwalking.BeforeAttack += CancelingAAOnSupportMode;
-            Game.OnUpdate += OrbwalkerComplementation;
-        }
-
-        private void Ultimate()
-        {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.R.Range, TargetSelector.DamageType.Magical);
-            if (target != null)
-            {
-                Spells.R.Cast(target.Position);
-            }
         }
 
         private void LoadLambdaExpressions()
@@ -80,14 +75,6 @@ namespace KoreanAnnie
             CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
             CheckStun = () => Player.HasBuff("pyromania_particle", true);
             SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
-        }
-
-        private void CancelingAAOnSupportMode(Orbwalking.BeforeAttackEventArgs args)
-        {
-            if ((args.Target is Obj_AI_Base) && (((Obj_AI_Base)args.Target).IsMinion) && (!CanFarm()))
-            {
-                args.Process = false;
-            }
         }
 
         void StunGapCloser(ActiveGapcloser gapcloser)
@@ -130,160 +117,6 @@ namespace KoreanAnnie
                 (args.SData.Name.ToLowerInvariant().Contains("attack")))
             {
                 Spells.E.Cast();
-            }
-        }
-
-        public void LastHitMode()
-        {
-            if (!SaveStun())
-            {
-                QFarmLogic();
-            }
-        }
-
-        public void MixedMode()
-        {
-            LastHitMode();
-            Haras();
-        }
-
-        public void LaneClearMode()
-        {
-            if ((!SaveStun()) && (CanFarm()))
-            {
-                bool manaLimitReached = Player.ManaPercent < GetParamSlider("manalimittolaneclear");
-
-                if ((GetParamBool("useqtolaneclear")) && (Spells.Q.IsReady()))
-                {
-                    if (GetParamBool("saveqtofarm"))
-                    {
-                        QFarmLogic();
-                    }
-                    else if (!manaLimitReached)
-                    {
-                        List<Obj_AI_Base> minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth);
-
-                        if ((minions != null) && (minions.Count > 0))
-                        {
-                            Spells.Q.Cast(minions[0]);
-                        }
-                    }
-                }
-
-                if (!manaLimitReached)
-                {
-                    if ((GetParamBool("usewtolaneclear")) && (Spells.W.IsReady()))
-                    {
-                        List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, Spells.W.Range);
-
-                        MinionManager.FarmLocation WFarmLocation = Spells.W.GetCircularFarmLocation(Minions, Spells.W.Width);
-
-                        if (WFarmLocation.MinionsHit >= GetParamSlider("minminionstow"))
-                        {
-                            Spells.W.Cast(WFarmLocation.Position);
-                        }
-                    }
-                }
-            }
-
-            if (GetParamBool("harasonlaneclear"))
-            {
-                Haras();
-            }
-        }
-
-        public void ComboMode()
-        {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForCombo(), TargetSelector.DamageType.Magical);
-
-            if (target == null)
-                return;
-
-            if ((Spells.R.IsReady()) && (GetParamBool("usertocombo")) && (target.IsValidTarget(Spells.R.Range)) && (!Spells.CheckOverkill(target)))
-            {
-                int minEnemiesToR = GetParamSlider("minenemiestor");
-
-                if (minEnemiesToR == 1)
-                {
-                    Spells.R.Cast(target.Position);
-                }
-                else
-                {
-                    foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
-                        Where(x => x.IsValidTarget(Spells.R.Range)).
-                        Select(x => Spells.R.GetPrediction(x, true)).
-                            Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minEnemiesToR))
-                    {
-                        Spells.R.Cast(pred.CastPosition);
-                    }
-                }
-            }
-            if ((Spells.W.IsReady()) && (GetParamBool("usewtocombo")) && (target.IsValidTarget(Spells.W.Range)))
-            {
-                Spells.W.Cast(target);
-            }
-            if ((Spells.Q.IsReady()) && (GetParamBool("useqtocombo")) && (target.IsValidTarget(Spells.Q.Range)))
-            {
-                Spells.Q.Cast(target);
-            }
-            if ((!GetParamBool("supportmode")) && (Spells.GetMaxDamage(target) > target.Health * 1.02f))
-            {
-                Ultimate();
-            }
-        }
-
-        private void QFarmLogic()
-        {
-            if ((!SaveStun()) && (CanFarm()))
-            {
-                if ((Spells.Q.IsReady()) && (GetParamBool("useqtofarm")))
-                {
-                    List<Obj_AI_Base> Minions = MinionManager.GetMinions(Player.Position, Spells.Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth)
-                        .Where(x => Spells.Q.IsKillable(x)).ToList();
-
-                    if ((Minions != null) && (Minions.Count > 0))
-                    {
-                        Spells.Q.Cast(Minions[0]);
-                    }
-                }
-            }
-        }
-
-        private void Haras()
-        {
-            bool manaLimitReached = Player.ManaPercent < GetParamSlider("manalimittoharas");
-            if (!manaLimitReached)
-            {
-                Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForHaras(), TargetSelector.DamageType.Magical);
-
-                if ((Spells.Q.IsReady()) && (GetParamBool("useqtoharas")) && (target.IsValidTarget(Spells.Q.Range)))
-                {
-                    Spells.Q.Cast(target);
-                }
-
-                if ((Spells.W.IsReady()) && (GetParamBool("usewtoharas")) && (target.IsValidTarget(Spells.W.Range)))
-                {
-                    Spells.W.Cast(target.Position);
-                }
-            }
-        }
-
-        void OrbwalkerComplementation(EventArgs args)
-        {
-            switch (Orbwalker.ActiveMode)
-            {
-                case Orbwalking.OrbwalkingMode.LastHit:
-                    LastHitMode();
-                    break;
-                case Orbwalking.OrbwalkingMode.Mixed:
-                    MixedMode();
-                    break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                    LaneClearMode();
-                    break;
-                case Orbwalking.OrbwalkingMode.Combo:
-                    ComboMode();
-                    break;
             }
         }
 

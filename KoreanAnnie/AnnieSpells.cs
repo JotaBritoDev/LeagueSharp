@@ -8,7 +8,7 @@ using LeagueSharp.Common;
 
 namespace KoreanAnnie
 {
-    class AnnieSpells
+    class AnnieSpells : CommonSpells
     {
         public Spell Q { get; set; }
         public Spell W { get; set; }
@@ -17,7 +17,7 @@ namespace KoreanAnnie
         public Spell RFlash { get; set; }
 
         private const float QRange = 625;
-        private const float WRange = 525;
+        private const float WRange = 550;
         private const float ERange = 0;
         private const float RRange = 600;
         private const float RFlashRange = 995;
@@ -44,14 +44,14 @@ namespace KoreanAnnie
 
         public AnnieSpells(Annie annie)
         {
-            Q = new Spell(SpellSlot.Q, QRange);
-            W = new Spell(SpellSlot.W, WRange);
-            E = new Spell(SpellSlot.E, ERange);
-            R = new Spell(SpellSlot.R, RRange);
-            RFlash = new Spell(SpellSlot.R, RFlashRange);
-
+            Q = new Spell(SpellSlot.Q, QRange, TargetSelector.DamageType.Magical);
+            W = new Spell(SpellSlot.W, WRange, TargetSelector.DamageType.Magical);
+            E = new Spell(SpellSlot.E, ERange, TargetSelector.DamageType.Magical);
+            R = new Spell(SpellSlot.R, RRange, TargetSelector.DamageType.Magical);
+            RFlash = new Spell(SpellSlot.R, RFlashRange, TargetSelector.DamageType.Magical);
+            
             Q.SetTargetted(QDelay, QSpeed);
-            W.SetSkillshot(WDelay, WWidth, W.Speed, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(WDelay, WWidth, W.Speed, false, SkillshotType.SkillshotCone);
             R.SetSkillshot(RDelay, RWidth, R.Speed, false, SkillshotType.SkillshotCircle);
             RFlash.SetSkillshot(RFlashDelay, RFlashWidth, RFlashSpeed, false, SkillshotType.SkillshotCircle);
 
@@ -62,7 +62,7 @@ namespace KoreanAnnie
 
         public float MaxRangeForCombo()
         {
-            return R.IsReady() ? R.Range : MaxRangeForHaras();
+            return (R.IsReady() && annie.Tibbers.Tibbers == null) ? R.Range : MaxRangeForHaras();
         }
 
         public float MaxRangeForHaras()
@@ -112,7 +112,7 @@ namespace KoreanAnnie
                 if (W.IsReady())
                     maxDamage += (float)annie.Player.GetSpellDamage(champ, SpellSlot.W);
 
-                if (R.IsReady())
+                if (R.IsReady() && annie.Tibbers.Tibbers == null)
                     maxDamage += (float)annie.Player.GetSpellDamage(champ, SpellSlot.R);
             }
 

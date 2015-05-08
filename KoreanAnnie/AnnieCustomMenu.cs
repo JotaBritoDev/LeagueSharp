@@ -20,7 +20,7 @@ namespace KoreanAnnie
 
         private static void LoadCombo(CommonMenu MainMenu)
         {
-            MainMenu.ComboMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "minenemiestor"), "Only R if will hit at least").SetValue(new Slider(1, 1, 5)));
+            //
         }
 
         private static void RemoveItems(CommonMenu MainMenu)
@@ -49,6 +49,8 @@ namespace KoreanAnnie
             Menu FlashTibbers = MainMenu.MiscMenu.AddSubMenu(new Menu("Flash + Tibbers", KoreanUtils.ParamName(MainMenu, "flashtibbersmenu")));
             FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "flashtibbers"), "key").SetValue(new KeyBind('T', KeyBindType.Press)));
             FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "minenemiestoflashr"), "Only use if will hit at least").SetValue(new Slider(2, 1, 5)));
+            FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "orbwalktoflashtibbers"), "Orbwalk").SetValue(false));
+
 
             MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "supportmode"), "Support mode").SetValue(false));
             MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "useqtofarm"), "Use Q to farm").SetValue(true));

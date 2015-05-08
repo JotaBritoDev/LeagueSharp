@@ -26,7 +26,7 @@ namespace KoreanAnnie
         {
             if (annie.GetParamBool("drawskillranges"))
             {
-                if (annie.GetParamKeyBind("flashtibbers") && (annie.Spells.R.IsReady()) && (CommonSpells.Flash(annie.Player).IsReady) && (annie.CheckStun()))
+                if (annie.GetParamKeyBind("flashtibbers") && (annie.Spells.R.IsReady()) && (FlashSpell.Flash(annie.Player).IsReady) && (annie.CheckStun()))
                 {
                     Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.RFlash.Range, System.Drawing.Color.DarkGreen, 3);
                 }

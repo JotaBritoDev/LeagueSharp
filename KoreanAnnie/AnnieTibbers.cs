@@ -38,7 +38,7 @@ namespace KoreanAnnie
         {
             if (annie.GetParamKeyBind("flashtibbers"))
             {
-                if ((annie.Spells.R.IsReady()) && (CommonSpells.Flash(annie.Player).IsReady) && (annie.CheckStun()))
+                if ((annie.Spells.R.IsReady()) && (FlashSpell.Flash(annie.Player).IsReady) && (annie.CheckStun()))
                 {
                     int minToCast = annie.GetParamSlider("minenemiestoflashr");
 
@@ -49,19 +49,23 @@ namespace KoreanAnnie
                             Select(x => annie.Spells.RFlash.GetPrediction(x, true)).
                                 Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minToCast))
                         {
-                            annie.Player.Spellbook.CastSpell(CommonSpells.Flash(annie.Player).Slot, pred.CastPosition);
+                            annie.Player.Spellbook.CastSpell(FlashSpell.Flash(annie.Player).Slot, pred.CastPosition);
                             Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(pred.CastPosition));
                         }
                     }
                     else
                     {
                         Obj_AI_Hero target = TargetSelector.GetTarget(annie.Spells.RFlash.Range, TargetSelector.DamageType.Magical);
-                        annie.Player.Spellbook.CastSpell(CommonSpells.Flash(annie.Player).Slot, target.Position);
+                        annie.Player.Spellbook.CastSpell(FlashSpell.Flash(annie.Player).Slot, target.Position);
                         Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(target.Position));
                     }
                 }
 
-                annie.ComboMode();
+                if (annie.GetParamBool("orbwalktoflashtibbers"))
+                {
+                    annie.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                }
+                annie.AnnieOrbwalker.ComboMode();
             }
         }
 

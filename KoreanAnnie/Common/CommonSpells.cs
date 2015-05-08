@@ -8,13 +8,22 @@ using LeagueSharp.Common;
 
 namespace KoreanAnnie
 {
+    abstract class CommonSpells
+    {
+        Spell Q { get; set; }
+        Spell W { get; set; }
+        Spell E { get; set; }
+        Spell R { get; set; }
+        Spell RFlash { get; set; }
+    }
+
     struct FlashStruct
     {
         public SpellSlot Slot;
         public bool IsReady;
     }
 
-    static class CommonSpells
+    static class FlashSpell
     {
         public static FlashStruct Flash(Obj_AI_Hero Player)
         {

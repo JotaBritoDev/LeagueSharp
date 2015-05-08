@@ -51,8 +51,9 @@ namespace KoreanAnnie
         private bool UltimateUp()
         {
             bool b = ((ObjectManager.Player.GetSpell(SpellSlot.R).IsReady()) && (champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo));
+            b = b && (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse"));
 
-            if ((champion is Annie) && (((Annie)champion).Tibbers.Tibbers != null))
+            if ((b) && (champion is Annie) && (((Annie)champion).Tibbers.Tibbers != null))
             {
                 b = false;
             }
@@ -97,6 +98,11 @@ namespace KoreanAnnie
                         ForceUltimate();
                     }
                 }
+            }
+            else
+            {
+                leftButtonDown = false;
+                rightButtonDown = false;
             }
         }
 
