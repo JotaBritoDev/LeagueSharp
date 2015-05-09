@@ -10,7 +10,7 @@ using KoreanAnnie.Properties;
 
 namespace KoreanAnnie
 {
-    class Annie : CommonChamp
+    class Annie : CommonChampion
     {
         public const string menuDisplay = "Korean Annie";
         public float UltimateRange { get; set; }
@@ -24,7 +24,7 @@ namespace KoreanAnnie
         public Func<bool> CheckStun;
 
         public CommonMenu MainMenu { get; set; }
-        public AnnieSpells Spells { get; set; }
+        public CommonSpells Spells { get; set; }
         public AnnieButtons Buttons { get; set; }
         public AnnieTibbers Tibbers { get; set; }
         public AnnieOrbwalkComplementation AnnieOrbwalker { get; set; }
@@ -44,25 +44,26 @@ namespace KoreanAnnie
 
             LoadLambdaExpressions();
 
-            Spells = new AnnieSpells(this);
+            Spells = new CommonSpells(this);
+            AnnieSpells.Load(this);
+
             Buttons = new AnnieButtons(this);
             Tibbers = new AnnieTibbers(this);
             AnnieOrbwalker = new AnnieOrbwalkComplementation(this);
 
             Draws = new AnnieDrawings(this);
             DrawDamage = new CommonDamageDrawing(this);
+            DisableAA = new CommonDisableAA(this);
             ForceUltimate = new CommonForceUltimate(this);
             UltimateRange = Spells.R.Range;
-
             ForceUltimate.ForceUltimate = AnnieOrbwalker.Ultimate;
-            DrawDamage.AmountOfDamage = Spells.GetMaxDamage;
+            DrawDamage.AmountOfDamage = Spells.MaxComboDamage;
             DrawDamage.Active = true;
-
-            DisableAA = new CommonDisableAA(this);
 
             Obj_AI_Base.OnProcessSpellCast += EAgainstEnemyAA;
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
             AntiGapcloser.OnEnemyGapcloser += StunGapCloser;
+            Game.OnUpdate += StackE;
         }
 
         private void LoadLambdaExpressions()
@@ -75,6 +76,15 @@ namespace KoreanAnnie
             CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
             CheckStun = () => Player.HasBuff("pyromania_particle", true);
             SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
+        }
+
+        private void StackE(EventArgs args)
+        {
+            if ((!Player.IsRecalling()) && (!CheckStun()) && (GetParamBool("useetostack")) && (Player.ManaPercent > GetParamSlider("manalimitforstacking")) &&
+                (Spells.E.IsReady()))
+            {
+                Spells.E.Cast();
+            }
         }
 
         void StunGapCloser(ActiveGapcloser gapcloser)

@@ -11,7 +11,7 @@ namespace KoreanAnnie
 {
     class CommonForceUltimate
     {
-        private CommonChamp champion;
+        private CommonChampion champion;
         private bool leftButtonDown;
         private bool rightButtonDown;
         private int j, k;
@@ -24,7 +24,7 @@ namespace KoreanAnnie
         public delegate void ForceUltimateDelegate();
         public ForceUltimateDelegate ForceUltimate { get; set; }
 
-        public CommonForceUltimate(CommonChamp champion)
+        public CommonForceUltimate(CommonChampion champion)
         {
             this.champion = champion;
 

@@ -10,7 +10,7 @@ namespace KoreanAnnie
 {
     abstract class CommonOrbwalkComplementation
     {
-        protected CommonChamp champion { get; set; }
+        protected CommonChampion champion { get; set; }
 
         public abstract void LastHitMode();
         public abstract void HarasMode();

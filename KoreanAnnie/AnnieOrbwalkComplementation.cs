@@ -11,7 +11,7 @@ namespace KoreanAnnie
     class AnnieOrbwalkComplementation : CommonOrbwalkComplementation
     {
         private Annie annie;
-        private AnnieSpells Spells;
+        private CommonSpells Spells;
 
         public AnnieOrbwalkComplementation(Annie annie)
         {
@@ -19,7 +19,6 @@ namespace KoreanAnnie
             this.annie = annie;
             Spells = annie.Spells;
 
-            Orbwalking.BeforeAttack += CancelingAAOnSupportMode;
             Game.OnUpdate += UseSkills;
         }
 
@@ -84,12 +83,13 @@ namespace KoreanAnnie
 
         public override void ComboMode()
         {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForCombo(), TargetSelector.DamageType.Magical);
+            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeCombo, TargetSelector.DamageType.Magical);
 
             if (target == null)
                 return;
 
-            if ((Spells.R.IsReady()) && (annie.GetParamBool("usertocombo")) && (target.IsValidTarget(Spells.R.Range)) && (!Spells.CheckOverkill(target)))
+            if (annie.GetParamBool("usertocombo") && Spells.R.IsReady() && Spells.R.CanCast() &&
+                target.IsValidTarget(Spells.R.Range) && !Spells.CheckOverkill(target))
             {
                 int minEnemiesToR = annie.GetParamSlider("minenemiestor");
 
@@ -108,6 +108,11 @@ namespace KoreanAnnie
                     }
                 }
             }
+            if (!annie.GetParamBool("supportmode") && Spells.R.GetDamage(target) > target.Health + 50f &&
+                Spells.R.IsReady() && Spells.R.CanCast() && Spells.R.CanCast(target) && !Spells.CheckOverkill(target))
+            {
+                Spells.R.Cast(target.Position);
+            }
             if ((Spells.W.IsReady()) && (annie.GetParamBool("usewtocombo")) && (target.IsValidTarget(Spells.W.Range)))
             {
                 Spells.W.Cast(target.Position);
@@ -116,19 +121,11 @@ namespace KoreanAnnie
             {
                 Spells.Q.Cast(target);
             }
-            if ((!annie.GetParamBool("supportmode")) && (Spells.R.GetDamage(target) > target.Health * 1.02f) && (!Spells.CheckOverkill(target)))
-            {
-                Ultimate();
-            }
         }
 
         public override void Ultimate()
         {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Spells.R.Range, TargetSelector.DamageType.Magical);
-            if (target != null)
-            {
-                Spells.R.Cast(target.Position);
-            }
+            Spells.R.CastOnBestTarget();
         }
 
         private void Haras()
@@ -136,7 +133,7 @@ namespace KoreanAnnie
             bool manaLimitReached = annie.Player.ManaPercent < annie.GetParamSlider("manalimittoharas");
             if (!manaLimitReached)
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeForHaras(), TargetSelector.DamageType.Magical);
+                Obj_AI_Hero target = TargetSelector.GetTarget(Spells.MaxRangeHaras, TargetSelector.DamageType.Magical);
 
                 if ((Spells.Q.IsReady()) && (annie.GetParamBool("useqtoharas")) && (target.IsValidTarget(Spells.Q.Range)))
                 {
@@ -164,14 +161,6 @@ namespace KoreanAnnie
                         Spells.Q.Cast(Minions[0]);
                     }
                 }
-            }
-        }
-
-        private void CancelingAAOnSupportMode(Orbwalking.BeforeAttackEventArgs args)
-        {
-            if ((args.Target is Obj_AI_Base) && (((Obj_AI_Base)args.Target).IsMinion) && (!annie.CanFarm()))
-            {
-                args.Process = false;
             }
         }
     }

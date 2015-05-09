@@ -12,20 +12,35 @@ namespace KoreanAnnie
     {
         Never,
         Always,
-        SomeSkill,
-        FullCombo
+        SomeSkillReady,
+        HarasComboReady,
+        FullComboReady
     };
 
     class CommonDisableAA
     {
-        private CommonChamp champion;
+        private CommonChampion champion;
+
+        public bool CanUseAA()
+        {
+            bool canHit = true;
+
+            if (KoreanUtils.GetParam(champion.MainMenu, "supportmode") != null) 
+            {
+                if (KoreanUtils.GetParamBool(champion.MainMenu, "supportmode") && champion.Player.CountAlliesInRange(1500f) > 0)
+                {
+                    canHit = false;
+                }
+            }
+            return canHit;
+        }
 
         public CommonDisableAAMode Mode
         {
             get { return (CommonDisableAAMode)KoreanUtils.GetParamStringList(champion.MainMenu, "disableaa"); }
         }
 
-        public CommonDisableAA(CommonChamp champion)
+        public CommonDisableAA(CommonChampion champion)
         {
             this.champion = champion;
 
@@ -34,35 +49,47 @@ namespace KoreanAnnie
 
         private void CancelAA(Orbwalking.BeforeAttackEventArgs args)
         {
-            if (champion.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
+            if (args.Target != null)
             {
-                args.Process = true;
-                return;
-            }
+                if (champion.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                {
 
-            switch (Mode)
-            {
-                case CommonDisableAAMode.Always:
-                    args.Process = false;
-                    break;
-                case CommonDisableAAMode.Never:
-                    args.Process = true;
-                    break;
-                case CommonDisableAAMode.SomeSkill:
-                    if (champion.Spells.Q.IsReady() || champion.Spells.W.IsReady() || champion.Spells.R.IsReady())
+                    switch (Mode)
+                    {
+                        case CommonDisableAAMode.Always:
+                            args.Process = false;
+                            break;
+                        case CommonDisableAAMode.Never:
+                            args.Process = true;
+                            break;
+                        case CommonDisableAAMode.SomeSkillReady:
+                            if (champion.Spells.SomeSkillReady())
+                            {
+                                args.Process = false;
+                            }
+                            break;
+                        case CommonDisableAAMode.HarasComboReady:
+                            if (champion.Spells.HarasReady())
+                            {
+                                args.Process = false;
+                            }
+                            break;
+                        case CommonDisableAAMode.FullComboReady:
+                            if (champion.Spells.ComboReady())
+                            {
+                                args.Process = false;
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    if (args.Target is Obj_AI_Base && ((Obj_AI_Base)args.Target).IsMinion && !CanUseAA())
                     {
                         args.Process = false;
+                        return;
                     }
-                    break;
-                case CommonDisableAAMode.FullCombo:
-                    Console.Clear();
-                    Console.WriteLine("fulcombo");
-                    if (champion.Spells.Q.IsReady() && champion.Spells.W.IsReady())
-                    {
-                        Console.WriteLine("canceling");
-                        args.Process = false;
-                    }
-                    break;
+                }
             }
         }
     }
