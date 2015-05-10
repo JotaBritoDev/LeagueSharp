@@ -146,7 +146,7 @@ namespace KoreanAnnie
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetocombo", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(new Slider(1, 1, 5)));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(new StringList(new[] { "Never", "Always", "Some skill is ready", "Full combo is ready" })));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(new StringList(new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
             newMenu.AddItem(new MenuItem(string.Format("{0}.forceultusingmouse", MenuName), "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
 
             return newMenu;

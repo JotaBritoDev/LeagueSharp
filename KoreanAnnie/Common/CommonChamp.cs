@@ -8,12 +8,12 @@ using LeagueSharp.Common;
 
 namespace KoreanAnnie
 {
-    interface CommonChamp
+    interface CommonChampion
     {
         CommonMenu MainMenu { get; set; }
         CommonDamageDrawing DrawDamage { get; set; }
         CommonForceUltimate ForceUltimate { get; set; }
-        AnnieSpells Spells { get; set; } //TODO: make it generic
+        CommonSpells Spells { get; set; }
         Orbwalking.Orbwalker Orbwalker { get; set; }
         Obj_AI_Hero Player { get; set; }
         float UltimateRange { get; set; }

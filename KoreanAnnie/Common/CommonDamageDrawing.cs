@@ -12,7 +12,7 @@ namespace KoreanAnnie
 {
     class CommonDamageDrawing
     {
-        private CommonChamp champion;
+        private CommonChampion champion;
         private Color barColor = Color.Lime;
         private Color comboDamageColor = Color.FromArgb(100, Color.Black);
 
@@ -40,7 +40,7 @@ namespace KoreanAnnie
             }
         }
 
-        public CommonDamageDrawing(CommonChamp champion)
+        public CommonDamageDrawing(CommonChampion champion)
         {
             this.champion = champion;
         }
@@ -64,7 +64,7 @@ namespace KoreanAnnie
                     {
                         Vector2 pos = champ.HPBarPosition;
 
-                        if (KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator") && (damage > champ.Health))
+                        if (KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator") && (damage > champ.Health + 50f))
                         {
                             Render.Circle.DrawCircle(champ.Position, 100, Color.Red);
                             Render.Circle.DrawCircle(champ.Position, 75, Color.Red);

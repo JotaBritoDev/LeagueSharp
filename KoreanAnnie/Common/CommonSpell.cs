@@ -20,19 +20,79 @@ namespace KoreanAnnie
         public MenuItem UseOnHarasMenu { get; set; }
         public MenuItem UseOnLaneClearMenu { get; set; }
 
+        public bool CanCast()
+        {
+            return this.Instance.ToggleState <= 1;
+        }
+
         public bool UseOnCombo
         {
-            get { return UseOnComboMenu.GetValue<bool>(); }
+            get 
+            {
+                bool b;
+
+                if (UseOnComboMenu != null)
+                {
+                    b = UseOnComboMenu.GetValue<bool>();
+                }
+                else
+                {
+                    b = false;
+                }
+                return b;
+            }
         }
 
         public bool UseOnHaras
         {
-            get { return UseOnHarasMenu.GetValue<bool>(); }
+            get
+            {
+                bool b;
+
+                if (UseOnHarasMenu != null)
+                {
+                    b = UseOnHarasMenu.GetValue<bool>();
+                }
+                else
+                {
+                    b = false;
+                }
+                return b;
+            }
         }
 
         public bool UseOnLaneClear
         {
-            get { return UseOnLaneClearMenu.GetValue<bool>(); }
+            get
+            {
+                bool b;
+
+                if (UseOnComboMenu != null)
+                {
+                    b = UseOnLaneClearMenu.GetValue<bool>();
+                }
+                else
+                {
+                    b = false;
+                }
+                return b;
+            }
+        }
+
+        public float LastTimeUsed
+        {
+            get
+            {
+                return this.Instance.CooldownExpires - this.Instance.Cooldown;
+            }
+        }
+
+        public float UsedforXSecAgo
+        {
+            get
+            {
+                return Game.Time - this.LastTimeUsed;
+            }
         }
     }
 }

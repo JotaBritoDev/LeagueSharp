@@ -32,7 +32,7 @@ namespace KoreanAnnie
                 }
                 else
                 {
-                    Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.MaxRangeForCombo(), System.Drawing.Color.DarkGreen, 3);
+                    Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.MaxRangeCombo, System.Drawing.Color.DarkGreen, 3);
                 }
 
             }
