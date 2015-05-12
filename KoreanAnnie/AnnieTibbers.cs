@@ -71,6 +71,7 @@ namespace KoreanAnnie
 
         private void AttackTurrent(AttackableUnit unit, AttackableUnit target)
         {
+            Console.WriteLine(target.GetType());
             if ((_tibbers != null) && (_tibbers.IsValid) && (unit.IsMe) && (target != null) && (target is Obj_AI_Turret))
             {
                 CurrentTarget = (Obj_AI_Base)target;
@@ -184,8 +185,8 @@ namespace KoreanAnnie
         private Obj_AI_Base GetBaronOrDragon()
         {
             List<Obj_AI_Base> legendaryMonster = ObjectManager.Get<Obj_AI_Base>().
-                Where(obj => ((obj.SkinName.ToLowerInvariant() == "sru_dragon" || obj.SkinName.ToLowerInvariant() == "sru_baron") && obj.IsVisible && obj.HealthPercent < 100 && obj.HealthPercent > 0)).
-                ToList();
+                Where(obj => ((obj.SkinName.ToLowerInvariant() == "sru_dragon" || obj.SkinName.ToLowerInvariant() == "sru_baron") 
+                    && obj.IsVisible && obj.HealthPercent < 100 && obj.HealthPercent > 0)).ToList();
 
             if ((legendaryMonster != null) && (legendaryMonster.Count > 0))
             {

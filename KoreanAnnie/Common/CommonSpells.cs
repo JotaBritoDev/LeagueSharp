@@ -42,7 +42,7 @@ namespace KoreanAnnie
             {
                 if (_rflash == null && R != null)
                 {
-                    _rflash = new CommonSpell(R.Slot, R.Range, R.DamageType);
+                    _rflash = new CommonSpell(R.Slot, R.Range + 400, R.DamageType);
 
                     if (R.IsSkillshot)
                     {

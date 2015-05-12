@@ -48,7 +48,6 @@ namespace KoreanAnnie
             AnnieSpells.Load(this);
 
             Buttons = new AnnieButtons(this);
-            Tibbers = new AnnieTibbers(this);
             AnnieOrbwalker = new AnnieOrbwalkComplementation(this);
 
             Draws = new AnnieDrawings(this);
@@ -59,6 +58,8 @@ namespace KoreanAnnie
             ForceUltimate.ForceUltimate = AnnieOrbwalker.Ultimate;
             DrawDamage.AmountOfDamage = Spells.MaxComboDamage;
             DrawDamage.Active = true;
+
+            Tibbers = new AnnieTibbers(this);
 
             Obj_AI_Base.OnProcessSpellCast += EAgainstEnemyAA;
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
