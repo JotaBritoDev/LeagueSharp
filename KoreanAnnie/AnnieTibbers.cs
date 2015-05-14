@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie
 {
-    class AnnieTibbers
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using KoreanAnnie.Common;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class AnnieTibbers
     {
-        private const float tibbersRange = 1500f;
+        #region Constants
 
-        private Obj_AI_Base _tibbers;
+        private const float TibbersRange = 1500f;
 
-        public Obj_AI_Base Tibbers
-        {
-            get { return _tibbers; }
-        }
+        #endregion
 
-        private Obj_AI_Base CurrentTarget;
-        private Annie annie;
+        #region Fields
+
+        private readonly Annie annie;
+
+        private Obj_AI_Base currentTarget;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public AnnieTibbers(Annie annie)
         {
@@ -34,55 +38,83 @@ namespace KoreanAnnie
             Game.OnUpdate += FlashTibbersLogic;
         }
 
-        private void FlashTibbersLogic(EventArgs args)
+        #endregion
+
+        #region Public Properties
+
+        public Obj_AI_Base Tibbers { get; private set; }
+
+        #endregion
+
+        #region Methods
+
+        private static Obj_AI_Base GetBaronOrDragon()
         {
-            if (annie.GetParamKeyBind("flashtibbers"))
-            {
-                if ((annie.Spells.R.IsReady()) && (FlashSpell.Flash(annie.Player).IsReady) && (annie.CheckStun()))
-                {
-                    int minToCast = annie.GetParamSlider("minenemiestoflashr");
+            List<Obj_AI_Base> legendaryMonster =
+                ObjectManager.Get<Obj_AI_Base>()
+                    .Where(
+                        obj =>
+                        ((obj.SkinName.ToLowerInvariant() == "sru_dragon"
+                          || obj.SkinName.ToLowerInvariant() == "sru_baron") && obj.IsVisible && obj.HealthPercent < 100
+                         && obj.HealthPercent > 0))
+                    .ToList();
 
-                    if (minToCast > 1)
-                    {
-                        foreach (PredictionOutput pred in ObjectManager.Get<Obj_AI_Hero>().
-                            Where(x => x.IsValidTarget(annie.Spells.RFlash.Range)).
-                            Select(x => annie.Spells.RFlash.GetPrediction(x, true)).
-                                Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minToCast))
-                        {
-                            annie.Player.Spellbook.CastSpell(FlashSpell.Flash(annie.Player).Slot, pred.CastPosition);
-                            Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(pred.CastPosition));
-                        }
-                    }
-                    else
-                    {
-                        Obj_AI_Hero target = TargetSelector.GetTarget(annie.Spells.RFlash.Range, TargetSelector.DamageType.Magical);
-                        annie.Player.Spellbook.CastSpell(FlashSpell.Flash(annie.Player).Slot, target.Position);
-                        Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(target.Position));
-                    }
-                }
+            return (legendaryMonster.Count > 0) ? legendaryMonster[0] : null;
+        }
 
-                if (annie.GetParamBool("orbwalktoflashtibbers"))
-                {
-                    annie.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                }
-                annie.AnnieOrbwalker.ComboMode();
-            }
+        private static Obj_AI_Base GetChampion()
+        {
+            Obj_AI_Hero champ = TargetSelector.GetTarget(TibbersRange, TargetSelector.DamageType.Magical);
+
+            return champ;
+        }
+
+        private static Obj_AI_Base GetJungleMob()
+        {
+            List<Obj_AI_Base> jungleMob =
+                ObjectManager.Get<Obj_AI_Base>()
+                    .Where(
+                        obj =>
+                        ((obj.SkinName.ToLowerInvariant() == "sru_blue"
+                          || obj.SkinName.ToLowerInvariant() == "sru_gromp"
+                          || obj.SkinName.ToLowerInvariant() == "sru_murkwolf"
+                          || obj.SkinName.ToLowerInvariant() == "sru_razorbeak"
+                          || obj.SkinName.ToLowerInvariant() == "sru_red"
+                          || obj.SkinName.ToLowerInvariant() == "sru_krug")
+                         && (obj.IsVisible && obj.HealthPercent < 100) && (obj.HealthPercent > 0) && (obj.IsVisible)))
+                    .ToList();
+
+            return (jungleMob.Count > 0) ? jungleMob[0] : null;
+        }
+
+        private static bool IsTibbers(GameObject sender)
+        {
+            return ((sender != null) && (sender.IsValid) && (sender.Name.ToLowerInvariant().Equals("tibbers"))
+                    && (sender.IsAlly));
         }
 
         private void AttackTurrent(AttackableUnit unit, AttackableUnit target)
         {
-            Console.WriteLine(target.GetType());
-            if ((_tibbers != null) && (_tibbers.IsValid) && (unit.IsMe) && (target != null) && (target is Obj_AI_Turret))
+            if ((Tibbers != null) && (Tibbers.IsValid) && (unit.IsMe) && (target is Obj_AI_Turret))
             {
-                CurrentTarget = (Obj_AI_Base)target;
+                currentTarget = (Obj_AI_Base)target;
             }
         }
 
-        private void NewTibbers(GameObject sender, EventArgs args)
+        private void ControlTibbers(EventArgs args)
         {
-            if (IsTibbers(sender))
+            if ((Tibbers == null) || (!Tibbers.IsValid))
             {
-                _tibbers = (Obj_AI_Base) sender;
+                return;
+            }
+
+            Obj_AI_Base target = FindTarget();
+
+            if ((target != null))
+            {
+                annie.Player.IssueOrder(
+                    Tibbers.Distance(target.Position) > 200 ? GameObjectOrder.MovePet : GameObjectOrder.AutoAttackPet,
+                    target);
             }
         }
 
@@ -90,126 +122,113 @@ namespace KoreanAnnie
         {
             if (IsTibbers(sender))
             {
-                _tibbers = null;
-            }
-        }
-
-        private bool IsTibbers(GameObject sender)
-        {
-            return ((sender != null) && (sender.IsValid) && (sender.Name.ToLowerInvariant().Equals("tibbers")) && (sender.IsAlly));
-        }
-
-        public void ControlTibbers(EventArgs args)
-        {
-            if ((_tibbers != null) && (_tibbers.IsValid))
-            {
-                Obj_AI_Base target = FindTarget();
-
-                if ((target != null))
-                {
-                    annie.Player.IssueOrder(_tibbers.Distance(target.Position) > 200 ? 
-                        GameObjectOrder.MovePet : 
-                        GameObjectOrder.AutoAttackPet, target);
-                }
+                Tibbers = null;
             }
         }
 
         private Obj_AI_Base FindTarget()
         {
-            Obj_AI_Base target;
-
-            target = GetChampion();
+            Obj_AI_Base target = GetChampion();
 
             if (target != null)
+            {
                 return target;
+            }
 
             target = GetBaronOrDragon();
 
             if (target != null)
+            {
                 return target;
+            }
 
             target = GetJungleMob();
 
             if (target != null)
+            {
                 return target;
+            }
 
             target = GetMinion();
 
             if (target != null)
+            {
                 return target;
+            }
 
-            if ((CurrentTarget != null) && (CurrentTarget.IsValidTarget(annie.Player.AttackRange + 200f)))
-                return CurrentTarget;
-            else
-                CurrentTarget = null;
+            if ((currentTarget != null) && (currentTarget.IsValidTarget(annie.Player.AttackRange + 200f)))
+            {
+                return currentTarget;
+            }
+            currentTarget = null;
 
             return annie.Player;
         }
 
+        private void FlashTibbersLogic(EventArgs args)
+        {
+            if (!annie.GetParamKeyBind("flashtibbers"))
+            {
+                return;
+            }
+
+            if ((annie.Spells.R.IsReady()) && (FlashSpell.IsReady(annie.Player)) && (annie.CheckStun()))
+            {
+                int minToCast = annie.GetParamSlider("minenemiestoflashr");
+
+                if (minToCast > 1)
+                {
+                    foreach (
+                        PredictionOutput pred in
+                            ObjectManager.Get<Obj_AI_Hero>()
+                                .Where(x => x.IsValidTarget(annie.Spells.RFlash.Range))
+                                .Select(x => annie.Spells.RFlash.GetPrediction(x, true))
+                                .Where(pred => pred.Hitchance >= HitChance.High && pred.AoeTargetsHitCount >= minToCast)
+                        )
+                    {
+                        PredictionOutput pred1 = pred;
+                        annie.Player.Spellbook.CastSpell(FlashSpell.Slot(annie.Player), pred1.CastPosition);
+                        Utility.DelayAction.Add(10, () => annie.Spells.R.Cast(pred1.CastPosition));
+                    }
+                }
+                else
+                {
+                    Obj_AI_Hero target = TargetSelector.GetTarget(
+                        annie.Spells.RFlash.Range,
+                        TargetSelector.DamageType.Magical);
+                    if (target != null)
+                    {
+                        annie.Player.Spellbook.CastSpell(FlashSpell.Slot(annie.Player), target.Position);
+                        Utility.DelayAction.Add(50, () => annie.Spells.R.Cast(target.Position));
+                    }
+                }
+            }
+
+            if (annie.GetParamBool("orbwalktoflashtibbers"))
+            {
+                annie.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            }
+            annie.AnnieOrbwalker.ComboMode();
+        }
+
         private Obj_AI_Base GetMinion()
         {
-            List<Obj_AI_Base> minion = MinionManager.GetMinions(_tibbers.Position, tibbersRange).
-                OrderBy(x => x.Distance(_tibbers.Position)).ToList();
-            if ((minion != null) && (minion.Count > 0))
-            {
-                return minion[0];
-            }
-            else
-            {
-                return null;
-            }
+            List<Obj_AI_Base> minion =
+                MinionManager.GetMinions(Tibbers.Position, TibbersRange)
+                    .OrderBy(x => x.Distance(Tibbers.Position))
+                    .ToList();
+
+            return (minion.Count > 0) ? minion[0] : null;
         }
 
-        private Obj_AI_Base GetJungleMob()
+        private void NewTibbers(GameObject sender, EventArgs args)
         {
-            List<Obj_AI_Base> jungleMob = ObjectManager.Get<Obj_AI_Base>().
-                Where(obj => ((obj.SkinName.ToLowerInvariant() == "sru_blue" ||
-                               obj.SkinName.ToLowerInvariant() == "sru_gromp" ||
-                               obj.SkinName.ToLowerInvariant() == "sru_murkwolf" ||
-                               obj.SkinName.ToLowerInvariant() == "sru_razorbeak" ||
-                               obj.SkinName.ToLowerInvariant() == "sru_red" ||
-                               obj.SkinName.ToLowerInvariant() == "sru_krug") &&
-                               (obj.IsVisible && obj.HealthPercent < 100) && (obj.HealthPercent > 0) && (obj.IsVisible))).
-                ToList();
-
-            if ((jungleMob != null) && (jungleMob.Count > 0))
+            if (IsTibbers(sender))
             {
-                return jungleMob[0];
-            }
-            else
-            {
-                return null;
+                Tibbers = (Obj_AI_Base)sender;
             }
         }
 
-        private Obj_AI_Base GetBaronOrDragon()
-        {
-            List<Obj_AI_Base> legendaryMonster = ObjectManager.Get<Obj_AI_Base>().
-                Where(obj => ((obj.SkinName.ToLowerInvariant() == "sru_dragon" || obj.SkinName.ToLowerInvariant() == "sru_baron") 
-                    && obj.IsVisible && obj.HealthPercent < 100 && obj.HealthPercent > 0)).ToList();
-
-            if ((legendaryMonster != null) && (legendaryMonster.Count > 0))
-            {
-                return legendaryMonster[0];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private Obj_AI_Base GetChampion()
-        {
-            Obj_AI_Hero champ = TargetSelector.GetTarget(tibbersRange, TargetSelector.DamageType.Magical);
-            if ((champ != null))
-            {
-                return champ;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
+        #endregion
     }
 }

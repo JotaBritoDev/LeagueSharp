@@ -1,89 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    class CommonSpell : Spell
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class CommonSpell : Spell
     {
-        public CommonSpell(SpellSlot slot, float range = 0, TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
-            : base (slot, range, damageType)
-        {
+        #region Constructors and Destructors
 
+        public CommonSpell(
+            SpellSlot slot,
+            float range = 0,
+            TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
+            : base(slot, range, damageType)
+        {
         }
 
-        public MenuItem UseOnComboMenu { get; set; }
-        public MenuItem UseOnHarasMenu { get; set; }
-        public MenuItem UseOnLaneClearMenu { get; set; }
+        #endregion
 
-        public bool CanCast()
-        {
-            return this.Instance.ToggleState <= 1;
-        }
-
-        public bool UseOnCombo
-        {
-            get 
-            {
-                bool b;
-
-                if (UseOnComboMenu != null)
-                {
-                    b = UseOnComboMenu.GetValue<bool>();
-                }
-                else
-                {
-                    b = false;
-                }
-                return b;
-            }
-        }
-
-        public bool UseOnHaras
-        {
-            get
-            {
-                bool b;
-
-                if (UseOnHarasMenu != null)
-                {
-                    b = UseOnHarasMenu.GetValue<bool>();
-                }
-                else
-                {
-                    b = false;
-                }
-                return b;
-            }
-        }
-
-        public bool UseOnLaneClear
-        {
-            get
-            {
-                bool b;
-
-                if (UseOnComboMenu != null)
-                {
-                    b = UseOnLaneClearMenu.GetValue<bool>();
-                }
-                else
-                {
-                    b = false;
-                }
-                return b;
-            }
-        }
+        #region Public Properties
 
         public float LastTimeUsed
         {
             get
             {
-                return this.Instance.CooldownExpires - this.Instance.Cooldown;
+                return Instance.CooldownExpires - Instance.Cooldown;
             }
         }
 
@@ -91,8 +31,49 @@ namespace KoreanAnnie
         {
             get
             {
-                return Game.Time - this.LastTimeUsed;
+                return Game.Time - LastTimeUsed;
             }
         }
+
+        public bool UseOnCombo
+        {
+            get
+            {
+                return UseOnComboMenu != null && UseOnComboMenu.GetValue<bool>();
+            }
+        }
+
+        public MenuItem UseOnComboMenu { get; set; }
+
+        public bool UseOnHaras
+        {
+            get
+            {
+                return UseOnHarasMenu != null && UseOnHarasMenu.GetValue<bool>();
+            }
+        }
+
+        public MenuItem UseOnHarasMenu { get; set; }
+
+        public bool UseOnLaneClear
+        {
+            get
+            {
+                return UseOnComboMenu != null && UseOnLaneClearMenu.GetValue<bool>();
+            }
+        }
+
+        public MenuItem UseOnLaneClearMenu { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public bool CanCast()
+        {
+            return Instance.ToggleState <= 1;
+        }
+
+        #endregion
     }
 }

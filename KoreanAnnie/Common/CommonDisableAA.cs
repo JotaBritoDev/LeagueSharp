@@ -1,27 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    enum CommonDisableAAMode
-    {
-        Never,
-        Always,
-        SomeSkillReady,
-        HarasComboReady,
-        FullComboReady
-    };
+    using LeagueSharp;
+    using LeagueSharp.Common;
 
     class CommonDisableAA
     {
-        private CommonChampion champion;
+        private readonly ICommonChampion champion;
 
-        public bool CanUseAA()
+        private bool CanUseAA()
         {
             bool canHit = true;
 
@@ -35,12 +21,12 @@ namespace KoreanAnnie
             return canHit;
         }
 
-        public CommonDisableAAMode Mode
+        private CommonDisableAAMode Mode
         {
             get { return (CommonDisableAAMode)KoreanUtils.GetParamStringList(champion.MainMenu, "disableaa"); }
         }
 
-        public CommonDisableAA(CommonChampion champion)
+        public CommonDisableAA(ICommonChampion champion)
         {
             this.champion = champion;
 
@@ -49,46 +35,48 @@ namespace KoreanAnnie
 
         private void CancelAA(Orbwalking.BeforeAttackEventArgs args)
         {
-            if (args.Target != null)
+            if (args.Target == null)
             {
-                if (champion.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-                {
+                return;
+            }
 
-                    switch (Mode)
-                    {
-                        case CommonDisableAAMode.Always:
-                            args.Process = false;
-                            break;
-                        case CommonDisableAAMode.Never:
-                            args.Process = true;
-                            break;
-                        case CommonDisableAAMode.SomeSkillReady:
-                            if (champion.Spells.SomeSkillReady())
-                            {
-                                args.Process = false;
-                            }
-                            break;
-                        case CommonDisableAAMode.HarasComboReady:
-                            if (champion.Spells.HarasReady())
-                            {
-                                args.Process = false;
-                            }
-                            break;
-                        case CommonDisableAAMode.FullComboReady:
-                            if (champion.Spells.ComboReady())
-                            {
-                                args.Process = false;
-                            }
-                            break;
-                    }
-                }
-                else
+            if (champion.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            {
+
+                switch (Mode)
                 {
-                    if (args.Target is Obj_AI_Base && ((Obj_AI_Base)args.Target).IsMinion && !CanUseAA())
-                    {
+                    case CommonDisableAAMode.Always:
                         args.Process = false;
-                        return;
-                    }
+                        break;
+                    case CommonDisableAAMode.Never:
+                        args.Process = true;
+                        break;
+                    case CommonDisableAAMode.SomeSkillReady:
+                        if (champion.Spells.SomeSkillReady())
+                        {
+                            args.Process = false;
+                        }
+                        break;
+                    case CommonDisableAAMode.HarasComboReady:
+                        if (champion.Spells.HarasReady())
+                        {
+                            args.Process = false;
+                        }
+                        break;
+                    case CommonDisableAAMode.FullComboReady:
+                        if (champion.Spells.ComboReady())
+                        {
+                            args.Process = false;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                if (args.Target is Obj_AI_Base && ((Obj_AI_Base)args.Target).IsMinion && !CanUseAA())
+                {
+                    args.Process = false;
+                    return;
                 }
             }
         }

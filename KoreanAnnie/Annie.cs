@@ -1,44 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using KoreanAnnie.Properties;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie
 {
-    class Annie : CommonChampion
+    using System;
+
+    using KoreanAnnie.Common;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class Annie : ICommonChampion
     {
-        public const string menuDisplay = "Korean Annie";
-        public float UltimateRange { get; set; }
-        public Func<string, bool> GetParamBool;
-        public Action<string, bool> SetValueBool;
-        public Func<string, int> GetParamSlider;
-        public Func<string, bool> GetParamKeyBind;
-        public Func<string, string> ParamName;
+        #region Constants
+
+        private const string MenuDisplay = "Korean Annie";
+
+        #endregion
+
+        #region Fields
+
         public Func<bool> CanFarm;
-        public Func<bool> SaveStun;
+
         public Func<bool> CheckStun;
 
-        public CommonMenu MainMenu { get; set; }
-        public CommonSpells Spells { get; set; }
-        public AnnieButtons Buttons { get; set; }
-        public AnnieTibbers Tibbers { get; set; }
-        public AnnieOrbwalkComplementation AnnieOrbwalker { get; set; }
-        public AnnieDrawings Draws { get; set; }
-        public CommonDamageDrawing DrawDamage { get; set; }
-        public CommonForceUltimate ForceUltimate { get; set; }
-        public Orbwalking.Orbwalker Orbwalker { get; set; }
-        public Obj_AI_Hero Player { get; set; }
-        public CommonDisableAA DisableAA { get; set; }
+        public Func<string, bool> GetParamBool;
 
-        public Annie() 
+        public Func<string, bool> GetParamKeyBind;
+
+        public Func<string, int> GetParamSlider;
+
+        public Func<string, string> ParamName;
+
+        public Func<bool> SaveStun;
+
+        public Action<string, bool> SetValueBool;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public Annie()
         {
             Player = ObjectManager.Player;
-            MainMenu = new CommonMenu(menuDisplay, true);
+            MainMenu = new CommonMenu(MenuDisplay, true);
             Orbwalker = MainMenu.Orbwalker;
             AnnieCustomMenu.Load(MainMenu);
 
@@ -67,6 +69,53 @@ namespace KoreanAnnie
             Game.OnUpdate += StackE;
         }
 
+        #endregion
+
+        #region Public Properties
+
+        public AnnieOrbwalkComplementation AnnieOrbwalker { get; set; }
+        public AnnieButtons Buttons { get; set; }
+        public CommonDisableAA DisableAA { get; set; }
+        public CommonDamageDrawing DrawDamage { get; set; }
+        public AnnieDrawings Draws { get; set; }
+        public CommonForceUltimate ForceUltimate { get; set; }
+        public CommonMenu MainMenu { get; set; }
+        public Orbwalking.Orbwalker Orbwalker { get; set; }
+        public Obj_AI_Hero Player { get; set; }
+        public CommonSpells Spells { get; set; }
+        public AnnieTibbers Tibbers { get; set; }
+        public float UltimateRange { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        private void EAgainstEnemyAA(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if ((GetParamBool("useeagainstaa")) && (!sender.IsMe) && (sender.IsEnemy) && (sender is Obj_AI_Hero)
+                && (args.Target != null) && (args.Target.IsMe) && (Player.Distance(args.End) < 440)
+                && (args.SData.Name.ToLowerInvariant().Contains("attack")))
+            {
+                Spells.E.Cast();
+            }
+        }
+
+        private void InterruptDangerousSpells(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
+        {
+            if ((GetParamBool("interruptspells")) && (CheckStun()) && (sender.IsEnemy)
+                && (args.DangerLevel > Interrupter2.DangerLevel.Medium))
+            {
+                if ((Spells.Q.IsReady()) && (sender.IsValidTarget(Spells.Q.Range)))
+                {
+                    Spells.Q.Cast(sender);
+                }
+                if ((Spells.W.IsReady()) && (sender.IsValidTarget(Spells.W.Range)))
+                {
+                    Spells.W.Cast(sender);
+                }
+            }
+        }
+
         private void LoadLambdaExpressions()
         {
             ParamName = s => KoreanUtils.ParamName(MainMenu, s);
@@ -74,21 +123,24 @@ namespace KoreanAnnie
             SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
             GetParamSlider = s => KoreanUtils.GetParamSlider(MainMenu, s);
             GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
-            CanFarm = () => (!GetParamBool("supportmode")) || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
+            CanFarm =
+                () =>
+                (!GetParamBool("supportmode"))
+                || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
             CheckStun = () => Player.HasBuff("pyromania_particle", true);
             SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
         }
 
         private void StackE(EventArgs args)
         {
-            if ((!Player.IsRecalling()) && (!CheckStun()) && (GetParamBool("useetostack")) && (Player.ManaPercent > GetParamSlider("manalimitforstacking")) &&
-                (Spells.E.IsReady()))
+            if (!Player.IsRecalling() && !CheckStun() && GetParamBool("useetostack")
+                && Player.ManaPercent > GetParamSlider("manalimitforstacking") && Spells.E.IsReady())
             {
                 Spells.E.Cast();
             }
         }
 
-        void StunGapCloser(ActiveGapcloser gapcloser)
+        private void StunGapCloser(ActiveGapcloser gapcloser)
         {
             if (GetParamBool("antigapcloser") && (CheckStun()))
             {
@@ -103,33 +155,6 @@ namespace KoreanAnnie
             }
         }
 
-        void InterruptDangerousSpells(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
-        {
-            if ((GetParamBool("interruptspells")) && (CheckStun()) && (sender.IsEnemy) && 
-                (args.DangerLevel > Interrupter2.DangerLevel.Medium))
-            {
-                if ((Spells.Q.IsReady()) && (sender.IsValidTarget(Spells.Q.Range)))
-                {
-                    Spells.Q.Cast(sender);
-                }
-                if ((Spells.W.IsReady()) && (sender.IsValidTarget(Spells.W.Range)))
-                {
-                    Spells.W.Cast(sender);
-                }
-            }
-        }
-
-        void EAgainstEnemyAA(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if ((GetParamBool("useeagainstaa")) && 
-                (!sender.IsMe) && (sender.IsEnemy) && (sender is Obj_AI_Hero) && 
-                (args.Target != null) && (args.Target.IsMe) &&
-                (Player.Distance(args.End) < 440) &&
-                (args.SData.Name.ToLowerInvariant().Contains("attack")))
-            {
-                Spells.E.Cast();
-            }
-        }
-
+        #endregion
     }
 }

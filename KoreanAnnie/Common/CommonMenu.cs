@@ -1,175 +1,219 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    class CommonMenu
+    using LeagueSharp.Common;
+
+    internal class CommonMenu
     {
-        private Menu _mainMenu;
+        #region Fields
 
-        public Menu MainMenu
-        {
-            get { return _mainMenu; }
-        }
+        private readonly Menu comboMenu;
 
-        private Menu _harasMenu;
+        private readonly Menu drwaingsMenu;
 
-        public Menu HarasMenu
-        {
-            get { return _harasMenu; }
-        }
+        private readonly Menu harasMenu;
 
-        private Menu _laneClearMenu;
+        private readonly Menu laneClearMenu;
 
-        public Menu LaneClearMenu
-        {
-            get { return _laneClearMenu; }
-        }
+        private readonly Menu mainMenu;
 
-        private Menu _comboMenu;
+        private readonly string menuName;
 
-        public Menu ComboMenu
-        {
-            get { return _comboMenu; }
-        }
+        private readonly Menu miscMenu;
 
-        private Menu _miscMenu;
+        #endregion
 
-        public Menu MiscMenu
-        {
-            get { return _miscMenu; }
-        }
-
-        private Menu _drwaingsMenu;
-
-        public Menu DrawingMenu
-        {
-            get { return _drwaingsMenu; }
-        }
-
-        private string _menuName;
-
-        public string MenuName
-        {
-            get { return _menuName; }
-        }
-
-        private Orbwalking.Orbwalker _orbwalker;
-
-	    public Orbwalking.Orbwalker Orbwalker
-	    {
-		    get { return _orbwalker;}
-		    set { _orbwalker = value;}
-	    }
+        #region Constructors and Destructors
 
         public CommonMenu(string displayName, bool misc)
         {
-            _menuName = displayName.Replace(" ", "_").ToLowerInvariant();
+            menuName = displayName.Replace(" ", "_").ToLowerInvariant();
 
-            _mainMenu = new Menu(displayName, _menuName, true);
+            mainMenu = new Menu(displayName, menuName, true);
 
-            addOrbwalker(_mainMenu);
-            addTargetSelector(_mainMenu);
+            AddOrbwalker(mainMenu);
+            AddTargetSelector(mainMenu);
 
             Menu modes = new Menu("Modes", string.Format("{0}.modes", MenuName));
-            _mainMenu.AddSubMenu(modes);
+            mainMenu.AddSubMenu(modes);
 
-            _harasMenu = addHarasMenu(modes);
-            _laneClearMenu = addLaneClearMenu(modes);
-            _comboMenu = addComboMenu(modes);
+            harasMenu = AddHarasMenu(modes);
+            laneClearMenu = AddLaneClearMenu(modes);
+            comboMenu = AddComboMenu(modes);
 
             if (misc)
             {
-                _miscMenu = addMiscMenu(_mainMenu);
+                miscMenu = AddMiscMenu(mainMenu);
             }
 
-            _drwaingsMenu = addDrawingMenu(_mainMenu);
+            drwaingsMenu = AddDrawingMenu(mainMenu);
 
-            _mainMenu.AddToMainMenu();
+            mainMenu.AddToMainMenu();
         }
 
-        private void addOrbwalker(Menu RootMenu)
+        #endregion
+
+        #region Public Properties
+
+        public Menu ComboMenu
         {
-            Menu orbwalkerMenu = new Menu("Orbwalker", string.Format("{0}.orbwalker", MenuName));
-            Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
-            RootMenu.AddSubMenu(orbwalkerMenu);
+            get
+            {
+                return comboMenu;
+            }
         }
 
-        private void addTargetSelector(Menu RootMenu)
+        public Menu DrawingMenu
         {
-            Menu targetselectorMenu = new Menu("Target Selector", string.Format("{0}.targetselector", MenuName));
-            TargetSelector.AddToMenu(targetselectorMenu);
-            RootMenu.AddSubMenu(targetselectorMenu);
+            get
+            {
+                return drwaingsMenu;
+            }
         }
 
-        private Menu addHarasMenu(Menu RootMenu)
+        public Menu HarasMenu
         {
-            Menu newMenu = new Menu("Haras", string.Format("{0}.haras", MenuName));
-            RootMenu.AddSubMenu(newMenu);
-
-            newMenu.AddItem(new MenuItem(string.Format("{0}.useqtoharas", MenuName), "Use Q").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.usewtoharas", MenuName), "Use W").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.useetoharas", MenuName), "Use E").SetValue(true));
-
-            MenuItem ManaLimitToHaras = new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana limit").SetValue(new Slider(0, 0, 100));
-            newMenu.AddItem(ManaLimitToHaras);
-
-            return newMenu;
+            get
+            {
+                return harasMenu;
+            }
         }
 
-        private Menu addLaneClearMenu(Menu RootMenu)
+        public Menu LaneClearMenu
         {
-            Menu newMenu = new Menu("Lane Clear", string.Format("{0}.laneclear", MenuName));
-            RootMenu.AddSubMenu(newMenu);
-
-            newMenu.AddItem(new MenuItem(string.Format("{0}.useqtolaneclear", MenuName), "Use Q").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(new Slider(50, 0, 100)));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
-
-            return newMenu;
+            get
+            {
+                return laneClearMenu;
+            }
         }
 
-        private Menu addComboMenu(Menu RootMenu)
+        public Menu MainMenu
+        {
+            get
+            {
+                return mainMenu;
+            }
+        }
+
+        public Menu MiscMenu
+        {
+            get
+            {
+                return miscMenu;
+            }
+        }
+
+        public Orbwalking.Orbwalker Orbwalker { get; private set; }
+
+        #endregion
+
+        #region Properties
+
+        private string MenuName
+        {
+            get
+            {
+                return menuName;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        private Menu AddComboMenu(Menu rootMenu)
         {
             Menu newMenu = new Menu("Combo", string.Format("{0}.combo", MenuName));
-            RootMenu.AddSubMenu(newMenu);
+            rootMenu.AddSubMenu(newMenu);
 
             newMenu.AddItem(new MenuItem(string.Format("{0}.useqtocombo", MenuName), "Use Q").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtocombo", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetocombo", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(new Slider(1, 1, 5)));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(new StringList(new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.forceultusingmouse", MenuName), "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(
+                    new Slider(1, 1, 5)));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(
+                    new StringList(
+                        new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
+            newMenu.AddItem(
+                new MenuItem(
+                    string.Format("{0}.forceultusingmouse", MenuName),
+                    "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
 
             return newMenu;
         }
 
-        private Menu addMiscMenu(Menu RootMenu)
-        {
-            Menu newMenu = new Menu("Options", string.Format("{0}.misc", MenuName));
-            RootMenu.AddSubMenu(newMenu);
-
-            return newMenu;
-        }
-
-        private Menu addDrawingMenu(Menu RootMenu)
+        private Menu AddDrawingMenu(Menu rootMenu)
         {
             Menu newMenu = new Menu("Drawings", string.Format("{0}.drawings", MenuName));
-            RootMenu.AddSubMenu(newMenu);
+            rootMenu.AddSubMenu(newMenu);
 
             newMenu.AddItem(new MenuItem(string.Format("{0}.drawskillranges", MenuName), "Skill ranges").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage indicator").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable indicator").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage indicator").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable indicator").SetValue(true));
 
             return newMenu;
         }
+
+        private Menu AddHarasMenu(Menu rootMenu)
+        {
+            Menu newMenu = new Menu("Haras", string.Format("{0}.haras", MenuName));
+            rootMenu.AddSubMenu(newMenu);
+
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useqtoharas", MenuName), "Use Q").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.usewtoharas", MenuName), "Use W").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useetoharas", MenuName), "Use E").SetValue(true));
+
+            MenuItem manaLimitToHaras =
+                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana limit").SetValue(
+                    new Slider(0, 0, 100));
+            newMenu.AddItem(manaLimitToHaras);
+
+            return newMenu;
+        }
+
+        private Menu AddLaneClearMenu(Menu rootMenu)
+        {
+            Menu newMenu = new Menu("Lane Clear", string.Format("{0}.laneclear", MenuName));
+            rootMenu.AddSubMenu(newMenu);
+
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useqtolaneclear", MenuName), "Use Q").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(
+                    new Slider(50, 0, 100)));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
+
+            return newMenu;
+        }
+
+        private Menu AddMiscMenu(Menu rootMenu)
+        {
+            Menu newMenu = new Menu("Options", string.Format("{0}.misc", MenuName));
+            rootMenu.AddSubMenu(newMenu);
+
+            return newMenu;
+        }
+
+        private void AddOrbwalker(Menu rootMenu)
+        {
+            Menu orbwalkerMenu = new Menu("Orbwalker", string.Format("{0}.orbwalker", MenuName));
+            Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
+            rootMenu.AddSubMenu(orbwalkerMenu);
+        }
+
+        private void AddTargetSelector(Menu rootMenu)
+        {
+            Menu targetselectorMenu = new Menu("Target Selector", string.Format("{0}.targetselector", MenuName));
+            TargetSelector.AddToMenu(targetselectorMenu);
+            rootMenu.AddSubMenu(targetselectorMenu);
+        }
+
+        #endregion
     }
 }

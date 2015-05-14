@@ -1,69 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    class CommonSpells : IEnumerable
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class CommonSpells : IEnumerable
     {
-        public List<CommonSpell> SpellList;
-        private CommonChampion champion;
+        #region Fields
 
-        public CommonSpell Q
+        private readonly ICommonChampion champion;
+
+        private readonly List<CommonSpell> spellList;
+
+        private CommonSpell rflash;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public CommonSpells(ICommonChampion player)
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.Q).First(); }
+            champion = player;
+
+            spellList = new List<CommonSpell>();
         }
 
-        public CommonSpell W
-        {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.W).First(); }
-        }
+        #endregion
+
+        #region Public Properties
 
         public CommonSpell E
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.E).First(); }
-        }
-
-        public CommonSpell R
-        {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.R).First(); }
-        }
-
-        private CommonSpell _rflash;
-
-        public CommonSpell RFlash
-        {
-            get 
+            get
             {
-                if (_rflash == null && R != null)
-                {
-                    _rflash = new CommonSpell(R.Slot, R.Range + 400, R.DamageType);
-
-                    if (R.IsSkillshot)
-                    {
-                        _rflash.SetSkillshot(R.Delay, R.Width, R.Speed, R.Collision, R.Type, R.From, R.RangeCheckFrom);
-                    }
-                }
-
-                return _rflash;
+                return spellList.First(x => x.Slot == SpellSlot.E);
             }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return SpellList.GetEnumerator();
-        }
-
-        public CommonSpells(CommonChampion player)
-        {
-            this.champion = player;
-
-            SpellList = new List<CommonSpell>();
         }
 
         public float MaxRangeCombo
@@ -71,20 +46,21 @@ namespace KoreanAnnie
             get
             {
                 float range = 0f;
-                if (SpellList != null && SpellList.Count > 0)
+                if (spellList != null && spellList.Count > 0)
                 {
-                    CommonSpell ultimate = SpellList.
-                            Where(x => x.Slot == SpellSlot.R).First();
+                    CommonSpell ultimate = spellList.First(x => x.Slot == SpellSlot.R);
                     if (ultimate != null && ultimate.UseOnCombo && ultimate.IsReady() && ultimate.CanCast())
                     {
                         range = ultimate.Range;
                     }
                     else
                     {
-                        List<CommonSpell> Spells = SpellList.Where(x => x.Slot != SpellSlot.R && x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
-                        if (Spells != null && Spells.Count > 0)
+                        List<CommonSpell> spells =
+                            spellList.Where(x => x.Slot != SpellSlot.R && x.UseOnCombo && x.IsReady() && x.CanCast())
+                                .ToList();
+                        if (spells.Count > 0)
                         {
-                            foreach (CommonSpell spell in Spells)
+                            foreach (CommonSpell spell in spells)
                             {
                                 range = Math.Max(spell.Range, range);
                             }
@@ -98,44 +74,71 @@ namespace KoreanAnnie
 
         public float MaxRangeHaras
         {
-            get 
+            get
             {
                 float range = 0f;
 
-                if (SpellList != null && SpellList.Count > 0)
+                if (spellList != null && spellList.Count > 0)
                 {
-                    List<CommonSpell> Spells = SpellList.Where(x => x.UseOnHaras && x.IsReady() && x.CanCast()).ToList();
-                    if (Spells != null && Spells.Count > 0)
+                    List<CommonSpell> spells = spellList.Where(x => x.UseOnHaras && x.IsReady() && x.CanCast()).ToList();
+                    if (spells.Count > 0)
                     {
-                        foreach (CommonSpell spell in Spells)
+                        foreach (CommonSpell spell in spells)
                         {
                             range = Math.Max(spell.Range, range);
                         }
                     }
                 }
 
-                return range; 
+                return range;
             }
         }
 
-        public float MaxComboDamage(Obj_AI_Hero target)
+        public CommonSpell Q
         {
-            float damage = 0f;
-
-            if (SpellList != null && SpellList.Count > 0)
+            get
             {
-                List<CommonSpell> Spells = SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
-                if (Spells != null && Spells.Count > 0)
+                return spellList.First(x => x.Slot == SpellSlot.Q);
+            }
+        }
+
+        public CommonSpell R
+        {
+            get
+            {
+                return spellList.First(x => x.Slot == SpellSlot.R);
+            }
+        }
+
+        public CommonSpell RFlash
+        {
+            get
+            {
+                if (rflash == null && R != null)
                 {
-                    foreach (CommonSpell spell in Spells)
+                    rflash = new CommonSpell(R.Slot, R.Range + 400, R.DamageType);
+
+                    if (R.IsSkillshot)
                     {
-                        damage += spell.GetDamage(target);
+                        rflash.SetSkillshot(R.Delay, R.Width, R.Speed, R.Collision, R.Type, R.From, R.RangeCheckFrom);
                     }
                 }
-            }
 
-            return damage;
+                return rflash;
+            }
         }
+
+        public CommonSpell W
+        {
+            get
+            {
+                return spellList.First(x => x.Slot == SpellSlot.W);
+            }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void AddSpell(CommonSpell spell)
         {
@@ -160,12 +163,7 @@ namespace KoreanAnnie
             spell.UseOnComboMenu = KoreanUtils.GetParam(champion.MainMenu, string.Format("use{0}tocombo", slot));
             spell.UseOnHarasMenu = KoreanUtils.GetParam(champion.MainMenu, string.Format("use{0}toharas", slot));
             spell.UseOnLaneClearMenu = KoreanUtils.GetParam(champion.MainMenu, string.Format("use{0}tolaneclear", slot));
-            SpellList.Add(spell);
-        }
-
-        public void RemoveSpell(CommonSpell spell)
-        {
-            SpellList.Remove(spell);
+            spellList.Add(spell);
         }
 
         public bool CheckOverkill(Obj_AI_Hero target)
@@ -174,64 +172,64 @@ namespace KoreanAnnie
 
             if (R.IsReady() && R.CanCast() && target.IsValidTarget(R.Range))
             {
-                List<CommonSpell> Spells = SpellList.
-                    Where(x => x.CanCast() && x.IsReady() && target.IsValidTarget(x.Range) && 
-                               x.IsKillable(target) && x.Slot != SpellSlot.R).ToList();
+                List<CommonSpell> spells =
+                    spellList.Where(
+                        x =>
+                        x.CanCast() && x.IsReady() && target.IsValidTarget(x.Range) && x.IsKillable(target)
+                        && x.Slot != SpellSlot.R).ToList();
 
-                if (Spells != null && Spells.Count > 0)
+                if (spells.Count > 0)
                 {
-                    foreach (CommonSpell spell in Spells)
-                    {
-                        totalDamage += spell.GetDamage(target);
-                    }
+                    totalDamage = spells.Sum(spell => spell.GetDamage(target));
                 }
             }
 
             return totalDamage > target.Health;
-
-            //return ((Q.IsReady()) && (target.IsValidTarget(Q.Range)) && (Q.IsKillable(target))) ||
-            //       ((E.IsReady()) && (target.IsValidTarget(E.Range)) && (E.IsKillable(target))) ||
-            //       ((W.IsReady()) && (target.IsValidTarget(W.Range)) && (W.IsKillable(target)));
-        }
-
-        public bool HarasReady()
-        {
-            Console.Clear();
-            Console.WriteLine("checking haras");
-            return SpellList.Where(x => x.UseOnHaras && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnHaras).Count();
         }
 
         public bool ComboReady()
         {
-            Console.Clear();
-            Console.WriteLine("checking combo");
-            return SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnCombo).Count();
+            return spellList.Count(x => x.UseOnCombo && x.IsReady() && x.CanCast())
+                   == spellList.Count(x => x.UseOnCombo);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return spellList.GetEnumerator();
+        }
+
+        public bool HarasReady()
+        {
+            return spellList.Count(x => x.UseOnHaras && x.IsReady() && x.CanCast())
+                   == spellList.Count(x => x.UseOnHaras);
+        }
+
+        public float MaxComboDamage(Obj_AI_Hero target)
+        {
+            float damage = 0f;
+
+            if (spellList != null && spellList.Count > 0)
+            {
+                List<CommonSpell> spells = spellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
+                if (spells.Count > 0)
+                {
+                    damage = spells.Sum(spell => spell.GetDamage(target));
+                }
+            }
+
+            return damage;
+        }
+
+        public void RemoveSpell(CommonSpell spell)
+        {
+            spellList.Remove(spell);
         }
 
         public bool SomeSkillReady()
         {
-            Console.Clear();
-            Console.WriteLine("checking some skill");
-            return SpellList.Where(x => x.Range > 0 && x.IsReady() && x.CanCast()).Count() > 0;
+            return spellList.Count(x => x.Range > 0 && x.IsReady() && x.CanCast()) > 0;
         }
-    }
 
-    struct FlashStruct
-    {
-        public SpellSlot Slot;
-        public bool IsReady;
-    }
-
-    static class FlashSpell
-    {
-        public static FlashStruct Flash(Obj_AI_Hero Player)
-        {
-            FlashStruct flash = new FlashStruct();
-
-            flash.Slot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
-            flash.IsReady = ((flash.Slot != SpellSlot.Unknown) && (Player.Spellbook.CanUseSpell(flash.Slot) == SpellState.Ready));
-
-            return flash;
-        }
+        #endregion
     }
 }

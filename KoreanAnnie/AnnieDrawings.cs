@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using System.Drawing;
-using SharpDX;
-using Color = System.Drawing.Color;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie
 {
-    class AnnieDrawings
+    using System;
+    using System.Drawing;
+
+    using KoreanAnnie.Common;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class AnnieDrawings
     {
-        private Annie annie;
+        #region Fields
+
+        private readonly Annie annie;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public AnnieDrawings(Annie annie)
         {
@@ -22,21 +25,28 @@ namespace KoreanAnnie
             Drawing.OnDraw += DrawAvailableRange;
         }
 
+        #endregion
+
+        #region Methods
+
         private void DrawAvailableRange(EventArgs args)
         {
-            if (annie.GetParamBool("drawskillranges"))
+            if (!annie.GetParamBool("drawskillranges"))
             {
-                if (annie.GetParamKeyBind("flashtibbers") && (annie.Spells.R.IsReady()) && (FlashSpell.Flash(annie.Player).IsReady) && (annie.CheckStun()))
-                {
-                    Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.RFlash.Range, System.Drawing.Color.DarkGreen, 3);
-                }
-                else
-                {
-                    Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.MaxRangeCombo, System.Drawing.Color.DarkGreen, 3);
-                }
+                return;
+            }
 
+            if (annie.GetParamKeyBind("flashtibbers") && (annie.Spells.R.IsReady())
+                && (FlashSpell.IsReady(annie.Player)) && (annie.CheckStun()))
+            {
+                Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.RFlash.Range, Color.DarkGreen, 3);
+            }
+            else
+            {
+                Render.Circle.DrawCircle(annie.Player.Position, annie.Spells.MaxRangeCombo, Color.DarkGreen, 3);
             }
         }
 
+        #endregion
     }
 }

@@ -1,65 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    class CommonForceUltimate
+    using System;
+
+    using KoreanAnnie.Properties;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using SharpDX;
+
+    internal class CommonForceUltimate
     {
-        private CommonChampion champion;
-        private bool leftButtonDown;
-        private bool rightButtonDown;
+        #region Fields
+
+        private readonly ICommonChampion champion;
+
+        private readonly Render.Text text = new Render.Text(0, 0, "No enemies found", 20, new ColorBGRA(255, 0, 0, 255));
+
         private int j, k;
 
-        public Render.Sprite mouseImage1 { get; set; }
-        public Render.Sprite mouseImage2 { get; set; }
-        public Render.Sprite denyMouseImage { get; set; }
-        private Render.Text Text = new Render.Text(0, 0, "No enemies found", 20, new ColorBGRA(255, 0, 0, 255));
+        private bool leftButtonDown;
 
-        public delegate void ForceUltimateDelegate();
-        public ForceUltimateDelegate ForceUltimate { get; set; }
+        private bool rightButtonDown;
 
-        public CommonForceUltimate(CommonChampion champion)
+        #endregion
+
+        #region Constructors and Destructors
+
+        public CommonForceUltimate(ICommonChampion champion)
         {
             this.champion = champion;
 
-            mouseImage1 = new Render.Sprite(Properties.Resources.Mouse1, new Vector2(0, 0));
-            mouseImage1.Scale = new Vector2(0.50f, 0.50f);
-            mouseImage1.Add();
+            MouseImage1 = new Render.Sprite(Resources.Mouse1, new Vector2(0, 0));
+            MouseImage1.Scale = new Vector2(0.50f, 0.50f);
+            MouseImage1.Add();
 
-            mouseImage2 = new Render.Sprite(Properties.Resources.Mouse2, new Vector2(0, 0));
-            mouseImage2.Scale = new Vector2(0.50f, 0.50f);
-            mouseImage2.Add();
+            MouseImage2 = new Render.Sprite(Resources.Mouse2, new Vector2(0, 0));
+            MouseImage2.Scale = new Vector2(0.50f, 0.50f);
+            MouseImage2.Add();
 
-            denyMouseImage = new Render.Sprite(Properties.Resources.DenyMouse, new Vector2(0, 0));
-            denyMouseImage.Scale = new Vector2(0.50f, 0.50f);
-            denyMouseImage.Add();
-            denyMouseImage.Visible = false;
+            DenyMouseImage = new Render.Sprite(Resources.DenyMouse, new Vector2(0, 0));
+            DenyMouseImage.Scale = new Vector2(0.50f, 0.50f);
+            DenyMouseImage.Add();
+            DenyMouseImage.Visible = false;
 
-            Text.Add();
-            Text.Visible = false;
+            text.Add();
+            text.Visible = false;
 
             Game.OnWndProc += CheckMouseButtons;
             Game.OnUpdate += ShowAnimation;
         }
 
-        private bool UltimateUp()
-        {
-            bool b = ((ObjectManager.Player.GetSpell(SpellSlot.R).IsReady()) && (champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo));
-            b = b && (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse"));
+        #endregion
 
-            if ((b) && (champion is Annie) && (((Annie)champion).Tibbers.Tibbers != null))
-            {
-                b = false;
-            }
+        #region Delegates
 
-            return b;
-        }
+        public delegate void ForceUltimateDelegate();
+
+        #endregion
+
+        #region Public Properties
+
+        public ForceUltimateDelegate ForceUltimate { get; set; }
+
+        #endregion
+
+        #region Properties
+
+        private Render.Sprite DenyMouseImage { get; set; }
+        private Render.Sprite MouseImage1 { get; set; }
+        private Render.Sprite MouseImage2 { get; set; }
+
+        #endregion
+
+        #region Methods
 
         private void CheckMouseButtons(WndEventArgs args)
         {
@@ -88,9 +102,9 @@ namespace KoreanAnnie
                 {
                     if (TargetSelector.GetTarget(champion.UltimateRange, TargetSelector.DamageType.Magical) == null)
                     {
-                        denyMouseImage.Visible = true;
-                        Text.Visible = true;
-                        Text.OnEndScene();
+                        DenyMouseImage.Visible = true;
+                        text.Visible = true;
+                        text.OnEndScene();
                         k = 0;
                     }
                     else
@@ -106,63 +120,79 @@ namespace KoreanAnnie
             }
         }
 
-        public void ShowAnimation(EventArgs args)
+        private void ShowAnimation(EventArgs args)
         {
             if (UltimateUp())
             {
                 j++;
 
                 Vector2 pos = Utils.GetCursorPos();
-                pos.X -= mouseImage1.Width * 1.2f;
+                pos.X -= MouseImage1.Width * 1.2f;
 
-                mouseImage1.Position = pos;
+                MouseImage1.Position = pos;
 
-                mouseImage2.Position = pos;
+                MouseImage2.Position = pos;
 
                 Vector2 pos2 = Utils.GetCursorPos();
-                pos2.X -= denyMouseImage.Width;
+                pos2.X -= DenyMouseImage.Width;
 
-                if (denyMouseImage.Visible)
+                if (DenyMouseImage.Visible)
                 {
                     k++;
                 }
 
-                denyMouseImage.Position = pos2;
+                DenyMouseImage.Position = pos2;
 
-                Text.X = (int)(pos2.X - 32);
-                Text.Y = (int)(pos2.Y + 50);
-                Text.OnEndScene();
+                text.X = (int)(pos2.X - 32);
+                text.Y = (int)(pos2.Y + 50);
+                text.OnEndScene();
 
-                if ((j == 30) && (mouseImage1.Visible))
+                if ((j == 30) && (MouseImage1.Visible))
                 {
                     j = 0;
-                    mouseImage1.Visible = false;
-                    mouseImage2.Visible = true;
+                    MouseImage1.Visible = false;
+                    MouseImage2.Visible = true;
                 }
-                else if ((j == 30) && (!mouseImage1.Visible))
+                else if ((j == 30) && (!MouseImage1.Visible))
                 {
                     j = 0;
-                    mouseImage1.Visible = true;
-                    mouseImage2.Visible = false;
+                    MouseImage1.Visible = true;
+                    MouseImage2.Visible = false;
                 }
                 if (k == 70)
                 {
-                    Text.Visible = false;
-                    denyMouseImage.Visible = false;
+                    text.Visible = false;
+                    DenyMouseImage.Visible = false;
                     k = 0;
                 }
             }
             else
             {
-                mouseImage1.PositionUpdate = null;
-                mouseImage2.PositionUpdate = null;
-                denyMouseImage.Visible = false;
-                denyMouseImage.PositionUpdate = null;
-                mouseImage1.Visible = false;
-                mouseImage2.Visible = false;
-                Text.Visible = false;
+                MouseImage1.PositionUpdate = null;
+                MouseImage2.PositionUpdate = null;
+                DenyMouseImage.Visible = false;
+                DenyMouseImage.PositionUpdate = null;
+                MouseImage1.Visible = false;
+                MouseImage2.Visible = false;
+                text.Visible = false;
                 k = 0;
             }
         }
+
+        private bool UltimateUp()
+        {
+            bool b = ((ObjectManager.Player.GetSpell(SpellSlot.R).IsReady())
+                      && (champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo));
+            b = b && (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse"));
+
+            if ((b) && (champion is Annie) && (((Annie)champion).Tibbers.Tibbers != null))
+            {
+                b = false;
+            }
+
+            return b;
+        }
+
+        #endregion
     }
 }

@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    interface CommonChampion
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal interface ICommonChampion
     {
-        CommonMenu MainMenu { get; set; }
+        #region Public Properties
+
         CommonDamageDrawing DrawDamage { get; set; }
         CommonForceUltimate ForceUltimate { get; set; }
-        CommonSpells Spells { get; set; }
+        CommonMenu MainMenu { get; set; }
         Orbwalking.Orbwalker Orbwalker { get; set; }
         Obj_AI_Hero Player { get; set; }
+        CommonSpells Spells { get; set; }
         float UltimateRange { get; set; }
+
+        #endregion
     }
 }

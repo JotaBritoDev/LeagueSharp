@@ -1,9 +1,10 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie
 {
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     class Program
     {
         static void Main(string[] args)

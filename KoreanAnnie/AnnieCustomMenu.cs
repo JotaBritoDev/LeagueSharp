@@ -1,62 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie
 {
-    static class AnnieCustomMenu
+    using KoreanAnnie.Common;
+
+    using LeagueSharp.Common;
+
+    internal static class AnnieCustomMenu
     {
-        public static void Load(CommonMenu MainMenu)
+        #region Public Methods and Operators
+
+        public static void Load(CommonMenu mainMenu)
         {
-            RemoveItems(MainMenu);
-            LoadLaneClear(MainMenu);
-            LoadCombo(MainMenu);
-            LoadMisc(MainMenu);
+            RemoveItems(mainMenu);
+            LoadLaneClear(mainMenu);
+            LoadCombo(mainMenu);
+            LoadMisc(mainMenu);
         }
 
-        private static void LoadCombo(CommonMenu MainMenu)
+        #endregion
+
+        #region Methods
+
+        private static void LoadCombo(CommonMenu mainMenu)
         {
             //
         }
 
-        private static void RemoveItems(CommonMenu MainMenu)
+        private static void LoadLaneClear(CommonMenu mainMenu)
         {
-            MainMenu.HarasMenu.Items.Remove(MainMenu.HarasMenu.Item(KoreanUtils.ParamName(MainMenu, "useetoharas")));
-            MainMenu.LaneClearMenu.Items.Remove(MainMenu.LaneClearMenu.Item(KoreanUtils.ParamName(MainMenu, "useetolaneclear")));
-            MainMenu.ComboMenu.Items.Remove(MainMenu.ComboMenu.Item(KoreanUtils.ParamName(MainMenu, "useetocombo")));
+            mainMenu.LaneClearMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "saveqtofarm"), "Save Q to farm").SetValue(true));
+            mainMenu.LaneClearMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "minminionstow"), "W must hit at least").SetValue(
+                    new Slider(3, 1, 6)));
         }
 
-        private static void LoadLaneClear(CommonMenu MainMenu)
+        private static void LoadMisc(CommonMenu mainMenu)
         {
-            MainMenu.LaneClearMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "saveqtofarm"), "Save Q to farm").SetValue(true));
-            MainMenu.LaneClearMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "minminionstow"), "W must hit at least").SetValue(new Slider(3, 1, 6)));
+            Menu passiveStunMenu =
+                mainMenu.MiscMenu.AddSubMenu(
+                    new Menu("Pyromania control (passive)", KoreanUtils.ParamName(mainMenu, "passivestunmenu")));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "useetostack"), "Use E to stack").SetValue(true));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "manalimitforstacking"), "Mana limit for stacking")
+                    .SetValue(new Slider(30, 0, 100)));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "savestunforcombo"), "Save stun for combo/haras").SetValue(
+                    false));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "showeeasybutton"), "Show easy button").SetValue(true));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "easybuttonpositionx"), "Button position X (ReadOnly)")
+                    .SetValue(0));
+            passiveStunMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "easybuttonpositiony"), "Button position Y (ReadOnly)")
+                    .SetValue(0));
+
+            Menu flashTibbers =
+                mainMenu.MiscMenu.AddSubMenu(
+                    new Menu("Flash + Tibbers", KoreanUtils.ParamName(mainMenu, "flashtibbersmenu")));
+            flashTibbers.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashtibbers"), "key").SetValue(
+                    new KeyBind('T', KeyBindType.Press)));
+            flashTibbers.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "minenemiestoflashr"), "Only use if will hit at least")
+                    .SetValue(new Slider(2, 1, 5)));
+            flashTibbers.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashtibbers"), "Orbwalk").SetValue(false));
+
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "supportmode"), "Support mode").SetValue(false));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "useqtofarm"), "Use Q to farm").SetValue(true));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "useeagainstaa"), "Use E against AA").SetValue(true));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "antigapcloser"), "Anti gap closer").SetValue(true));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(
+                    KoreanUtils.ParamName(mainMenu, "interruptspells"),
+                    "Interrupt dangerous spells if possible").SetValue(true));
         }
 
-        private static void LoadMisc(CommonMenu MainMenu)
+        private static void RemoveItems(CommonMenu mainMenu)
         {
-            Menu PassiveStunMenu = MainMenu.MiscMenu.AddSubMenu(new Menu("Pyromania control (passive)", KoreanUtils.ParamName(MainMenu, "passivestunmenu")));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "useetostack"), "Use E to stack").SetValue(true));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "manalimitforstacking"), "Mana limit for stacking").SetValue(new Slider(30, 0, 100)));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "savestunforcombo"), "Save stun for combo/haras").SetValue(false));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "showeeasybutton"), "Show easy button").SetValue(true));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "easybuttonpositionx"), "Button position X (ReadOnly)").SetValue<int>(0));
-            PassiveStunMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "easybuttonpositiony"), "Button position Y (ReadOnly)").SetValue<int>(0));
-
-            Menu FlashTibbers = MainMenu.MiscMenu.AddSubMenu(new Menu("Flash + Tibbers", KoreanUtils.ParamName(MainMenu, "flashtibbersmenu")));
-            FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "flashtibbers"), "key").SetValue(new KeyBind('T', KeyBindType.Press)));
-            FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "minenemiestoflashr"), "Only use if will hit at least").SetValue(new Slider(2, 1, 5)));
-            FlashTibbers.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "orbwalktoflashtibbers"), "Orbwalk").SetValue(false));
-
-
-            MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "supportmode"), "Support mode").SetValue(false));
-            MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "useqtofarm"), "Use Q to farm").SetValue(true));
-            MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "useeagainstaa"), "Use E against AA").SetValue(true));
-            MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "antigapcloser"), "Anti gap closer").SetValue(true));
-            MainMenu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(MainMenu, "interruptspells"), "Interrupt dangerous spells if possible").SetValue(true));
+            mainMenu.HarasMenu.Items.Remove(mainMenu.HarasMenu.Item(KoreanUtils.ParamName(mainMenu, "useetoharas")));
+            mainMenu.LaneClearMenu.Items.Remove(
+                mainMenu.LaneClearMenu.Item(KoreanUtils.ParamName(mainMenu, "useetolaneclear")));
+            mainMenu.ComboMenu.Items.Remove(mainMenu.ComboMenu.Item(KoreanUtils.ParamName(mainMenu, "useetocombo")));
         }
+
+        #endregion
     }
 }

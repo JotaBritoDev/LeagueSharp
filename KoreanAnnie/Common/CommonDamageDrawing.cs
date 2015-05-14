@@ -1,101 +1,137 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using Color = System.Drawing.Color;
-
-namespace KoreanAnnie
+﻿namespace KoreanAnnie.Common
 {
-    class CommonDamageDrawing
-    {
-        private CommonChampion champion;
-        private Color barColor = Color.Lime;
-        private Color comboDamageColor = Color.FromArgb(100, Color.Black);
+    using System;
+    using System.Linq;
 
-        public bool Active = true;
-        private const int Width = 103;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using SharpDX;
+
+    using Color = System.Drawing.Color;
+
+    internal class CommonDamageDrawing
+    {
+        #region Constants
+
         private const int Height = 8;
 
-        private readonly Render.Text Text = new Render.Text(0, 0, "KILLABLE", 20, new ColorBGRA(255, 0, 0, 255));
+        private const int Width = 103;
 
-        public delegate float DrawDamageDelegate(Obj_AI_Hero hero);
+        #endregion
 
-        private DrawDamageDelegate _amountOfDamage;
+        #region Fields
 
-        public DrawDamageDelegate AmountOfDamage
-        {
-            get { return _amountOfDamage; }
+        public bool Active = true;
 
-            set
-            {
-                if (_amountOfDamage == null)
-                {
-                    Drawing.OnDraw += DrawDamage;
-                }
-                _amountOfDamage = value;
-            }
-        }
+        private readonly Color barColor = Color.Lime;
 
-        public CommonDamageDrawing(CommonChampion champion)
+        private readonly ICommonChampion champion;
+
+        private readonly Color comboDamageColor = Color.FromArgb(100, Color.Black);
+
+        private readonly Render.Text text = new Render.Text(0, 0, "KILLABLE", 20, new ColorBGRA(255, 0, 0, 255));
+
+        private DrawDamageDelegate amountOfDamage;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public CommonDamageDrawing(ICommonChampion champion)
         {
             this.champion = champion;
         }
 
-        private bool Enabled()
+        #endregion
+
+        #region Delegates
+
+        public delegate float DrawDamageDelegate(Obj_AI_Hero hero);
+
+        #endregion
+
+        #region Public Properties
+
+        public DrawDamageDelegate AmountOfDamage
         {
-            return ((Active) && (_amountOfDamage != null) &&
-                ((KoreanUtils.GetParamBool(champion.MainMenu, "damageindicator")) || KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator")));
+            get
+            {
+                return amountOfDamage;
+            }
+
+            set
+            {
+                if (amountOfDamage == null)
+                {
+                    Drawing.OnDraw += DrawDamage;
+                }
+                amountOfDamage = value;
+            }
         }
+
+        #endregion
+
+        #region Methods
 
         private void DrawDamage(EventArgs args)
         {
-            if (Enabled())
+            if (!Enabled())
             {
-                foreach (var champ in ObjectManager.Get<Obj_AI_Hero>().
-                    Where(h => h.IsVisible && h.IsEnemy && h.IsValid && h.IsHPBarRendered))
+                return;
+            }
+
+            foreach (
+                Obj_AI_Hero champ in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(h => h.IsVisible && h.IsEnemy && h.IsValid && h.IsHPBarRendered))
+            {
+                float damage = amountOfDamage(champ);
+
+                if (damage > 0)
                 {
-                    float damage = _amountOfDamage(champ);
+                    Vector2 pos = champ.HPBarPosition;
 
-                    if (damage > 0)
+                    if (KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator")
+                        && (damage > champ.Health + 50f))
                     {
-                        Vector2 pos = champ.HPBarPosition;
+                        Render.Circle.DrawCircle(champ.Position, 100, Color.Red);
+                        Render.Circle.DrawCircle(champ.Position, 75, Color.Red);
+                        Render.Circle.DrawCircle(champ.Position, 50, Color.Red);
+                        text.X = (int)pos.X + 40;
+                        text.Y = (int)pos.Y - 20;
+                        text.OnEndScene();
+                    }
 
-                        if (KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator") && (damage > champ.Health + 50f))
+                    if (KoreanUtils.GetParamBool(champion.MainMenu, "damageindicator"))
+                    {
+                        float healthAfterDamage = Math.Max(0, champ.Health - damage) / champ.MaxHealth;
+                        float posY = pos.Y + 20f;
+                        float posDamageX = pos.X + 12f + Width * healthAfterDamage;
+                        float posCurrHealthX = pos.X + 12f + Width * champ.Health / champ.MaxHealth;
+
+                        Drawing.DrawLine(posDamageX, posY, posDamageX, posY + Height, 2, barColor);
+
+                        float diff = (posCurrHealthX - posDamageX) + 3;
+
+                        float pos1 = pos.X + 9 + (107 * healthAfterDamage);
+
+                        for (int i = 0; i < diff; i++)
                         {
-                            Render.Circle.DrawCircle(champ.Position, 100, Color.Red);
-                            Render.Circle.DrawCircle(champ.Position, 75, Color.Red);
-                            Render.Circle.DrawCircle(champ.Position, 50, Color.Red);
-                            Text.X = (int)pos.X + 40;
-                            Text.Y = (int)pos.Y - 20;
-                            Text.OnEndScene();
-                        }
-
-                        if (KoreanUtils.GetParamBool(champion.MainMenu, "damageindicator"))
-                        {
-                            float healthAfterDamage = Math.Max(0, champ.Health - damage) / champ.MaxHealth;
-                            float posY = pos.Y + 20f;
-                            float posDamageX = pos.X + 12f + Width * healthAfterDamage;
-                            float posCurrHealthX = pos.X + 12f + Width * champ.Health / champ.MaxHealth;
-
-                            Drawing.DrawLine(posDamageX, posY, posDamageX, posY + Height, 2, barColor);
-
-                            float diff = (posCurrHealthX - posDamageX) + 3;
-
-                            var pos1 = pos.X + 9 + (107 * healthAfterDamage);
-
-                            for (int i = 0; i < diff; i++)
-                            {
-                                Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, comboDamageColor);
-                            }
+                            Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, comboDamageColor);
                         }
                     }
                 }
             }
         }
+
+        private bool Enabled()
+        {
+            return ((Active) && (amountOfDamage != null)
+                    && ((KoreanUtils.GetParamBool(champion.MainMenu, "damageindicator"))
+                        || KoreanUtils.GetParamBool(champion.MainMenu, "killableindicator")));
+        }
+
+        #endregion
     }
 }
-
