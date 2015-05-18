@@ -44,7 +44,7 @@ namespace KoreanChoGath
 
             var pred = W.GetPrediction(target);
 
-            if (pred.Hitchance >= HitChance.High && W.IsInRange(pred.CastPosition))
+            if (pred.Hitchance >= HitChance.VeryHigh && W.IsInRange(pred.CastPosition))
             {
                 W.Cast(pred.CastPosition);
             }
@@ -107,6 +107,7 @@ namespace KoreanChoGath
                 MinionManager.FarmLocation farmLocation = spells.Q.GetCircularFarmLocation(
                     minions,
                     spells.Q.Width);
+                
                 if (farmLocation.MinionsHit >= KoreanUtils.GetParamSlider(champion.MainMenu, "minminionstoq"))
                 {
                     spells.Q.Cast(farmLocation.Position);

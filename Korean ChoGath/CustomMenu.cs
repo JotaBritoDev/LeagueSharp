@@ -41,8 +41,8 @@ namespace KoreanChoGath
                 }
             };
 
-            mainMenu.MiscMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "koreanprediction"), "Use korean prediction").SetValue(true));
+            //mainMenu.MiscMenu.AddItem(
+            //    new MenuItem(KoreanUtils.ParamName(mainMenu, "koreanprediction"), "Use korean prediction").SetValue(true));
         }
 
         static private void LoadHarasMenu(CommonChampion champion)
