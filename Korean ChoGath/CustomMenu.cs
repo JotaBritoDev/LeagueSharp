@@ -58,10 +58,10 @@ namespace KoreanChoGath
 
             mainMenu.LaneClearMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "minminionstoq"), "Q must hit at least").SetValue(
-                    new Slider(3, 1, 6)));
+                    new Slider(6, 1, 6)));
             mainMenu.LaneClearMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "minminionstow"), "W must hit at least").SetValue(
-                    new Slider(3, 1, 6)));
+                    new Slider(6, 1, 6)));
         }
     }
 }

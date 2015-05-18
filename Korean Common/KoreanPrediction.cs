@@ -9,10 +9,11 @@ using SharpDX;
 
 namespace KoreanCommon
 {
+    using System.Diagnostics;
+
     public static class KoreanPrediction
     {
         static private Vector3 predictedPosition;
-        static private Vector3 zeroVector = new Vector3(0, 0, 0);
 
         static public void Cast(Spell spell, Obj_AI_Hero target, KoreanPredictionTypes type = KoreanPredictionTypes.Slow)
         {
@@ -26,80 +27,30 @@ namespace KoreanCommon
             }
         }
 
+        static private void PrintVector3(Vector3 vector, bool debugging = false)
+        {
+            if (!debugging)
+            {
+                Console.WriteLine("X = {0}, Y = {1}, Z = {2}", vector.X, vector.Y, vector.Z);
+            }
+        }
+
         static public Vector3 GetPredictedPosition(Spell spell, Obj_AI_Hero target, KoreanPredictionTypes type, bool debug = false)
         {
             Vector3 newPred1 = CheckPredictedPosition(target, spell, debug);
+            PrintVector3(newPred1);
             Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
             Vector3 newPred2 = predictedPosition;
+            PrintVector3(newPred2);
 
-            if (type == KoreanPredictionTypes.Fast)
+            if (newPred1.Distance(newPred2) < spell.Width)
             {
-                if (newPred1.Distance(newPred2) < spell.Width)
-                {
-                    return newPred2;
-                }
-                else
-                {
-                    return zeroVector;
-                }
+                return newPred2;
             }
-
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred3 = predictedPosition;
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred4 = predictedPosition;
-            Utility.DelayAction.Add(50, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred5 = predictedPosition;
-
-            if (type == KoreanPredictionTypes.Medium)
+            else
             {
-                if (newPred1.Distance(newPred2) < spell.Width
-                    && newPred2.Distance(newPred3) < spell.Width
-                    && newPred3.Distance(newPred4) < spell.Width
-                    && newPred4.Distance(newPred5) < spell.Width)
-                {
-                    return newPred5;
-                }
-                else
-                {
-                    return zeroVector;
-                }
+                return Vector3.Zero;
             }
-
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred6 = predictedPosition;
-            Utility.DelayAction.Add(100, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred7 = predictedPosition;
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred8 = predictedPosition;
-            Utility.DelayAction.Add(100, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred9 = predictedPosition;
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred10 = predictedPosition;
-
-            if (type == KoreanPredictionTypes.Slow)
-            {
-                if (newPred1.Distance(newPred2) < spell.Width
-                    && newPred2.Distance(newPred3) < spell.Width
-                    && newPred3.Distance(newPred4) < spell.Width
-                    && newPred4.Distance(newPred5) < spell.Width
-                    && newPred5.Distance(newPred6) < spell.Width
-                    && newPred6.Distance(newPred7) < spell.Width
-                    && newPred7.Distance(newPred8) < spell.Width
-                    && newPred8.Distance(newPred9) < spell.Width
-                    && newPred9.Distance(newPred10) < spell.Width)
-                {
-                    Console.WriteLine("PERFECT HIT!");
-                    return newPred10;
-                }
-                else
-                {
-                    Console.WriteLine("PERFECT ======");
-                    return zeroVector;
-                }
-            }
-
-            return zeroVector;
         }
 
         static private Vector3 CheckPredictedPosition(Obj_AI_Hero target, Spell spell, bool debug)
