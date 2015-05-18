@@ -25,7 +25,12 @@ namespace KoreanChoGath
                 return;
             }
 
-            KoreanPrediction.Cast(Q, target, KoreanPredictionTypes.Slow);
+            var pred = Q.GetPrediction(target);
+
+            if (pred.Hitchance >= HitChance.VeryHigh)
+            {
+                Q.Cast(target);
+            }
         }
 
         private void useW(Obj_AI_Hero target)

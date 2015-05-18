@@ -18,7 +18,7 @@ namespace KoreanChoGath
             CommonSpell E = new CommonSpell(SpellSlot.E, 0, TargetSelector.DamageType.Magical);
             CommonSpell R = new CommonSpell(SpellSlot.R, 175, TargetSelector.DamageType.Magical);
 
-            Q.SetSkillshot(0.625f, 250f, 1000f, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.625f, 250f, 900f, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(0.25f, 250f, float.MaxValue, false, SkillshotType.SkillshotCone);
 
             champion.Spells.AddSpell(Q);
