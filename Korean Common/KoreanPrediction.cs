@@ -19,10 +19,10 @@ namespace KoreanCommon
         {
             if (spell.IsReady())
             {
-                Vector3 predictedPosition = GetPredictedPosition(spell, target, type);
-                if (spell.IsInRange(predictedPosition))
+                Vector3 position = GetPredictedPosition(spell, target, type);
+                if (spell.IsInRange(position))
                 {
-                    spell.Cast(predictedPosition);
+                    spell.Cast(position);
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace KoreanCommon
         {
             Vector3 newPred1 = CheckPredictedPosition(target, spell, debug);
             PrintVector3(newPred1);
-            Utility.DelayAction.Add(150, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
+            Utility.DelayAction.Add(200, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
             Vector3 newPred2 = predictedPosition;
             PrintVector3(newPred2);
 
@@ -67,15 +67,10 @@ namespace KoreanCommon
 
                 if (path.Count() <= 1)
                 {
-                    return new Vector3(0, 0, 0);
+                    return Vector3.Zero;
                 }
 
                 newPoint = path.Last(p => p.Distance(target.Position) < target.MoveSpeed * spell.Delay);
-
-                if (newPoint == null)
-                {
-                    return new Vector3(0, 0, 0);
-                }
 
                 int i = 0;
                 while ((newPoint.Distance(target.Position) < (target.MoveSpeed * spell.Delay) + (newPoint.Distance(ObjectManager.Player.Position) / spell.Speed)) || i < 10)
@@ -83,9 +78,9 @@ namespace KoreanCommon
                     i++;
                     newPoint = ((newPoint - target.Position) * 1.05f) + target.Position;
 
-                    if (newPoint.Distance(target.Position) == 0)
+                    if (newPoint.Distance(target.Position).Equals(0))
                     {
-                        return new Vector3(0, 0, 0);
+                        return Vector3.Zero;
                     }
                 }
             }
