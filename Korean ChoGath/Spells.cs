@@ -14,7 +14,7 @@ namespace KoreanChoGath
         public static void Load(CommonChampion champion)
         {
             CommonSpell Q = new CommonSpell(SpellSlot.Q, 950, TargetSelector.DamageType.Magical);
-            CommonSpell W = new CommonSpell(SpellSlot.W, 650, TargetSelector.DamageType.Magical);
+            CommonSpell W = new CommonSpell(SpellSlot.W, 625, TargetSelector.DamageType.Magical);
             CommonSpell E = new CommonSpell(SpellSlot.E, 0, TargetSelector.DamageType.Magical);
             CommonSpell R = new CommonSpell(SpellSlot.R, 175, TargetSelector.DamageType.Magical);
 

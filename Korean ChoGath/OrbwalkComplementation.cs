@@ -11,6 +11,8 @@ using Color = System.Drawing.Color;
 
 namespace KoreanChoGath
 {
+    using SharpDX.Direct3D9;
+
     class OrbwalkComplementation : CommonOrbwalkComplementation
     {
         public OrbwalkComplementation(CommonChampion champion) : base(champion)
@@ -40,7 +42,12 @@ namespace KoreanChoGath
                 return;
             }
 
-            KoreanPrediction.Cast(W, target);
+            var pred = W.GetPrediction(target);
+
+            if (pred.Hitchance >= HitChance.High && W.IsInRange(pred.CastPosition))
+            {
+                W.Cast(pred.CastPosition);
+            }
         }
 
         private bool haveManaToHaras()
