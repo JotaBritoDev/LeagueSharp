@@ -46,7 +46,7 @@
 
                 if (target != null)
                 {
-                    ignite.Cast(target);
+                    ignite.CastOnUnit(target);
                 }
             }
         }
