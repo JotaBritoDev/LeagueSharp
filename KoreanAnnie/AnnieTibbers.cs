@@ -62,9 +62,9 @@
             return (legendaryMonster.Count > 0) ? legendaryMonster[0] : null;
         }
 
-        private static Obj_AI_Base GetChampion()
+        private Obj_AI_Base GetChampion()
         {
-            Obj_AI_Hero champ = TargetSelector.GetTarget(TibbersRange, TargetSelector.DamageType.Magical);
+            Obj_AI_Hero champ = TargetSelector.GetTarget(Tibbers, TibbersRange, TargetSelector.DamageType.Magical);
 
             return champ;
         }
@@ -112,9 +112,19 @@
 
             if ((target != null))
             {
-                annie.Player.IssueOrder(
-                    Tibbers.Distance(target.Position) > 200 ? GameObjectOrder.MovePet : GameObjectOrder.AutoAttackPet,
-                    target);
+                //Method bugged == plz fix the Common
+                //annie.Player.IssueOrder(
+                //    Tibbers.Distance(target.Position) > 200 ? GameObjectOrder.MovePet : GameObjectOrder.AutoAttackPet,
+                //    target);
+
+                if (Tibbers.Distance(target.Position) > 200)
+                {
+                    annie.Player.IssueOrder(GameObjectOrder.MovePet, target);
+                }
+                else
+                {
+                    Tibbers.IssueOrder(GameObjectOrder.AttackUnit, target);
+                }
             }
         }
 

@@ -116,7 +116,7 @@
             {
                 if (rflash == null && R != null)
                 {
-                    rflash = new CommonSpell(R.Slot, R.Range + 400, R.DamageType);
+                    rflash = new CommonSpell(R.Slot, R.Range + 390, R.DamageType);
 
                     if (R.IsSkillshot)
                     {

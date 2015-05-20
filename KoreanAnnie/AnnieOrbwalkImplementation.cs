@@ -8,7 +8,7 @@
     using LeagueSharp;
     using LeagueSharp.Common;
 
-    internal class AnnieOrbwalkComplementation : CommonOrbwalkComplementation
+    internal class AnnieOrbwalkImplementation : CommonOrbwalkImplementation
     {
         #region Fields
 
@@ -20,7 +20,7 @@
 
         #region Constructors and Destructors
 
-        public AnnieOrbwalkComplementation(Annie annie)
+        public AnnieOrbwalkImplementation(Annie annie)
         {
             Champion = annie;
             this.annie = annie;
@@ -164,6 +164,7 @@
                 && !annie.SaveStun() 
                 && annie.CanFarm() 
                 && annie.GetParamBool("useqtofarm")
+                && annie.Player.Mana > annie.Spells.Q.Instance.ManaCost
                 && Champion.Spells.Q.IsKillable((Obj_AI_Base)args.Target)
                 && Champion.Spells.Q.Instance.CooldownExpires - Game.Time < 0.3f)
             {

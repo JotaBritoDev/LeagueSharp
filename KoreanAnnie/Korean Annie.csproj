@@ -77,7 +77,7 @@
     <Compile Include="AnnieButtons.cs" />
     <Compile Include="AnnieCustomMenu.cs" />
     <Compile Include="AnnieDrawings.cs" />
-    <Compile Include="AnnieOrbwalkComplementation.cs" />
+    <Compile Include="AnnieOrbwalkImplementation.cs" />
     <Compile Include="AnnieSpells.cs" />
     <Compile Include="AnnieTibbers.cs" />
     <Compile Include="Common\CommonDisableAAMode.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="Common\CommonChamp.cs" />
     <Compile Include="Common\CommonDamageDrawing.cs" />
     <Compile Include="Common\CommonDisableAA.cs" />
-    <Compile Include="Common\CommonOrbwalkComplementation.cs" />
+    <Compile Include="Common\CommonOrbwalkImplementation.cs" />
     <Compile Include="Common\CommonMenu.cs" />
     <Compile Include="Common\CommonSpells.cs" />
     <Compile Include="Common\FlashSpell.cs" />

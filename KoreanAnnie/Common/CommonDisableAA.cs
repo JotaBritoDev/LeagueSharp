@@ -1,5 +1,7 @@
 ﻿namespace KoreanAnnie.Common
 {
+    using System;
+
     using LeagueSharp;
     using LeagueSharp.Common;
 
@@ -10,10 +12,11 @@
         private bool CanUseAA()
         {
             bool canHit = true;
+            Console.WriteLine(champion.Player.CountAlliesInRange(1500f));
 
             if (KoreanUtils.GetParam(champion.MainMenu, "supportmode") != null) 
             {
-                if (KoreanUtils.GetParamBool(champion.MainMenu, "supportmode") && champion.Player.CountAlliesInRange(1500f) > 0)
+                if (KoreanUtils.GetParamBool(champion.MainMenu, "supportmode") && champion.Player.CountAlliesInRange(1500f) > 1)
                 {
                     canHit = false;
                 }
@@ -75,8 +78,8 @@
             {
                 if (args.Target is Obj_AI_Base && ((Obj_AI_Base)args.Target).IsMinion && !CanUseAA())
                 {
+                    Console.WriteLine("cancelado");
                     args.Process = false;
-                    return;
                 }
             }
         }

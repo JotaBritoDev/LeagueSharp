@@ -50,7 +50,7 @@
             AnnieSpells.Load(this);
 
             Buttons = new AnnieButtons(this);
-            AnnieOrbwalker = new AnnieOrbwalkComplementation(this);
+            AnnieOrbwalker = new AnnieOrbwalkImplementation(this);
 
             Draws = new AnnieDrawings(this);
             DrawDamage = new CommonDamageDrawing(this);
@@ -67,13 +67,14 @@
             Interrupter2.OnInterruptableTarget += InterruptDangerousSpells;
             AntiGapcloser.OnEnemyGapcloser += StunGapCloser;
             Game.OnUpdate += StackE;
+            Obj_AI_Base.OnLevelUp += EvolveUltimate;
         }
 
         #endregion
 
         #region Public Properties
 
-        public AnnieOrbwalkComplementation AnnieOrbwalker { get; set; }
+        public AnnieOrbwalkImplementation AnnieOrbwalker { get; set; }
         public AnnieButtons Buttons { get; set; }
         public CommonDisableAA DisableAA { get; set; }
         public CommonDamageDrawing DrawDamage { get; set; }
@@ -89,6 +90,29 @@
         #endregion
 
         #region Methods
+
+        private void LoadLambdaExpressions()
+        {
+            ParamName = s => KoreanUtils.ParamName(MainMenu, s);
+            GetParamBool = s => KoreanUtils.GetParamBool(MainMenu, s);
+            SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
+            GetParamSlider = s => KoreanUtils.GetParamSlider(MainMenu, s);
+            GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
+            CanFarm =
+                () =>
+                (!GetParamBool("supportmode"))
+                || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
+            CheckStun = () => Player.HasBuff("pyromania_particle", true);
+            SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
+        }
+
+        private void EvolveUltimate(Obj_AI_Base sender, EventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                sender.Spellbook.EvolveSpell(SpellSlot.R);
+            }
+        }
 
         private void EAgainstEnemyAA(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
@@ -114,21 +138,6 @@
                     Spells.W.Cast(sender);
                 }
             }
-        }
-
-        private void LoadLambdaExpressions()
-        {
-            ParamName = s => KoreanUtils.ParamName(MainMenu, s);
-            GetParamBool = s => KoreanUtils.GetParamBool(MainMenu, s);
-            SetValueBool = (s, b) => KoreanUtils.SetValueBool(MainMenu, s, b);
-            GetParamSlider = s => KoreanUtils.GetParamSlider(MainMenu, s);
-            GetParamKeyBind = s => KoreanUtils.GetParamKeyBind(MainMenu, s);
-            CanFarm =
-                () =>
-                (!GetParamBool("supportmode"))
-                || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
-            CheckStun = () => Player.HasBuff("pyromania_particle", true);
-            SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
         }
 
         private void StackE(EventArgs args)

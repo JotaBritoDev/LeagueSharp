@@ -4,7 +4,7 @@
 
     using LeagueSharp.Common;
 
-    internal abstract class CommonOrbwalkComplementation
+    internal abstract class CommonOrbwalkImplementation
     {
         #region Properties
 
