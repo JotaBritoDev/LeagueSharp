@@ -9,10 +9,7 @@
     {
         private static void Main(string[] args)
         {
-            if (ObjectManager.Player.GetSpellSlot("SummonerDot") != SpellSlot.Unknown)
-            {
-                CustomEvents.Game.OnGameLoad += eventArgs => { Ignite inite = new Ignite(); };
-            }
+            CustomEvents.Game.OnGameLoad += eventArgs => { Ignite inite = new Ignite(); };
         }
     }
 }

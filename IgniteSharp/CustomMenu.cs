@@ -1,58 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace IgniteSharp
+﻿namespace IgniteSharp
 {
-    using System.Runtime.CompilerServices;
+    using LeagueSharp;
+    using LeagueSharp.Common;
 
     public class CustomMenu
     {
         private readonly Menu menu;
-
-        public Menu Get()
-        {
-            return menu;
-        }
 
         private readonly Ignite obj;
 
         public CustomMenu(Ignite ignite)
         {
             obj = ignite;
-            menu = new Menu("Ignite#", "ignite", true);            
+            menu = new Menu("Ignite#", "ignite", true);
 
             Load(ignite);
+        }
+
+        public Menu Get()
+        {
+            return menu;
         }
 
         private void Load(Ignite ignite)
         {
             menu.AddItem(
+                new MenuItem("ignite#key", "Key").SetValue(
+                    new KeyBind('F', KeyBindType.Toggle)));
+
+            menu.AddItem(
                 new MenuItem("ignite#target", "Cast on").SetValue(
                     new StringList(new[] { "Lowest target", "Use target selector" })));
 
-            MenuItem autoKill = new MenuItem("ignite#autokill", "Auto cast on killable targets").SetValue(false);
-
+            MenuItem autoKill = new MenuItem("ignite#autokill", "Auto kill").SetValue(false);
             menu.AddItem(autoKill);
 
             autoKill.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
+                {
+                    if (e.GetNewValue<bool>())
+                    {
+                        Game.OnUpdate += obj.AutoKill.CastIgnite;
+                    }
+                    else
+                    {
+                        Game.OnUpdate -= obj.AutoKill.CastIgnite;
+                    }
+                };
+
+            MenuItem drawRange = new MenuItem("ignite#range", "Draw range").SetValue(false);
+            menu.AddItem(drawRange);
+
+            drawRange.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
             {
                 if (e.GetNewValue<bool>())
                 {
-                    Game.OnUpdate += obj.AutoKill.CastIgnite;
+                    Drawing.OnDraw += obj.drawings.IgniteRange;
                 }
                 else
                 {
-                    Game.OnUpdate -= obj.AutoKill.CastIgnite;
+                    Drawing.OnDraw -= obj.drawings.IgniteRange;
                 }
             };
 
             menu.AddToMainMenu();
         }
-
     }
 }

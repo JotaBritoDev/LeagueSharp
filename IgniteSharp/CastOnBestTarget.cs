@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace IgniteSharp
+﻿namespace IgniteSharp
 {
-    class CastOnBestTarget
+    using System;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class CastOnBestTarget
     {
         private readonly Spell ignite;
 
@@ -16,36 +14,57 @@ namespace IgniteSharp
 
         public CastOnBestTarget(Ignite obj)
         {
-            this.ignite = obj.SummonerDot;
+            ignite = obj.SummonerDot;
             menu = obj.menu.Get();
 
-            Game.OnWndProc += CastIgnite;
+            //Game.OnWndProc += CastIgnite;
+            Game.OnUpdate += CastIgnite;
+        }
+
+        private void CastIgnite(EventArgs args)
+        {
+            if (menu.Item("ignite#key").GetValue<KeyBind>().Active)
+            {
+                Cast();
+            }
         }
 
         private void CastIgnite(WndEventArgs args)
         {
             if (args.Msg == (uint)WindowsMessages.WM_KEYDOWN
-                && ObjectManager.Player.Spellbook.ActiveSpellSlot == ignite.Slot
-                && ignite.IsReady()
-                && ObjectManager.Player.CountEnemiesInRange(ignite.Range) > 0)
+                && ObjectManager.Player.Spellbook.ActiveSpellSlot == ignite.Slot)
             {
-                Obj_AI_Hero target;
-                if (menu.Item("ignite#target").GetValue<StringList>().SelectedIndex == 0)
-                {
-                    target =
-                        HeroManager.Enemies.Where(hero => hero.IsValidTarget(ignite.Range))
-                            .OrderByDescending(hero => hero.Health)
-                            .First();
-                }
-                else
-                {
-                    target = TargetSelector.GetTarget(ObjectManager.Player, ignite.Range, TargetSelector.DamageType.True);
-                }
+                Cast();
+            }
+        }
 
-                if (target != null)
-                {
-                    ignite.CastOnUnit(target);
-                }
+        private void Cast()
+        {
+            if (!ignite.IsReady()
+                || ObjectManager.Player.CountEnemiesInRange(ignite.Range) == 0)
+            {
+                return;
+            }
+
+            Obj_AI_Hero target;
+            if (menu.Item("ignite#target").GetValue<StringList>().SelectedIndex == 0)
+            {
+                target =
+                    HeroManager.Enemies.Where(hero => hero.IsValidTarget(ignite.Range))
+                        .OrderBy(hero => hero.Health)
+                        .First();
+            }
+            else
+            {
+                target = TargetSelector.GetTarget(
+                    ObjectManager.Player,
+                    ignite.Range,
+                    TargetSelector.DamageType.True);
+            }
+
+            if (target != null)
+            {
+                ignite.CastOnUnit(target);
             }
         }
     }
