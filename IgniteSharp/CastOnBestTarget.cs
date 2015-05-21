@@ -23,7 +23,7 @@
 
         private void CastIgnite(EventArgs args)
         {
-            if (menu.Item("ignite#key").GetValue<KeyBind>().Active)
+            if (menu.Item("ignite#mapedkey").GetValue<KeyBind>().Active)
             {
                 Cast();
             }

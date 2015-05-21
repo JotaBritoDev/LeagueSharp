@@ -25,8 +25,8 @@
         private void Load(Ignite ignite)
         {
             menu.AddItem(
-                new MenuItem("ignite#key", "Key").SetValue(
-                    new KeyBind('F', KeyBindType.Toggle)));
+                new MenuItem("ignite#mapedkey", "Key").SetValue(
+                    new KeyBind('F', KeyBindType.Press)));
 
             menu.AddItem(
                 new MenuItem("ignite#target", "Cast on").SetValue(
