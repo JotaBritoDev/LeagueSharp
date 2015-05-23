@@ -12,7 +12,6 @@
         private bool CanUseAA()
         {
             bool canHit = true;
-            Console.WriteLine(champion.Player.CountAlliesInRange(1500f));
 
             if (KoreanUtils.GetParam(champion.MainMenu, "supportmode") != null) 
             {
@@ -78,7 +77,6 @@
             {
                 if (args.Target is Obj_AI_Base && ((Obj_AI_Base)args.Target).IsMinion && !CanUseAA())
                 {
-                    Console.WriteLine("cancelado");
                     args.Process = false;
                 }
             }
