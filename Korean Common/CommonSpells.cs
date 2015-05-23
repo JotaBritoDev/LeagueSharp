@@ -196,22 +196,16 @@ namespace KoreanCommon
 
         public bool HarasReady()
         {
-            Console.Clear();
-            Console.WriteLine("checking haras");
             return SpellList.Where(x => x.UseOnHaras && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnHaras).Count();
         }
 
         public bool ComboReady()
         {
-            Console.Clear();
-            Console.WriteLine("checking combo");
             return SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnCombo).Count();
         }
 
         public bool SomeSkillReady()
         {
-            Console.Clear();
-            Console.WriteLine("checking some skill");
             return SpellList.Where(x => x.Range > 0 && x.IsReady() && x.CanCast()).Count() > 0;
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using System.Threading;
 
 namespace KoreanCommon
 {
@@ -37,6 +38,8 @@ namespace KoreanCommon
 
         static public Vector3 GetPredictedPosition(Spell spell, Obj_AI_Hero target, KoreanPredictionTypes type, bool debug = false)
         {
+            Thread prediction = new Thread(GetPrediction);
+
             Vector3 newPred1 = CheckPredictedPosition(target, spell, debug);
             PrintVector3(newPred1);
             Utility.DelayAction.Add(200, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
@@ -51,6 +54,11 @@ namespace KoreanCommon
             {
                 return Vector3.Zero;
             }
+        }
+
+        static private void GetPrediction()
+        {
+            
         }
 
         static private Vector3 CheckPredictedPosition(Obj_AI_Hero target, Spell spell, bool debug)

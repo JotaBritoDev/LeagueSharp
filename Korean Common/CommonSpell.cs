@@ -22,7 +22,8 @@ namespace KoreanCommon
 
         public bool CanCast(int maxToggleState = 1)
         {
-            return this.Instance.ToggleState <= maxToggleState;
+            return ObjectManager.Player.Mana > this.Instance.ManaCost
+                && this.Instance.ToggleState <= maxToggleState;
         }
 
         public bool UseOnCombo
