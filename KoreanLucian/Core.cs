@@ -174,7 +174,7 @@ namespace KoreanLucian
                         E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player),
                         TargetSelector.DamageType.Physical);
 
-                    if (target != null && target.Distance(champion.Player) > Orbwalking.GetRealAutoAttackRange(champion.Player))
+                    if (target != null && !target.IsDead && target.Distance(champion.Player) > Orbwalking.GetRealAutoAttackRange(champion.Player))
                     {
                         if (E.Cast(Game.CursorPos))
                         {
