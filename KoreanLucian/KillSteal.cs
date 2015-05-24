@@ -1,24 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using KoreanCommon;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
-    class KillSteal
-    {
-        private readonly CommonChampion champion;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-        private readonly CommonSpells spells;
+    using KoreanCommon;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class KillSteal
+    {
+        private readonly Func<Obj_AI_Hero, float> aaDamage;
+
+        private readonly float aaRange;
+
+        private readonly Spell e;
+
+        private readonly Orbwalking.Orbwalker orbwalker;
+
+        private readonly Obj_AI_Hero player;
+
+        private readonly Spell w;
 
         public KillSteal(CommonChampion champion)
         {
-            this.champion = champion;
-            spells = champion.Spells;
+            orbwalker = champion.Orbwalker;
+            player = champion.Player;
+            e = champion.Spells.E;
+            w = champion.Spells.W;
+            aaRange = Orbwalking.GetRealAutoAttackRange(champion.Player);
+            aaDamage = target => (float)champion.Player.GetAutoAttackDamage(target);
 
             if (KoreanUtils.GetParamBool(champion.MainMenu, "killsteal"))
             {
@@ -28,34 +40,42 @@ namespace KoreanLucian
 
         public void KS(EventArgs args)
         {
-            if (champion.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
+            if (orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-                Obj_AI_Hero target;
+                return;
+            }
 
-                if (spells.W.IsReady())
+            List<Obj_AI_Hero> targetList =
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(target => target.HealthPercent < 20f && target.Distance(player) < w.Range && !target.IsDead)
+                    .ToList();
+
+            if (targetList.Count == 0)
+            {
+                return;
+            }
+
+            targetList = targetList.Where(
+                        target =>
+                        ((e.IsReady() && target.Distance(player) < e.Range + aaRange && aaDamage(target) * 1.4f > target.Health)
+                         || (w.IsReady() && w.CanCast(target) && w.IsKillable(target))))
+                    .ToList();
+
+            if (targetList.Count == 0)
+            {
+                return;
+            }
+
+            foreach (Obj_AI_Hero target in targetList)
+            {
+                if (w.IsReady() && w.CanCast(target) && w.IsKillable(target))
                 {
-                    target = TargetSelector.GetTarget(spells.W.Range, TargetSelector.DamageType.Magical, false);
-
-                    if (target != null && spells.W.IsKillable(target) && spells.W.CanCast(target)
-                        && target.Distance(champion.Player) > Orbwalking.GetRealAutoAttackRange(champion.Player))
-                    {
-                        spells.W.Cast(target.Position);
-                    }
+                    w.Cast(target);
                 }
-                if (spells.E.IsReady())
+                else
                 {
-                    target =
-                        TargetSelector.GetTarget(
-                            spells.E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player),
-                            TargetSelector.DamageType.Physical,
-                            false);
-
-                    if (target != null && champion.Player.GetAutoAttackDamage(target) * 1.5f > target.Health
-                        && target.Distance(champion.Player) > Orbwalking.GetRealAutoAttackRange(champion.Player))
-                    {
-                        spells.E.Cast(target.Position);
-                        champion.Orbwalker.ForceTarget(target);
-                    }
+                    e.Cast(target.Position);
+                    orbwalker.ForceTarget(target);
                 }
             }
         }
