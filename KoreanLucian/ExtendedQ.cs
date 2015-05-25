@@ -26,7 +26,7 @@
             Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
             <= 30000;
 
-        static private bool ExtendedQIsReady(CommonChampion lucian)
+        static private bool ExtendedQIsReady(CommonChampion lucian, bool laneclear = false)
         {
             Spell q = lucian.Spells.Q;
 
@@ -37,9 +37,17 @@
 
             List<Obj_AI_Base> minions = MinionManager.GetMinions(AdvancedQ.Range);
 
-            if (lucian.Player.CountEnemiesInRange(AdvancedQ.Range) == 0 || minions.Count == 0)
+            if (minions.Count == 0)
             {
                 return false;
+            }
+
+            if (!laneclear)
+            {
+                if (lucian.Player.CountEnemiesInRange(AdvancedQ.Range) == 0)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -79,7 +87,7 @@
 
         public static bool CastExtendedQToLaneClear(this CommonChampion lucian)
         {
-            if (!ExtendedQIsReady(lucian) || !lucian.Spells.Q.UseOnLaneClear)
+            if (!ExtendedQIsReady(lucian, true) || !lucian.Spells.Q.UseOnLaneClear)
             {
                 return false;
             }

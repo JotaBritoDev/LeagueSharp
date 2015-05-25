@@ -205,9 +205,6 @@ namespace KoreanLucian
                     MinionManager.FarmLocation farmLocation = W.GetCircularFarmLocation(minions);
 
                     int minMinions = KoreanUtils.GetParamSlider(champion.MainMenu, "wcounthit");
-                    Console.Clear();
-                    Console.WriteLine(minions.Count);
-                    Console.WriteLine(farmLocation.MinionsHit);
 
                     if (farmLocation.MinionsHit >= minMinions && minions.Count >= minMinions)
                     {
