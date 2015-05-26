@@ -88,9 +88,12 @@ namespace KoreanLucian
 
         void Drawing_OnDraw(EventArgs args)
         {
-            Text.OnEndScene();
-            Text.X = (int)lucian.Player.HPBarPosition.X + 5;
-            Text.Y = (int)lucian.Player.HPBarPosition.Y + 180;
+            if (KoreanUtils.GetParamBool(lucian.MainMenu, "drawingetext"))
+            {
+                Text.OnEndScene();
+                Text.X = (int)lucian.Player.HPBarPosition.X + 5;
+                Text.Y = (int)lucian.Player.HPBarPosition.Y + 180;
+            }
         }
 
         public void Game_OnWndProc(WndEventArgs args)

@@ -52,7 +52,7 @@ namespace KoreanLucian
                 }
             };
 
-            SemiAutoE.AddItem(new MenuItem("drawingetext", "Drawing text").SetValue(true));
+            SemiAutoE.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "drawingetext"), "Drawing text").SetValue(true));
 
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "lockr"), "Lock R").SetValue(true));
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "useyoumuu"), "Use Youmuu before R").SetValue(true));
