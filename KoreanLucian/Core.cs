@@ -274,15 +274,23 @@ namespace KoreanLucian
                 }
             }
 
-            if (Q.UseOnCombo && !CheckPassive() && Q.IsReady() && Q.CanCast())
+            if (Q.UseOnCombo && Q.IsReady() && Q.CanCast())
             {
-                target = TargetSelector.GetTarget(champion.Player, Q.Range, TargetSelector.DamageType.Physical);
-
-                if (target != null && Q.IsReadyToCastOn(target) && Q.CanCast(target))
+                if (champion.CastExtendedQ())
                 {
-                    if (Q.CastOnUnit(target))
+                    ProcessSpell();
+                }
+
+                if (!CheckPassive())
+                {
+                    target = TargetSelector.GetTarget(champion.Player, Q.Range, TargetSelector.DamageType.Physical);
+
+                    if (target != null && Q.IsReadyToCastOn(target) && Q.CanCast(target))
                     {
-                        ProcessSpell();
+                        if (Q.CastOnUnit(target))
+                        {
+                            ProcessSpell();
+                        }
                     }
                 }
             }
@@ -298,6 +306,7 @@ namespace KoreanLucian
                     ProcessSpell();
                 }
             }
+
         }
 
         public override void Ultimate(Obj_AI_Hero target)
