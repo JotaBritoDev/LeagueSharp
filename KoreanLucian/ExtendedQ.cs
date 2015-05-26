@@ -24,7 +24,7 @@
         static private readonly Func<Vector3, Vector3, Vector3, bool> CheckLine =
             (v1, v2, v3) =>
             Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
-            <= 30000;
+            <= 25000;
 
         static private bool ExtendedQIsReady(CommonChampion lucian, bool laneclear = false)
         {

@@ -23,7 +23,7 @@ namespace KoreanLucian
             CommonSpell R = new CommonSpell(SpellSlot.R, 1400, TargetSelector.DamageType.Physical);
 
             Q.SetTargetted(0.25f, float.MaxValue);
-            W.SetSkillshot(0.4f, 250f, 1600, true, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.4f, 150f, 1600, true, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 1f, float.MaxValue, false, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.2f, 110f, 2500, true, SkillshotType.SkillshotLine);
 

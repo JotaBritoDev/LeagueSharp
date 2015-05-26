@@ -35,6 +35,25 @@ namespace KoreanLucian
         {
             Menu menu = champion.MainMenu.MiscMenu;
 
+            Menu SemiAutoE = menu.AddSubMenu(new Menu("Semi-Automatic E", "semiautoe"));
+
+            MenuItem semiAutomaticE = new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "dashmode"), "Active").SetValue(true);
+
+            SemiAutoE.AddItem(semiAutomaticE);
+            semiAutomaticE.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
+            {
+                if (e.GetNewValue<bool>())
+                {
+                    Game.OnWndProc += ((Lucian)champion).semiAutomaticE.Game_OnWndProc; 
+                }
+                else
+                {
+                    Game.OnWndProc -= ((Lucian)champion).semiAutomaticE.Game_OnWndProc; 
+                }
+            };
+
+            SemiAutoE.AddItem(new MenuItem("drawingetext", "Drawing text").SetValue(true));
+
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "lockr"), "Lock R").SetValue(true));
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "useyoumuu"), "Use Youmuu before R").SetValue(true));
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "extendedq"), "Extended Q").SetValue(true));

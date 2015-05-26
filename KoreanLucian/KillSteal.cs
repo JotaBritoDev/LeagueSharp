@@ -55,11 +55,12 @@
                 return;
             }
 
-            targetList = targetList.Where(
-                        target =>
-                        ((e.IsReady() && target.Distance(player) < e.Range + aaRange && aaDamage(target) * 1.4f > target.Health)
-                         || (w.IsReady() && w.CanCast(target) && w.IsKillable(target))))
-                    .ToList();
+            targetList =
+                targetList.Where(
+                    target =>
+                    ((e.IsReady() && !target.IsDead && target.Distance(player) > aaRange
+                      && target.Distance(player) < e.Range + aaRange && aaDamage(target) * 1.4f > target.Health)
+                     || (w.IsReady() && w.CanCast(target) && w.IsKillable(target)))).ToList();
 
             if (targetList.Count == 0)
             {

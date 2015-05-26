@@ -17,6 +17,8 @@ namespace KoreanLucian
 
         public readonly KillSteal killSteal;
 
+        public readonly SemiAutomaticE semiAutomaticE;
+
         public Lucian() : 
             base ("Korean Lucian")
         {
@@ -27,6 +29,7 @@ namespace KoreanLucian
             drawing = new Drawing(this);
             killSteal = new KillSteal(this);
             DrawDamage.AmountOfDamage = KoreanLucian.Spells.MaxComboDamage;
+            semiAutomaticE = new SemiAutomaticE(this);
         }
     }
 }
