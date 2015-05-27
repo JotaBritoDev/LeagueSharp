@@ -83,6 +83,11 @@ namespace KoreanLucian
             return hasPassive;
         }
 
+        private bool CheckHaras(Obj_AI_Hero target)
+        {
+            return KoreanUtils.GetParamBool(lucian.MainMenu, target.ChampionName.ToLowerInvariant());
+        }
+
         //Maybe next feature
         //private bool IsJungleMob(Obj_AI_Base target)
         //{
@@ -137,6 +142,11 @@ namespace KoreanLucian
                     {
                         target = TargetSelector.GetTarget(champion.Player, Q.Range, TargetSelector.DamageType.Physical);
 
+                        if (!CheckHaras(target))
+                        {
+                            return;
+                        }
+
                         if (target != null && Q.IsReadyToCastOn(target) && Q.CanCast(target))
                         {
                             if (Q.CastOnUnit(target))
@@ -150,6 +160,11 @@ namespace KoreanLucian
                 if (W.UseOnHaras && !CheckPassive() && HaveManaToHaras() && W.IsReady() && W.CanCast())
                 {
                     target = TargetSelector.GetTarget(champion.Player, W.Range, TargetSelector.DamageType.Physical);
+
+                    if (!CheckHaras(target))
+                    {
+                        return;
+                    }
 
                     if (target != null && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
                     {
@@ -180,6 +195,11 @@ namespace KoreanLucian
                         champion.Player,
                         E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player),
                         TargetSelector.DamageType.Physical);
+
+                    if (!CheckHaras(target))
+                    {
+                        return;
+                    }
 
                     if (target != null && lucian.semiAutomaticE.Cast(target))
                     {

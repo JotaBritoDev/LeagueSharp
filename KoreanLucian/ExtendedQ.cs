@@ -26,6 +26,11 @@
             Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
             <= 25000;
 
+        static private bool CheckHaras(CommonChampion lucian, Obj_AI_Hero target)
+        {
+            return KoreanUtils.GetParamBool(lucian.MainMenu, target.ChampionName.ToLowerInvariant());
+        }
+
         static private bool ExtendedQIsReady(CommonChampion lucian, bool laneclear = false)
         {
             Spell q = lucian.Spells.Q;
@@ -66,6 +71,11 @@
 
             foreach (Obj_AI_Hero target in lucian.Player.GetEnemiesInRange(AdvancedQ.Range))
             {
+                if (!CheckHaras(lucian, target))
+                {
+                    continue;
+                }
+
                 List<Vector2> position = new List<Vector2> { target.Position.To2D() };
 
                 Obj_AI_Base colisionMinion =
@@ -74,7 +84,8 @@
                             minion =>
                             q.CanCast(minion) && q.IsInRange(minion)
                             && CheckLine(lucian.Player.Position, minion.Position, target.ServerPosition)
-                            && CheckDistance(target, minion));
+                            && CheckDistance(target, minion)
+                            && target.Distance(lucian.Player) > minion.Distance(lucian.Player));
 
                 if (colisionMinion != null)
                 {

@@ -16,6 +16,19 @@ namespace KoreanLucian
             LoadLaneClearMenu(champion);
             LoadMiscMenu(champion);
             LoadComboMenu(champion);
+            LoadHarasMenu(champion);
+        }
+
+        private static void LoadHarasMenu(CommonChampion champion)
+        {
+            Menu menu = champion.MainMenu.HarasMenu;
+
+            Menu subMenuChampions = menu.AddSubMenu(new Menu("Targets", KoreanUtils.ParamName(champion.MainMenu,"harastargets")));
+
+            foreach (var enemy in HeroManager.Enemies)
+            {
+                subMenuChampions.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, enemy.ChampionName.ToLowerInvariant()), enemy.ChampionName).SetValue(true));
+            }
         }
 
         private static void LoadComboMenu(CommonChampion champion)

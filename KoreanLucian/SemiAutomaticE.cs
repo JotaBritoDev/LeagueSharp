@@ -46,13 +46,8 @@ namespace KoreanLucian
             }
             else
             {
-                //Console.WriteLine("=======================");
-                //Console.WriteLine(target.Distance(Game.CursorPos));
-                //Console.WriteLine(lucian.Player.Distance(target));
-                //Console.WriteLine(Orbwalking.GetRealAutoAttackRange(lucian.Player));
-                //Console.WriteLine(target.Distance(lucian.Player) + E.Range);
                 Process(false);
-                result = E.Cast(Vector2.Divide(2f, Game.CursorPos.To2D()));
+                E.Cast(Vector3.SmoothStep(lucian.Player.Position, Game.CursorPos, 0.001f));
             }
 
 
@@ -90,9 +85,9 @@ namespace KoreanLucian
         {
             if (KoreanUtils.GetParamBool(lucian.MainMenu, "drawingetext"))
             {
-                Text.OnEndScene();
                 Text.X = (int)lucian.Player.HPBarPosition.X + 5;
                 Text.Y = (int)lucian.Player.HPBarPosition.Y + 180;
+                Text.OnEndScene();
             }
         }
 
