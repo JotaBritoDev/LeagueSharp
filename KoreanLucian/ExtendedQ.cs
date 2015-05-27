@@ -19,15 +19,33 @@
             (champ, minion) =>
             Math.Abs(
                 champ.Distance(ObjectManager.Player) - (minion.Distance(ObjectManager.Player) + minion.Distance(champ)))
-            <= 3;
+            <= 2;
 
         static private readonly Func<Vector3, Vector3, Vector3, bool> CheckLine =
             (v1, v2, v3) =>
             Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
-            <= 25000;
+            <= 20000;
+
+        static public void Load(CommonChampion lucian)
+        {
+            if (KoreanUtils.GetParamKeyBind(lucian.MainMenu, "toggleextendedq"))
+            {
+                Game.OnUpdate += AutoExtendedQ;
+            }
+        }
+
+        static public void AutoExtendedQ(EventArgs args)
+        {
+            Program.ChampionLucian.CastExtendedQ();
+        }
 
         static private bool CheckHaras(CommonChampion lucian, Obj_AI_Hero target)
         {
+            if (target == null)
+            {
+                return false;
+            }
+
             return KoreanUtils.GetParamBool(lucian.MainMenu, target.ChampionName.ToLowerInvariant());
         }
 
@@ -85,7 +103,8 @@
                             q.CanCast(minion) && q.IsInRange(minion)
                             && CheckLine(lucian.Player.Position, minion.Position, target.ServerPosition)
                             && CheckDistance(target, minion)
-                            && target.Distance(lucian.Player) > minion.Distance(lucian.Player));
+                            && target.Distance(lucian.Player) > minion.Distance(lucian.Player)
+                            && lucian.Player.Distance(minion) + minion.Distance(target) <= lucian.Player.Distance(target) + 10f);
 
                 if (colisionMinion != null)
                 {

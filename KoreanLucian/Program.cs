@@ -10,6 +10,8 @@ namespace KoreanLucian
 {
     class Program
     {
+        static public Lucian ChampionLucian;
+        
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
@@ -19,7 +21,7 @@ namespace KoreanLucian
         {
             if (ObjectManager.Player.ChampionName.ToLowerInvariant() == "lucian")
             {
-                Lucian lucian = new Lucian();
+                ChampionLucian = new Lucian();
             }
         }
     }

@@ -85,6 +85,10 @@ namespace KoreanLucian
 
         private bool CheckHaras(Obj_AI_Hero target)
         {
+            if (target == null)
+            {
+                return false;
+            }
             return KoreanUtils.GetParamBool(lucian.MainMenu, target.ChampionName.ToLowerInvariant());
         }
 
@@ -133,9 +137,12 @@ namespace KoreanLucian
 
                 if (Q.UseOnHaras && Q.IsReady() && Q.CanCast() && HaveManaToHaras())
                 {
-                    if (champion.CastExtendedQ())
+                    if (!KoreanUtils.GetParamKeyBind(champion.MainMenu, "toggleextendedq"))
                     {
-                        ProcessSpell();
+                        if (champion.CastExtendedQ())
+                        {
+                            ProcessSpell();
+                        }
                     }
 
                     if (!CheckPassive())
@@ -296,11 +303,6 @@ namespace KoreanLucian
 
             if (Q.UseOnCombo && Q.IsReady() && Q.CanCast())
             {
-                if (champion.CastExtendedQ())
-                {
-                    ProcessSpell();
-                }
-
                 if (!CheckPassive())
                 {
                     target = TargetSelector.GetTarget(champion.Player, Q.Range, TargetSelector.DamageType.Physical);
@@ -312,6 +314,11 @@ namespace KoreanLucian
                             ProcessSpell();
                         }
                     }
+                }
+
+                if (champion.CastExtendedQ())
+                {
+                    ProcessSpell();
                 }
             }
 

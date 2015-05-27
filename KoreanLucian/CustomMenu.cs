@@ -25,7 +25,7 @@ namespace KoreanLucian
 
             Menu subMenuChampions = menu.AddSubMenu(new Menu("Targets", KoreanUtils.ParamName(champion.MainMenu,"harastargets")));
 
-            foreach (var enemy in HeroManager.Enemies)
+            foreach (Obj_AI_Hero enemy in HeroManager.Enemies)
             {
                 subMenuChampions.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, enemy.ChampionName.ToLowerInvariant()), enemy.ChampionName).SetValue(true));
             }
@@ -67,9 +67,28 @@ namespace KoreanLucian
 
             SemiAutoE.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "drawingetext"), "Drawing text").SetValue(true));
 
+            Menu extendedQMenu = menu.AddSubMenu(new Menu("Extended Q", KoreanUtils.ParamName(champion.MainMenu, "extendedqmenu")));
+            extendedQMenu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "extendedq"), "Active").SetValue(true));
+
+            MenuItem extendedQ =
+                extendedQMenu.AddItem(
+                    new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "toggleextendedq"), "Auto Haras").SetValue(
+                        new KeyBind('T', KeyBindType.Toggle)));
+
+            extendedQ.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
+            {
+                if (e.GetNewValue<KeyBind>().Active)
+                {
+                    Game.OnUpdate += ExtendedQ.AutoExtendedQ;
+                }
+                else
+                {
+                    Game.OnUpdate -= ExtendedQ.AutoExtendedQ;
+                }
+            };
+
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "lockr"), "Lock R").SetValue(true));
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "useyoumuu"), "Use Youmuu before R").SetValue(true));
-            menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "extendedq"), "Extended Q").SetValue(true));
 
             MenuItem ksOption = menu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "killsteal"), "Smart KillSteal").SetValue(true));

@@ -30,6 +30,7 @@ namespace KoreanLucian
             killSteal = new KillSteal(this);
             DrawDamage.AmountOfDamage = KoreanLucian.Spells.MaxComboDamage;
             semiAutomaticE = new SemiAutomaticE(this);
+            ExtendedQ.Load(this);
         }
     }
 }
