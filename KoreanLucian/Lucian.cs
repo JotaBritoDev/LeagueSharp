@@ -11,7 +11,7 @@ namespace KoreanLucian
 {
     class Lucian : CommonChampion
     {
-        private readonly Core core;
+        public readonly Core core;
 
         private readonly KoreanLucian.Drawing drawing;
 

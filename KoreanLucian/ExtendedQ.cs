@@ -36,7 +36,7 @@
 
         static public void AutoExtendedQ(EventArgs args)
         {
-            Program.ChampionLucian.CastExtendedQ();
+            Program.ChampionLucian.CastExtendedQ(true);
         }
 
         static private bool CheckHaras(CommonChampion lucian, Obj_AI_Hero target)
@@ -76,9 +76,14 @@
             return true;
         }
 
-        static public bool CastExtendedQ(this CommonChampion lucian)
+        static public bool CastExtendedQ(this CommonChampion lucian, bool Haras = false)
         {
             if (!ExtendedQIsReady(lucian))
+            {
+                return false;
+            }
+
+            if (Haras && ((Lucian)lucian).core.HaveManaToHaras() == false)
             {
                 return false;
             }

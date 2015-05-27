@@ -106,12 +106,12 @@ namespace KoreanLucian
         //            || target.SkinName.ToLowerInvariant() == "sru_krug");
         //}
 
-        private bool HaveManaToHaras()
+        public bool HaveManaToHaras()
         {
             return champion.Player.ManaPercent > KoreanUtils.GetParamSlider(champion.MainMenu, "manalimittoharas");
         }
 
-        private bool HaveManaToLaneclear()
+        public bool HaveManaToLaneclear()
         {
             return champion.Player.ManaPercent > KoreanUtils.GetParamSlider(champion.MainMenu, "manalimittolaneclear");
         }
