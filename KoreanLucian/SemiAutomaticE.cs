@@ -47,7 +47,7 @@ namespace KoreanLucian
             else
             {
                 Process(false);
-                E.Cast(Vector3.SmoothStep(lucian.Player.Position, Game.CursorPos, 0.001f));
+                result = E.Cast(Vector3.SmoothStep(lucian.Player.Position, Game.CursorPos, 0.001f));
             }
 
 
