@@ -1,40 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     public class CommonSpells : IEnumerable
     {
-        public List<CommonSpell> SpellList;
+        private CommonSpell _rflash;
+
         private CommonChampion champion;
+
+        public List<CommonSpell> SpellList;
+
+        public CommonSpells(CommonChampion player)
+        {
+            champion = player;
+
+            SpellList = new List<CommonSpell>();
+        }
 
         public CommonSpell Q
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.Q).First(); }
+            get
+            {
+                return SpellList.First(x => x.Slot == SpellSlot.Q);
+            }
         }
 
         public CommonSpell W
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.W).First(); }
+            get
+            {
+                return SpellList.First(x => x.Slot == SpellSlot.W);
+            }
         }
 
         public CommonSpell E
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.E).First(); }
+            get
+            {
+                return SpellList.First(x => x.Slot == SpellSlot.E);
+            }
         }
 
         public CommonSpell R
         {
-            get { return SpellList.Where(x => x.Slot == SpellSlot.R).First(); }
+            get
+            {
+                return SpellList.First(x => x.Slot == SpellSlot.R);
+            }
         }
-
-        private CommonSpell _rflash;
 
         public CommonSpell RFlash
         {
@@ -54,18 +73,6 @@ namespace KoreanCommon
             }
         }
 
-        public IEnumerator GetEnumerator()
-        {
-            return SpellList.GetEnumerator();
-        }
-
-        public CommonSpells(CommonChampion player)
-        {
-            this.champion = player;
-
-            SpellList = new List<CommonSpell>();
-        }
-
         public float MaxRangeCombo
         {
             get
@@ -73,15 +80,16 @@ namespace KoreanCommon
                 float range = 0f;
                 if (SpellList != null && SpellList.Count > 0)
                 {
-                    CommonSpell ultimate = SpellList.
-                            Where(x => x.Slot == SpellSlot.R).First();
+                    CommonSpell ultimate = SpellList.First(x => x.Slot == SpellSlot.R);
                     if (ultimate != null && ultimate.UseOnCombo && ultimate.IsReady() && ultimate.CanCast())
                     {
                         range = ultimate.Range;
                     }
                     else
                     {
-                        List<CommonSpell> Spells = SpellList.Where(x => x.Slot != SpellSlot.R && x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
+                        List<CommonSpell> Spells =
+                            SpellList.Where(x => x.Slot != SpellSlot.R && x.UseOnCombo && x.IsReady() && x.CanCast())
+                                .ToList();
                         if (Spells != null && Spells.Count > 0)
                         {
                             foreach (CommonSpell spell in Spells)
@@ -116,6 +124,11 @@ namespace KoreanCommon
 
                 return range;
             }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return SpellList.GetEnumerator();
         }
 
         public float MaxComboDamage(Obj_AI_Hero target)
@@ -174,11 +187,13 @@ namespace KoreanCommon
 
             if (R.IsReady() && R.CanCast() && target.IsValidTarget(R.Range))
             {
-                List<CommonSpell> Spells = SpellList.
-                    Where(x => x.CanCast() && x.IsReady() && target.IsValidTarget(x.Range) &&
-                               x.IsKillable(target) && x.Slot != SpellSlot.R).ToList();
+                List<CommonSpell> Spells =
+                    SpellList.Where(
+                        x =>
+                        x.CanCast() && x.IsReady() && target.IsValidTarget(x.Range) && x.IsKillable(target)
+                        && x.Slot != SpellSlot.R).ToList();
 
-                if (Spells != null && Spells.Count > 0)
+                if (Spells.Count > 0)
                 {
                     foreach (CommonSpell spell in Spells)
                     {
@@ -188,32 +203,31 @@ namespace KoreanCommon
             }
 
             return totalDamage > target.Health;
-
-            //return ((Q.IsReady()) && (target.IsValidTarget(Q.Range)) && (Q.IsKillable(target))) ||
-            //       ((E.IsReady()) && (target.IsValidTarget(E.Range)) && (E.IsKillable(target))) ||
-            //       ((W.IsReady()) && (target.IsValidTarget(W.Range)) && (W.IsKillable(target)));
         }
 
         public bool HarasReady()
         {
-            return SpellList.Where(x => x.UseOnHaras && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnHaras).Count();
+            return SpellList.Count(x => x.UseOnHaras && x.IsReady() && x.CanCast())
+                   == SpellList.Count(x => x.UseOnHaras);
         }
 
         public bool ComboReady()
         {
-            return SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).Count() == SpellList.Where(x => x.UseOnCombo).Count();
+            return SpellList.Count(x => x.UseOnCombo && x.IsReady() && x.CanCast())
+                   == SpellList.Count(x => x.UseOnCombo);
         }
 
         public bool SomeSkillReady()
         {
-            return SpellList.Where(x => x.Range > 0 && x.IsReady() && x.CanCast()).Count() > 0;
+            return SpellList.Any(x => x.Range > 0 && x.IsReady() && x.CanCast());
         }
     }
 
     public struct FlashStruct
     {
-        public SpellSlot Slot;
         public bool IsReady;
+
+        public SpellSlot Slot;
     }
 
     public static class FlashSpell
@@ -223,7 +237,8 @@ namespace KoreanCommon
             FlashStruct flash = new FlashStruct();
 
             flash.Slot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
-            flash.IsReady = ((flash.Slot != SpellSlot.Unknown) && (Player.Spellbook.CanUseSpell(flash.Slot) == SpellState.Ready));
+            flash.IsReady = ((flash.Slot != SpellSlot.Unknown)
+                             && (Player.Spellbook.CanUseSpell(flash.Slot) == SpellState.Ready));
 
             return flash;
         }

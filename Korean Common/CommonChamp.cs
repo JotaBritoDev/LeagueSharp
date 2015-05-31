@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     public abstract class CommonChampion
     {
-        public CommonMenu MainMenu { get; set; }
-        public CommonDamageDrawing DrawDamage { get; set; }
-        public CommonForceUltimate ForceUltimate { get; set; }
-        public CommonSpells Spells { get; set; }
-        public Orbwalking.Orbwalker Orbwalker { get; set; }
-        public Obj_AI_Hero Player { get; set; }
-
-        public CommonChampion(string menuDisplay)
+        protected CommonChampion(string menuDisplay)
         {
             Player = ObjectManager.Player;
 
@@ -28,7 +16,21 @@ namespace KoreanCommon
             DrawDamage = new CommonDamageDrawing(this);
             DrawDamage.AmountOfDamage = Spells.MaxComboDamage;
             DrawDamage.Active = true;
+            commonEvolveUltimate = new CommonEvolveUltimate();
         }
 
+        private CommonEvolveUltimate commonEvolveUltimate;
+
+        protected CommonDamageDrawing DrawDamage { get; set; }
+
+        protected CommonForceUltimate ForceUltimate { get; set; }
+
+        public CommonSpells Spells { get; set; }
+
+        public Orbwalking.Orbwalker Orbwalker { get; set; }
+
+        public Obj_AI_Hero Player { get; set; }
+
+        public CommonMenu MainMenu { get; set; }
     }
 }

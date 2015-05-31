@@ -1,109 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using System.Threading;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
-    using System.Diagnostics;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    public static class KoreanPrediction
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using SharpDX;
+
+    public class KoreanPrediction
     {
-        static private Vector3 predictedPosition;
+        private readonly List<PredictionItem> predictionItems;
 
-        static public void Cast(Spell spell, Obj_AI_Hero target, KoreanPredictionTypes type = KoreanPredictionTypes.Slow)
+        public KoreanPrediction(Spell spell, KoreanPredictionTypes type = KoreanPredictionTypes.Slow)
         {
-            if (spell.IsReady())
+            predictionItems = new List<PredictionItem>();
+            foreach (Obj_AI_Hero objAiHero in HeroManager.Enemies)
             {
-                Vector3 position = GetPredictedPosition(spell, target, type);
-                if (spell.IsInRange(position))
-                {
-                    spell.Cast(position);
-                }
+                predictionItems.Add(new PredictionItem(objAiHero, spell, type));
             }
         }
 
-        static private void PrintVector3(Vector3 vector, bool debugging = false)
+        public Vector3 GetPrediction(Obj_AI_Hero target)
         {
-            if (!debugging)
-            {
-                Console.WriteLine("X = {0}, Y = {1}, Z = {2}", vector.X, vector.Y, vector.Z);
-            }
+            return predictionItems.First(x => x.Target == target).GetPrediction();
         }
 
-        static public Vector3 GetPredictedPosition(Spell spell, Obj_AI_Hero target, KoreanPredictionTypes type, bool debug = false)
+        public void Cast(Obj_AI_Hero target)
         {
-            Thread prediction = new Thread(GetPrediction);
+            PredictionItem predictionItem = predictionItems.First(x => x.Target == target);
+            Vector3 castPosition = predictionItem.GetPrediction();
 
-            Vector3 newPred1 = CheckPredictedPosition(target, spell, debug);
-            PrintVector3(newPred1);
-            Utility.DelayAction.Add(200, () => predictedPosition = CheckPredictedPosition(target, spell, debug));
-            Vector3 newPred2 = predictedPosition;
-            PrintVector3(newPred2);
-
-            if (newPred1.Distance(newPred2) < spell.Width)
+            if (predictionItem.PredictionSpell.IsReady() && predictionItem.PredictionSpell.IsInRange(castPosition)
+                && !castPosition.IsWall())
             {
-                return newPred2;
+                predictionItem.PredictionSpell.Cast(castPosition);
             }
-            else
-            {
-                return Vector3.Zero;
-            }
-        }
-
-        static private void GetPrediction()
-        {
-            
-        }
-
-        static private Vector3 CheckPredictedPosition(Obj_AI_Hero target, Spell spell, bool debug)
-        {
-            Vector3 newPoint = target.ServerPosition;
-
-            if (!target.IsMoving)
-            {
-                newPoint = target.Position;
-            }
-            else
-            {
-                Vector3[] path = target.GetPath(target.GetWaypoints().Last().To3D());
-
-                if (path.Count() <= 1)
-                {
-                    return Vector3.Zero;
-                }
-
-                newPoint = path.Last(p => p.Distance(target.Position) < target.MoveSpeed * spell.Delay);
-
-                int i = 0;
-                while ((newPoint.Distance(target.Position) < (target.MoveSpeed * spell.Delay) + (newPoint.Distance(ObjectManager.Player.Position) / spell.Speed)) || i < 10)
-                {
-                    i++;
-                    newPoint = ((newPoint - target.Position) * 1.05f) + target.Position;
-
-                    if (newPoint.Distance(target.Position).Equals(0))
-                    {
-                        return Vector3.Zero;
-                    }
-                }
-            }
-
-            if (debug)
-            {
-                Render.Circle.DrawCircle(newPoint, 10, System.Drawing.Color.DarkBlue, 30);
-            }
-
-            if ((!debug) && !spell.IsInRange(target) && newPoint.Distance(ObjectManager.Player.Position) > spell.Range - 50)
-            {
-                newPoint = new Vector3(0, 0, 0);
-            }
-
-            return newPoint;
         }
     }
 }

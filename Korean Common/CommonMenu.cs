@@ -1,71 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
+    using LeagueSharp.Common;
+
     public class CommonMenu
     {
-        private Menu _mainMenu;
-
-        public Menu MainMenu
-        {
-            get { return _mainMenu; }
-        }
-
-        private Menu _harasMenu;
-
-        public Menu HarasMenu
-        {
-            get { return _harasMenu; }
-        }
-
-        private Menu _laneClearMenu;
-
-        public Menu LaneClearMenu
-        {
-            get { return _laneClearMenu; }
-        }
-
         private Menu _comboMenu;
-
-        public Menu ComboMenu
-        {
-            get { return _comboMenu; }
-        }
-
-        private Menu _miscMenu;
-
-        public Menu MiscMenu
-        {
-            get { return _miscMenu; }
-        }
 
         private Menu _drwaingsMenu;
 
-        public Menu DrawingMenu
-        {
-            get { return _drwaingsMenu; }
-        }
+        private Menu _harasMenu;
+
+        private Menu _laneClearMenu;
+
+        private Menu _mainMenu;
 
         private string _menuName;
 
-        public string MenuName
-        {
-            get { return _menuName; }
-        }
+        private Menu _miscMenu;
 
         private Orbwalking.Orbwalker _orbwalker;
-
-	    public Orbwalking.Orbwalker Orbwalker
-	    {
-		    get { return _orbwalker;}
-		    set { _orbwalker = value;}
-	    }
 
         public CommonMenu(string displayName, bool misc)
         {
@@ -93,6 +46,74 @@ namespace KoreanCommon
             _mainMenu.AddToMainMenu();
         }
 
+        public Menu MainMenu
+        {
+            get
+            {
+                return _mainMenu;
+            }
+        }
+
+        public Menu HarasMenu
+        {
+            get
+            {
+                return _harasMenu;
+            }
+        }
+
+        public Menu LaneClearMenu
+        {
+            get
+            {
+                return _laneClearMenu;
+            }
+        }
+
+        public Menu ComboMenu
+        {
+            get
+            {
+                return _comboMenu;
+            }
+        }
+
+        public Menu MiscMenu
+        {
+            get
+            {
+                return _miscMenu;
+            }
+        }
+
+        public Menu DrawingMenu
+        {
+            get
+            {
+                return _drwaingsMenu;
+            }
+        }
+
+        public string MenuName
+        {
+            get
+            {
+                return _menuName;
+            }
+        }
+
+        public Orbwalking.Orbwalker Orbwalker
+        {
+            get
+            {
+                return _orbwalker;
+            }
+            set
+            {
+                _orbwalker = value;
+            }
+        }
+
         private void addOrbwalker(Menu RootMenu)
         {
             Menu orbwalkerMenu = new Menu("Orbwalker", string.Format("{0}.orbwalker", MenuName));
@@ -116,7 +137,9 @@ namespace KoreanCommon
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtoharas", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetoharas", MenuName), "Use E").SetValue(true));
 
-            MenuItem ManaLimitToHaras = new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana limit").SetValue(new Slider(0, 0, 100));
+            MenuItem ManaLimitToHaras =
+                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana limit").SetValue(
+                    new Slider(0, 0, 100));
             newMenu.AddItem(ManaLimitToHaras);
 
             return newMenu;
@@ -130,8 +153,11 @@ namespace KoreanCommon
             newMenu.AddItem(new MenuItem(string.Format("{0}.useqtolaneclear", MenuName), "Use Q").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(new Slider(50, 0, 100)));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(
+                    new Slider(50, 0, 100)));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
 
             return newMenu;
         }
@@ -145,9 +171,17 @@ namespace KoreanCommon
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtocombo", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetocombo", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(new Slider(1, 1, 5)));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(new StringList(new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.forceultusingmouse", MenuName), "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(
+                    new Slider(1, 1, 5)));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(
+                    new StringList(
+                        new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
+            newMenu.AddItem(
+                new MenuItem(
+                    string.Format("{0}.forceultusingmouse", MenuName),
+                    "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
 
             return newMenu;
         }
@@ -166,8 +200,10 @@ namespace KoreanCommon
             RootMenu.AddSubMenu(newMenu);
 
             newMenu.AddItem(new MenuItem(string.Format("{0}.drawskillranges", MenuName), "Skill ranges").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage indicator").SetValue(true));
-            newMenu.AddItem(new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable indicator").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage indicator").SetValue(true));
+            newMenu.AddItem(
+                new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable indicator").SetValue(true));
 
             return newMenu;
         }

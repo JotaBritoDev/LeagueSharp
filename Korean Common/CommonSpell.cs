@@ -1,34 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     public class CommonSpell : Spell
     {
-        public CommonSpell(SpellSlot slot, float range = 0, TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
-            : base (slot, range, damageType)
+        public CommonSpell(
+            SpellSlot slot,
+            float range = 0,
+            TargetSelector.DamageType damageType = TargetSelector.DamageType.Physical)
+            : base(slot, range, damageType)
         {
-
         }
 
         public MenuItem UseOnComboMenu { get; set; }
-        public MenuItem UseOnHarasMenu { get; set; }
-        public MenuItem UseOnLaneClearMenu { get; set; }
 
-        public bool CanCast(int maxToggleState = 1)
-        {
-            return ObjectManager.Player.Mana > this.Instance.ManaCost
-                && this.Instance.ToggleState <= maxToggleState;
-        }
+        public MenuItem UseOnHarasMenu { get; set; }
+
+        public MenuItem UseOnLaneClearMenu { get; set; }
 
         public bool UseOnCombo
         {
-            get 
+            get
             {
                 bool b;
 
@@ -84,7 +77,7 @@ namespace KoreanCommon
         {
             get
             {
-                return this.Instance.CooldownExpires - this.Instance.Cooldown;
+                return Instance.CooldownExpires - Instance.Cooldown;
             }
         }
 
@@ -92,13 +85,18 @@ namespace KoreanCommon
         {
             get
             {
-                return Game.Time - this.LastTimeUsed;
+                return Game.Time - LastTimeUsed;
             }
+        }
+
+        public bool CanCast(int maxToggleState = 1)
+        {
+            return ObjectManager.Player.Mana > Instance.ManaCost && Instance.ToggleState <= maxToggleState;
         }
 
         public bool IsReadyToCastOn(Obj_AI_Hero target, int maxToggleState = 1)
         {
-            return this.IsReady() && this.CanCast(maxToggleState) && this.CanCast(target) && target.IsValidTarget(this.Range);
+            return this.IsReady() && CanCast(maxToggleState) && CanCast(target) && target.IsValidTarget(Range);
         }
     }
 }

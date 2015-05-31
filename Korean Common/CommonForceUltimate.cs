@@ -1,29 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using KoreanCommon.Properties;
-
-namespace KoreanCommon
+﻿namespace KoreanCommon
 {
+    using System;
+
+    using KoreanCommon.Properties;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    using SharpDX;
+
     public class CommonForceUltimate
     {
+        public delegate void ForceUltimateDelegate(Obj_AI_Hero target = null);
+
         private CommonChampion champion;
-        private bool leftButtonDown;
-        private bool rightButtonDown;
+
         private int j, k;
 
-        public Render.Sprite mouseImage1 { get; set; }
-        public Render.Sprite mouseImage2 { get; set; }
-        public Render.Sprite denyMouseImage { get; set; }
-        private Render.Text Text = new Render.Text(0, 0, "No enemies found", 20, new ColorBGRA(255, 0, 0, 255));
+        private bool leftButtonDown;
 
-        public delegate void ForceUltimateDelegate(Obj_AI_Hero target = null);
-        public ForceUltimateDelegate ForceUltimate { get; set; }
+        private bool rightButtonDown;
+
+        private Render.Text Text = new Render.Text(0, 0, "No enemies found", 20, new ColorBGRA(255, 0, 0, 255));
 
         public CommonForceUltimate(CommonChampion champion)
         {
@@ -49,11 +47,20 @@ namespace KoreanCommon
             Game.OnUpdate += ShowAnimation;
         }
 
+        public Render.Sprite mouseImage1 { get; set; }
+
+        public Render.Sprite mouseImage2 { get; set; }
+
+        public Render.Sprite denyMouseImage { get; set; }
+
+        public ForceUltimateDelegate ForceUltimate { get; set; }
+
         private bool UltimateUp()
         {
             bool b;
 
-            if (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse") && champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse")
+                && champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 b = champion.Spells.R.IsReady() && champion.Spells.R.CanCast();
             }
