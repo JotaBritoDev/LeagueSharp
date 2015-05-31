@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KoreanCommon;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanChoGath
+﻿namespace KoreanChoGath
 {
+    using KoreanCommon;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     public static class Spells
     {
         public static void Load(CommonChampion champion)
@@ -18,7 +14,7 @@ namespace KoreanChoGath
             CommonSpell E = new CommonSpell(SpellSlot.E, 0, TargetSelector.DamageType.Magical);
             CommonSpell R = new CommonSpell(SpellSlot.R, 175, TargetSelector.DamageType.Magical);
 
-            Q.SetSkillshot(0.75f, 250f, 1000f, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.75f, 200f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(0.25f, 250f, float.MaxValue, false, SkillshotType.SkillshotCone);
 
             champion.Spells.AddSpell(Q);

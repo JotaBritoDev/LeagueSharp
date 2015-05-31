@@ -22,9 +22,13 @@ namespace KoreanChoGath
         {
             CommonMenu mainMenu = champion.MainMenu;
 
-            mainMenu.MiscMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashult"), "Flash + Ult (if killabe)").SetValue(
+            Menu flashUlt = mainMenu.MiscMenu.AddSubMenu(new Menu("Flash + Ult (If killable)", "flashultmenu"));
+
+            flashUlt.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashult"), "Key").SetValue(
                     new KeyBind('T', KeyBindType.Press)));
+            flashUlt.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashult"), "Orbwalk").SetValue(true));
 
             MenuItem autoStackPassive = mainMenu.MiscMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "autostackpassive"), "Auto stack passive").SetValue(true));
