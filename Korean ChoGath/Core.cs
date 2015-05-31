@@ -11,10 +11,13 @@
     {
         private readonly KoreanPrediction koreanPredictionQ;
 
+        private readonly KoreanPrediction koreanPredictionW;
+
         public Core(CommonChampion champion)
             : base(champion)
         {
             koreanPredictionQ = new KoreanPrediction(spells.Q);
+            koreanPredictionW = new KoreanPrediction(spells.W, KoreanPredictionTypes.Fast);
         }
 
         private void UseQ(Obj_AI_Hero target)
@@ -34,12 +37,7 @@
                 return;
             }
 
-            PredictionOutput pred = W.GetPrediction(target);
-
-            if (pred.Hitchance >= HitChance.VeryHigh && W.IsInRange(pred.CastPosition))
-            {
-                W.Cast(pred.CastPosition);
-            }
+            koreanPredictionW.Cast(target);
         }
 
         private bool HaveManaToHaras()

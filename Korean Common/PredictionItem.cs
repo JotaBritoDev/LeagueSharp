@@ -37,12 +37,12 @@
                     limitBias = 15;
                     break;
                 case KoreanPredictionTypes.Medium:
-                    limit = 20;
+                    limit = 10;
                     limitBias = 10;
                     break;
                 default:
-                    limit = 50;
-                    limitBias = 8;
+                    limit = 20;
+                    limitBias = 5;
                     break;
             }
 
@@ -62,6 +62,7 @@
             }
 
             float bias = 0f;
+            int count = 0;
             Vector3 lastPrediction = Vector3.Zero;
             Vector3 average = Vector3.Zero;
 
@@ -79,11 +80,12 @@
                     average.X /= 2;
                     average.Y /= 2;
                     bias += lastPrediction.Distance(average);
+                    count++;
                     lastPrediction = prediction;
                 }
             }
 
-            bias = bias / limit;
+            bias = bias / count;
             if (bias > limitBias)
             {
                 return Vector3.Zero;
@@ -137,7 +139,9 @@
                     predictedPosiction.X /= 2;
                     predictedPosiction.Y /= 2;
 
-                    if (Target.Distance(predictedPosiction) < Target.MoveSpeed * (PredictionSpell.Delay + .4))
+                    if (Target.Distance(predictedPosiction)
+                        < (Target.MoveSpeed * (PredictionSpell.Delay + 0.4f))
+                        + ObjectManager.Player.Distance(predictedPosiction) / PredictionSpell.Speed)
                     {
                         break;
                     }
