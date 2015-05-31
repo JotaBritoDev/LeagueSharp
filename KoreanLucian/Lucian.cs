@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using KoreanCommon;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
-    class Lucian : CommonChampion
+    using KoreanCommon;
+
+    internal class Lucian : CommonChampion
     {
         public readonly Core core;
 
-        private readonly KoreanLucian.Drawing drawing;
+        private readonly Drawing drawing;
 
         public readonly KillSteal killSteal;
 
         public readonly SemiAutomaticE semiAutomaticE;
 
-        public Lucian() : 
-            base ("Korean Lucian")
+        public Lucian()
+            : base("Korean Lucian")
         {
             KoreanLucian.Spells.Load(this);
             core = new Core(this);

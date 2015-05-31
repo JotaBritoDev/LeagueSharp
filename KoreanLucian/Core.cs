@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
-using KoreanCommon;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using KoreanCommon;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using LeagueSharp.Common.Data;
+
     using SharpDX;
 
-    class Core : CommonOrbwalkComplementation
+    internal class Core : CommonCore
     {
-        private bool hasPassive;
-
         private readonly object lockObject;
 
         private readonly Lucian lucian;
+
+        private bool hasPassive;
 
         public Core(Lucian lucian)
             : base(lucian)
@@ -55,14 +56,18 @@ namespace KoreanLucian
             {
                 Spellbook.OnCastSpell -= LockR;
 
-                if (KoreanUtils.GetParamBool(champion.MainMenu, "useyoumuu") && ItemData.Youmuus_Ghostblade.GetItem().IsReady())
+                if (KoreanUtils.GetParamBool(champion.MainMenu, "useyoumuu")
+                    && ItemData.Youmuus_Ghostblade.GetItem().IsReady())
                 {
                     ItemData.Youmuus_Ghostblade.GetItem().Cast();
                 }
 
                 if (KoreanUtils.GetParamBool(champion.MainMenu, "lockr"))
                 {
-                    var target = TargetSelector.GetTarget(champion.Player, R.Range + 200f, TargetSelector.DamageType.Physical);
+                    Obj_AI_Hero target = TargetSelector.GetTarget(
+                        champion.Player,
+                        R.Range + 200f,
+                        TargetSelector.DamageType.Physical);
 
                     if (target != null)
                     {
@@ -116,7 +121,7 @@ namespace KoreanLucian
             return champion.Player.ManaPercent > KoreanUtils.GetParamSlider(champion.MainMenu, "manalimittolaneclear");
         }
 
-        void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
+        private void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
             if (unit.IsMe)
             {
@@ -139,7 +144,7 @@ namespace KoreanLucian
                 {
                     if (!KoreanUtils.GetParamKeyBind(champion.MainMenu, "toggleextendedq"))
                     {
-                        if (champion.CastExtendedQ())
+                        if (champion.CastExtendedQ(true))
                         {
                             ProcessSpell();
                         }
@@ -173,7 +178,8 @@ namespace KoreanLucian
                         return;
                     }
 
-                    if (target != null && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
+                    if (target != null
+                        && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
                     {
                         if (W.Cast(target.Position))
                         {
@@ -195,8 +201,8 @@ namespace KoreanLucian
                     }
                 }
 
-                if (E.UseOnHaras && lucian.semiAutomaticE.Holding && E.IsReady() && E.CanCast() && !CheckPassive() &&
-                    ((E.Instance.ManaCost > 0 && HaveManaToHaras()) || E.Instance.ManaCost.Equals(0f)))
+                if (E.UseOnHaras && lucian.semiAutomaticE.Holding && E.IsReady() && E.CanCast() && !CheckPassive()
+                    && ((E.Instance.ManaCost > 0 && HaveManaToHaras()) || E.Instance.ManaCost.Equals(0f)))
                 {
                     target = TargetSelector.GetTarget(
                         champion.Player,
@@ -210,7 +216,7 @@ namespace KoreanLucian
 
                     if (target != null && lucian.semiAutomaticE.Cast(target))
                     {
-                     ProcessSpell();
+                        ProcessSpell();
                     }
                 }
             }
@@ -251,10 +257,10 @@ namespace KoreanLucian
                     && (E.Instance.ManaCost.Equals(0) || (E.Instance.ManaCost > 0 && HaveManaToHaras())))
                 {
                     Obj_AI_Base target =
-                        MinionManager
-                            .GetMinions(
-                                E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player))
-                            .FirstOrDefault(minion => champion.Player.Distance(minion) > Orbwalking.GetRealAutoAttackRange(champion.Player)
+                        MinionManager.GetMinions(E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player))
+                            .FirstOrDefault(
+                                minion =>
+                                champion.Player.Distance(minion) > Orbwalking.GetRealAutoAttackRange(champion.Player)
                                 && Game.CursorPos.Distance(minion.Position) < champion.Player.Distance(minion));
 
                     if (target != null && lucian.semiAutomaticE.Cast(target))
@@ -279,7 +285,8 @@ namespace KoreanLucian
             {
                 target = TargetSelector.GetTarget(champion.Player, W.Range, TargetSelector.DamageType.Physical);
 
-                if (target != null && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
+                if (target != null
+                    && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
                 {
                     if (W.Cast(target.Position))
                     {
@@ -333,7 +340,6 @@ namespace KoreanLucian
                     ProcessSpell();
                 }
             }
-
         }
 
         public override void Ultimate(Obj_AI_Hero target)

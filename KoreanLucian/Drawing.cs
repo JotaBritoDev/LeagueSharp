@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using KoreanCommon;
-using SharpDX;
-using Color = System.Drawing.Color;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
+    using System;
+    using System.Drawing;
 
-    class Drawing
+    using KoreanCommon;
+
+    using LeagueSharp.Common;
+
+    internal class Drawing
     {
-        private CommonChampion champion { get; set; }
-        private CommonSpells spells { get; set; }
-
         public Drawing(CommonChampion champion)
         {
             this.champion = champion;
@@ -25,6 +17,10 @@ namespace KoreanLucian
             LeagueSharp.Drawing.OnDraw += DrawRanges;
         }
 
+        private CommonChampion champion { get; set; }
+
+        private CommonSpells spells { get; set; }
+
         private void DrawRanges(EventArgs args)
         {
             if (!KoreanUtils.GetParamBool(champion.MainMenu, "drawskillranges"))
@@ -32,8 +28,11 @@ namespace KoreanLucian
                 return;
             }
 
-            Render.Circle.DrawCircle(champion.Player.Position, spells.MaxRangeCombo, Color.FromArgb(150, Color.DarkGreen), 10);
+            Render.Circle.DrawCircle(
+                champion.Player.Position,
+                spells.MaxRangeCombo,
+                Color.FromArgb(150, Color.DarkGreen),
+                10);
         }
     }
 }
-

@@ -13,20 +13,20 @@
 
     internal static class ExtendedQ
     {
-        static private readonly Spell AdvancedQ = new Spell(SpellSlot.Q, 1100);
+        private static readonly Spell AdvancedQ = new Spell(SpellSlot.Q, 1100);
 
-        static private readonly Func<Obj_AI_Hero, Obj_AI_Base, bool> CheckDistance =
+        private static readonly Func<Obj_AI_Hero, Obj_AI_Base, bool> CheckDistance =
             (champ, minion) =>
             Math.Abs(
                 champ.Distance(ObjectManager.Player) - (minion.Distance(ObjectManager.Player) + minion.Distance(champ)))
             <= 2;
 
-        static private readonly Func<Vector3, Vector3, Vector3, bool> CheckLine =
+        private static readonly Func<Vector3, Vector3, Vector3, bool> CheckLine =
             (v1, v2, v3) =>
             Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
             <= 20000;
 
-        static public void Load(CommonChampion lucian)
+        public static void Load(CommonChampion lucian)
         {
             if (KoreanUtils.GetParamKeyBind(lucian.MainMenu, "toggleextendedq"))
             {
@@ -34,12 +34,12 @@
             }
         }
 
-        static public void AutoExtendedQ(EventArgs args)
+        public static void AutoExtendedQ(EventArgs args)
         {
             Program.ChampionLucian.CastExtendedQ(true);
         }
 
-        static private bool CheckHaras(CommonChampion lucian, Obj_AI_Hero target)
+        private static bool CheckHaras(CommonChampion lucian, Obj_AI_Hero target)
         {
             if (target == null)
             {
@@ -49,7 +49,7 @@
             return KoreanUtils.GetParamBool(lucian.MainMenu, target.ChampionName.ToLowerInvariant());
         }
 
-        static private bool ExtendedQIsReady(CommonChampion lucian, bool laneclear = false)
+        private static bool ExtendedQIsReady(CommonChampion lucian, bool laneclear = false)
         {
             Spell q = lucian.Spells.Q;
 
@@ -76,7 +76,7 @@
             return true;
         }
 
-        static public bool CastExtendedQ(this CommonChampion lucian, bool Haras = false)
+        public static bool CastExtendedQ(this CommonChampion lucian, bool Haras = false)
         {
             if (!ExtendedQIsReady(lucian))
             {
@@ -109,7 +109,8 @@
                             && CheckLine(lucian.Player.Position, minion.Position, target.ServerPosition)
                             && CheckDistance(target, minion)
                             && target.Distance(lucian.Player) > minion.Distance(lucian.Player)
-                            && lucian.Player.Distance(minion) + minion.Distance(target) <= lucian.Player.Distance(target) + 10f);
+                            && lucian.Player.Distance(minion) + minion.Distance(target)
+                            <= lucian.Player.Distance(target) + 10f);
 
                 if (colisionMinion != null)
                 {
@@ -130,11 +131,11 @@
             AdvancedQ.SetSkillshot(0.55f, 75f, float.MaxValue, false, SkillshotType.SkillshotLine);
 
             List<Obj_AI_Base> minionsBase = MinionManager.GetMinions(
-                    lucian.Player.Position,
-                    AdvancedQ.Range,
-                    MinionTypes.All,
-                    MinionTeam.NotAlly,
-                    MinionOrderTypes.MaxHealth);
+                lucian.Player.Position,
+                AdvancedQ.Range,
+                MinionTypes.All,
+                MinionTeam.NotAlly,
+                MinionOrderTypes.MaxHealth);
 
             if (minionsBase.Count == 0)
             {
@@ -142,10 +143,11 @@
             }
 
             Spell q = lucian.Spells.Q;
-            
+
             foreach (Obj_AI_Base minion in minionsBase.Where(x => q.IsInRange(x)))
             {
-                if (AdvancedQ.CountHits(minionsBase, minion.Position) >= KoreanUtils.GetParamSlider(lucian.MainMenu, "qcounthit"))
+                if (AdvancedQ.CountHits(minionsBase, minion.Position)
+                    >= KoreanUtils.GetParamSlider(lucian.MainMenu, "qcounthit"))
                 {
                     q.CastOnUnit(minion);
                     Orbwalking.ResetAutoAttackTimer();

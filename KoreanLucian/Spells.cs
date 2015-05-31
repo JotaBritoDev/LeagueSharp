@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using KoreanCommon;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using KoreanCommon;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     public static class Spells
     {
         private static CommonChampion lucian;
@@ -44,7 +43,8 @@ namespace KoreanLucian
 
             if (lucian.Spells != null && lucian.Spells.SpellList.Count > 0)
             {
-                List<CommonSpell> Spells = lucian.Spells.SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
+                List<CommonSpell> Spells =
+                    lucian.Spells.SpellList.Where(x => x.UseOnCombo && x.IsReady() && x.CanCast()).ToList();
                 if (Spells.Count > 0)
                 {
                     foreach (CommonSpell spell in Spells)
@@ -52,7 +52,7 @@ namespace KoreanLucian
                         damage += spell.GetDamage(target);
                         if (spell.Slot == SpellSlot.E)
                         {
-                            damage += (float)lucian.Player.GetAutoAttackDamage((Obj_AI_Base)target) * 1.4f;
+                            damage += (float)lucian.Player.GetAutoAttackDamage(target) * 1.4f;
                         }
                     }
                 }

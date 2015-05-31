@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
-    class Program
+    using System;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
+    internal class Program
     {
-        static public Lucian ChampionLucian;
-        
-        static void Main(string[] args)
+        public static Lucian ChampionLucian;
+
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
 
-        static void Game_OnGameLoad(EventArgs args)
+        private static void Game_OnGameLoad(EventArgs args)
         {
             if (ObjectManager.Player.ChampionName.ToLowerInvariant() == "lucian")
             {

@@ -1,31 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp;
-using LeagueSharp.Common;
-using KoreanCommon;
-using Color = System.Drawing.Color;
-
-
-namespace KoreanLucian
+﻿namespace KoreanLucian
 {
+    using System;
+
+    using KoreanCommon;
+
+    using LeagueSharp;
+    using LeagueSharp.Common;
+
     using SharpDX;
-    
-    class SemiAutomaticE
+
+    internal class SemiAutomaticE
     {
         private readonly Lucian lucian;
 
-        private readonly Render.Text Text = new Render.Text(0, 0, "Tap E again to DASH\nTap CTRL to CANCEL", 23, new ColorBGRA(255, 255, 255, 200));
-
-        private CommonSpell E;
+        private readonly Render.Text Text = new Render.Text(
+            0,
+            0,
+            "Tap E again to DASH\nTap CTRL to CANCEL",
+            23,
+            new ColorBGRA(255, 255, 255, 200));
 
         private bool _holding;
 
+        private CommonSpell E;
+
+        public SemiAutomaticE(Lucian lucian)
+        {
+            this.lucian = lucian;
+            E = lucian.Spells.E;
+
+            if (KoreanUtils.GetParamBool(lucian.MainMenu, "dashmode"))
+            {
+                Game.OnWndProc += Game_OnWndProc;
+            }
+        }
+
         public bool Holding
         {
-            get { return _holding; }
+            get
+            {
+                return _holding;
+            }
         }
 
         public bool Cast(Obj_AI_Base target)
@@ -50,19 +65,7 @@ namespace KoreanLucian
                 result = E.Cast(Vector3.SmoothStep(lucian.Player.Position, Game.CursorPos, 0.001f));
             }
 
-
             return result;
-        }
-        
-        public SemiAutomaticE(Lucian lucian)
-        {
-            this.lucian = lucian;
-            E = lucian.Spells.E;
-
-            if (KoreanUtils.GetParamBool(lucian.MainMenu, "dashmode"))
-            {
-                Game.OnWndProc += Game_OnWndProc; 
-            }
         }
 
         private void Process(bool b)
@@ -81,7 +84,7 @@ namespace KoreanLucian
             }
         }
 
-        void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnDraw(EventArgs args)
         {
             if (KoreanUtils.GetParamBool(lucian.MainMenu, "drawingetext"))
             {
