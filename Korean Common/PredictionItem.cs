@@ -86,7 +86,7 @@
             }
 
             bias = bias / count;
-            if (bias > limitBias)
+            if (bias > limitBias || average.Distance(Target.Position) > PredictionSpell.Width * 2.5f)
             {
                 return Vector3.Zero;
             }
@@ -113,7 +113,7 @@
         private void ProcessPrediction(EventArgs args)
         {
             if (!Target.IsVisible && Target.IsDead
-                && Target.Distance(ObjectManager.Player.Position) > PredictionSpell.Range + 100f)
+                && Target.Distance(ObjectManager.Player.Position) > PredictionSpell.Range + 150f)
             {
                 predictionList.Clear();
                 return;

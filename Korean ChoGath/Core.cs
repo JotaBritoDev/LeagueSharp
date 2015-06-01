@@ -96,7 +96,7 @@
             if (spells.Q.UseOnLaneClear && spells.Q.IsReady() && spells.Q.CanCast())
             {
                 List<Obj_AI_Base> minions = MinionManager.GetMinions(champion.Player.Position, spells.Q.Range);
-                MinionManager.FarmLocation farmLocation = spells.Q.GetCircularFarmLocation(minions, spells.Q.Width);
+                MinionManager.FarmLocation farmLocation = spells.Q.GetCircularFarmLocation(minions);
 
                 if (farmLocation.MinionsHit >= KoreanUtils.GetParamSlider(champion.MainMenu, "minminionstoq"))
                 {
@@ -113,7 +113,7 @@
             {
                 List<Obj_AI_Base> minions = MinionManager.GetMinions(champion.Player.Position, spells.W.Range);
 
-                MinionManager.FarmLocation wFarmLocation = spells.W.GetCircularFarmLocation(minions, spells.W.Width);
+                MinionManager.FarmLocation wFarmLocation = spells.W.GetCircularFarmLocation(minions);
 
                 if (wFarmLocation.MinionsHit >= KoreanUtils.GetParamSlider(champion.MainMenu, "minminionstow"))
                 {
