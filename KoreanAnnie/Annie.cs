@@ -102,7 +102,7 @@
                 () =>
                 (!GetParamBool("supportmode"))
                 || ((GetParamBool("supportmode")) && (Player.CountAlliesInRange(1500f) == 1));
-            CheckStun = () => Player.HasBuff("pyromania_particle", true);
+            CheckStun = () => Player.HasBuff("pyromania_particle");
             SaveStun = () => (CheckStun() && (GetParamBool("savestunforcombo")));
         }
 
