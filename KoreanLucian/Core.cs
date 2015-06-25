@@ -9,6 +9,8 @@
     using LeagueSharp.Common;
     using LeagueSharp.Common.Data;
 
+    using ItemData = LeagueSharp.Common.Data.ItemData;
+
     using SharpDX;
 
     internal class Core : CommonCore
