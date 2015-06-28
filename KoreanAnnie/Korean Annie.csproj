@@ -51,17 +51,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\Users\Windows 8.1\Documents\L#\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\Users\Windows 8.1\Documents\L#\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\Users\Windows 8.1\Documents\L#\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Windows 8.1\Documents\L#\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,7 +77,7 @@
     <Compile Include="AnnieButtons.cs" />
     <Compile Include="AnnieCustomMenu.cs" />
     <Compile Include="AnnieDrawings.cs" />
-    <Compile Include="AnnieOrbwalkImplementation.cs" />
+    <Compile Include="AnnieCore.cs" />
     <Compile Include="AnnieSpells.cs" />
     <Compile Include="AnnieTibbers.cs" />
     <Compile Include="Common\CommonDisableAAMode.cs" />

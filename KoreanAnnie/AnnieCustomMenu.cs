@@ -22,7 +22,7 @@
 
         private static void LoadCombo(CommonMenu mainMenu)
         {
-            //
+
         }
 
         private static void LoadLaneClear(CommonMenu mainMenu)
@@ -70,6 +70,7 @@
 
             mainMenu.MiscMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "supportmode"), "Support mode").SetValue(false));
+
             mainMenu.MiscMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "useqtofarm"), "Use Q to farm").SetValue(true));
             mainMenu.MiscMenu.AddItem(
@@ -80,6 +81,23 @@
                 new MenuItem(
                     KoreanUtils.ParamName(mainMenu, "interruptspells"),
                     "Interrupt dangerous spells if possible").SetValue(true));
+
+            Menu DontUseComboMenu = mainMenu.MiscMenu.AddSubMenu(new Menu("Don't haras/combo on", "dontusecomboon"));
+
+            foreach (var enemy in HeroManager.Enemies)
+            {
+                DontUseComboMenu.AddItem(
+                    new MenuItem(
+                        KoreanUtils.ParamName(mainMenu, "combo" + enemy.ChampionName.ToLowerInvariant()),
+                        enemy.ChampionName).SetValue(true));
+            }
+
+            DontUseComboMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel1"), "========================"));
+            DontUseComboMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel2"), "IMPORTANT: Targets setted \"OFF\" will"));
+            DontUseComboMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel3"), "    be attacked if they are alone or low"));
         }
 
         private static void RemoveItems(CommonMenu mainMenu)

@@ -50,7 +50,7 @@
             AnnieSpells.Load(this);
 
             Buttons = new AnnieButtons(this);
-            AnnieOrbwalker = new AnnieOrbwalkImplementation(this);
+            AnnieOrbwalker = new AnnieCore(this);
 
             Draws = new AnnieDrawings(this);
             DrawDamage = new CommonDamageDrawing(this);
@@ -74,7 +74,7 @@
 
         #region Public Properties
 
-        public AnnieOrbwalkImplementation AnnieOrbwalker { get; set; }
+        public AnnieCore AnnieOrbwalker { get; set; }
         public AnnieButtons Buttons { get; set; }
         public CommonDisableAA DisableAA { get; set; }
         public CommonDamageDrawing DrawDamage { get; set; }
@@ -145,7 +145,7 @@
             if (!Player.IsRecalling() && !CheckStun() && GetParamBool("useetostack")
                 && Player.ManaPercent > GetParamSlider("manalimitforstacking") && Spells.E.IsReady())
             {
-                Spells.E.Cast();
+                Utility.DelayAction.Add(100, () => Spells.E.Cast());
             }
         }
 

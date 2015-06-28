@@ -8,7 +8,7 @@
     using LeagueSharp;
     using LeagueSharp.Common;
 
-    internal class AnnieOrbwalkImplementation : CommonOrbwalkImplementation
+    internal class AnnieCore : CommonOrbwalkImplementation
     {
         #region Fields
 
@@ -20,7 +20,7 @@
 
         #region Constructors and Destructors
 
-        public AnnieOrbwalkImplementation(Annie annie)
+        public AnnieCore(Annie annie)
         {
             Champion = annie;
             this.annie = annie;
@@ -34,11 +34,40 @@
 
         #region Public Methods and Operators
 
+        private bool CanAttack(Obj_AI_Hero enemy)
+        {
+            if (enemy == null)
+            {
+                return false;
+            }
+            if (annie.GetParamBool("combo" + enemy.ChampionName.ToLowerInvariant()))
+            {
+                return true;
+            }
+            else if (enemy.HealthPercent < 30)
+            {
+                return true;
+            }
+            else if (annie.Player.GetEnemiesInRange(1100f).Count == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return
+                    !HeroManager.Enemies.Where(x => x.Distance(Champion.Player) < 1100f && !x.IsDead && !x.IsZombie)
+                        .Any(
+                            x =>
+                                x.ChampionName != enemy.ChampionName &&
+                                annie.GetParamBool("combo" + x.ChampionName.ToLowerInvariant()));
+            }
+        }
+
         public override void ComboMode()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(spells.MaxRangeCombo, TargetSelector.DamageType.Magical);
 
-            if (target == null)
+            if ((target == null) || (!CanAttack(target)))
             {
                 return;
             }
@@ -181,6 +210,11 @@
 
             Obj_AI_Hero target = TargetSelector.GetTarget(spells.MaxRangeHaras, TargetSelector.DamageType.Magical);
 
+            if (!CanAttack(target))
+            {
+                return;
+            }
+
             if ((spells.Q.IsReady()) && (annie.GetParamBool("useqtoharas")) && (target.IsValidTarget(spells.Q.Range)))
             {
                 spells.Q.Cast(target);
@@ -199,18 +233,18 @@
                 return;
             }
 
-            List<Obj_AI_Base> minions =
+            spells.Q.Cast(
                 MinionManager.GetMinions(
                     annie.Player.Position,
                     spells.Q.Range,
                     MinionTypes.All,
                     MinionTeam.NotAlly,
-                    MinionOrderTypes.MaxHealth).Where(x => spells.Q.IsKillable(x)).ToList();
-
-            if ((minions.Count > 0))
-            {
-                spells.Q.Cast(minions[0]);
-            }
+                    MinionOrderTypes.MaxHealth).Where(x => spells.Q.IsKillable(x)).FirstOrDefault(
+                        minion =>
+                            spells.Q.GetDamage(minion) >
+                            HealthPrediction.GetHealthPrediction(minion,
+                                (int) (annie.Player.Distance(minion)/spells.Q.Speed)*1000, (int) spells.Q.Delay*1000))
+                );
         }
 
         #endregion
