@@ -1,19 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Annie", "KoreanAnnie\Korean Annie.csproj", "{C7FB967D-C6A2-424B-9010-869FC37A9A48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Common", "Korean Common\Korean Common.csproj", "{C95719D6-FB10-472E-BD9C-47E2CF5CFB66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Common", "KoreanCommon\Korean Common.csproj", "{C95719D6-FB10-472E-BD9C-47E2CF5CFB66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Rumble", "Korean Rumble\Korean Rumble.csproj", "{80448A8E-96D8-41A8-8AA0-9C5791C69A9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean ChoGath", "Korean ChoGath\Korean ChoGath.csproj", "{D3BEFCAA-A52B-4D17-AE9A-4A5B8DA44FE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean ChoGath", "KoreanChoGath\Korean ChoGath.csproj", "{D3BEFCAA-A52B-4D17-AE9A-4A5B8DA44FE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteSharp", "IgniteSharp\IgniteSharp.csproj", "{18DF6A46-9A02-4D0B-A667-BB4FB1C899A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Lucian", "KoreanLucian\Korean Lucian.csproj", "{7535D69D-D8C7-49B2-A4B8-DEB50CB2CFEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Akali", "KoreanAkali\Korean Akali.csproj", "{19082CB8-189B-4802-9427-4CFBF6D2EA69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{7535D69D-D8C7-49B2-A4B8-DEB50CB2CFEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7535D69D-D8C7-49B2-A4B8-DEB50CB2CFEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7535D69D-D8C7-49B2-A4B8-DEB50CB2CFEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

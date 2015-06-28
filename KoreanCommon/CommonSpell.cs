@@ -96,7 +96,7 @@
 
         public bool IsReadyToCastOn(Obj_AI_Hero target, int maxToggleState = 1)
         {
-            return this.IsReady() && CanCast(maxToggleState) && CanCast(target) && target.IsValidTarget(Range);
+            return this.IsReady() && CanCast(maxToggleState) && CanCast(target) && target.IsValidTarget(Range) && !target.IsDead;
         }
     }
 }

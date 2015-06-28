@@ -69,7 +69,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Korean Common\Korean Common.csproj">
+    <ProjectReference Include="..\KoreanCommon\Korean Common.csproj">
       <Project>{c95719d6-fb10-472e-bd9c-47e2cf5cfb66}</Project>
       <Name>Korean Common</Name>
     </ProjectReference>
