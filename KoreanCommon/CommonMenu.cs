@@ -173,7 +173,7 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
             newMenu.AddItem(
                 new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(
-                    new Slider(1, 1, 5)));
+                    new Slider(3, 1, 5)));
             newMenu.AddItem(
                 new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(
                     new StringList(
