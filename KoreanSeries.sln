@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Lucian", "KoreanLuci
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Akali", "KoreanAkali\Korean Akali.csproj", "{19082CB8-189B-4802-9427-4CFBF6D2EA69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Vladimir", "KoreanVladimir\Korean Vladimir.csproj", "{F5A8BA06-4D32-4903-8855-850AF45087D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19082CB8-189B-4802-9427-4CFBF6D2EA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A8BA06-4D32-4903-8855-850AF45087D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A8BA06-4D32-4903-8855-850AF45087D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A8BA06-4D32-4903-8855-850AF45087D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A8BA06-4D32-4903-8855-850AF45087D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
