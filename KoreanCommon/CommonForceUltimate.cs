@@ -62,14 +62,7 @@
             if (KoreanUtils.GetParamBool(champion.MainMenu, "forceultusingmouse")
                 && champion.MainMenu.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if (champion.Player.ChampionName.ToLowerInvariant() == "vladimir")
-                {
-                    b = champion.Spells.R.IsReady();
-                }
-                else
-                {
-                    b = champion.Spells.R.IsReady() && champion.Spells.R.CanCast();
-                }
+                b = champion.Spells.R.IsReady() && champion.Spells.R.CanCast();
             }
             else
             {

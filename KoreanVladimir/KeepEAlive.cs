@@ -53,11 +53,7 @@ namespace KoreanVladimir
                 return;
             }
 
-            if (NextCicleOn == 0f)
-            {
-                E.Cast();               
-            }
-            else if (NextCicleOn <= Game.Time)
+            if (NextCicleOn <= Game.Time)
             {
                 Utility.DelayAction.Add(100, () => E.Cast()); 
             }

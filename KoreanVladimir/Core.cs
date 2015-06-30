@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using SharpDX.Direct3D9;
 
 namespace KoreanVladimir
 {
@@ -18,26 +20,29 @@ namespace KoreanVladimir
 
         public override void LastHitMode()
         {
-            if (!KoreanUtils.GetParamBool(champion.MainMenu, "useqtofarm"))
+            if (KoreanUtils.GetParamBool(champion.MainMenu, "useqtofarm") && Q.IsReady())
             {
-                return;
+                Obj_AI_Base target =
+                MinionManager.GetMinions(Q.Range).OrderByDescending(minion => minion.MaxHealth)
+                .FirstOrDefault(minion =>
+                    Q.GetDamage(minion) >
+                    HealthPrediction.GetHealthPrediction(minion,
+                        (int)(champion.Player.Distance(minion) / Q.Speed) * 1000, (int)Q.Delay * 1000));
+
+                if (target != null)
+                {
+                    Q.Cast(target);
+                }
             }
 
-            if (!Q.IsReady())
+            if (E.IsReady() && !Q.IsReady())
             {
-                return;
-            }
+                int farmCount = MinionManager.GetMinions(E.Range).Count(minion => E.IsKillable(minion));
 
-            Obj_AI_Base target =
-            MinionManager.GetMinions(Q.Range).OrderByDescending(minion => minion.MaxHealth)
-            .FirstOrDefault(minion =>
-                Q.GetDamage(minion) >
-                HealthPrediction.GetHealthPrediction(minion,
-                    (int) (champion.Player.Distance(minion)/Q.Speed)*1000, (int) Q.Delay*1000));
-
-            if (target != null)
-            {
-                Q.Cast(target);
+                if (farmCount >= 2)
+                {
+                    E.Cast();
+                }
             }
         }
 
@@ -47,7 +52,7 @@ namespace KoreanVladimir
 
             if (Q.IsReady() && Q.UseOnHaras)
             {
-                target = TargetSelector.GetTarget(Q.Range, Q.DamageType, false);
+                target = TargetSelector.GetTarget(Q.Range, Q.DamageType);
 
                 if (target != null)
                 {
@@ -57,7 +62,7 @@ namespace KoreanVladimir
 
             if (E.IsReady() && E.UseOnHaras)
             {
-                target = TargetSelector.GetTarget(E.Range, E.DamageType, false);
+                target = TargetSelector.GetTarget(E.Range, E.DamageType);
 
                 if (target != null)
                 {
@@ -75,6 +80,14 @@ namespace KoreanVladimir
                 if (MinionManager.GetMinions(E.Range).Count >= KoreanUtils.GetParamSlider(champion.MainMenu, "minminionstoe"))
                 {
                     E.Cast();
+                }
+
+                if (E.IsReady())
+                {
+                    if (MinionManager.GetMinions(E.Range, MinionTypes.All, MinionTeam.Neutral).Count > 0)
+                    {
+                        E.Cast();
+                    }
                 }
             }
 
@@ -94,6 +107,18 @@ namespace KoreanVladimir
                 }
             }
 
+            if (Q.IsReady() && Q.UseOnLaneClear)
+            {
+                Obj_AI_Base jungleMob =
+                    MinionManager.GetMinions(E.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth)
+                        .FirstOrDefault();
+
+                if (jungleMob != null)
+                {
+                    Q.Cast(jungleMob);
+                }
+            }
+
             if (KoreanUtils.GetParamBool(champion.MainMenu, "harasonlaneclear"))
             {
                 HarasMode();
@@ -104,33 +129,13 @@ namespace KoreanVladimir
         {
             Obj_AI_Hero target;
 
-            if (E.IsReady() && E.UseOnCombo)
-            {
-                target = TargetSelector.GetTarget(E.Range, E.DamageType, false);
-
-                if (target != null)
-                {
-                    E.Cast();
-                }
-            }
-
-            if (Q.IsReady() && Q.UseOnCombo)
-            {
-                target = TargetSelector.GetTarget(Q.Range, Q.DamageType, false);
-
-                if (target != null)
-                {
-                    Q.Cast(target);
-                }
-            }
-
             if (R.IsReady() && R.UseOnCombo)
             {
                 int minEnemiesToR = KoreanUtils.GetParamSlider(champion.MainMenu, "minenemiestor");
 
                 if (minEnemiesToR == 1)
                 {
-                    target = TargetSelector.GetTarget(R.Range, R.DamageType, false);
+                    target = TargetSelector.GetTarget(R.Range, R.DamageType);
                     if (target != null)
                     {
                         spells.R.Cast(target.Position);
@@ -147,6 +152,49 @@ namespace KoreanVladimir
                     {
                         spells.R.Cast(pred.CastPosition);
                     }
+                }
+
+                if (R.IsReady() && ((Q.UseOnCombo && Q.IsReady()) || !Q.UseOnCombo))
+                {
+                    target = TargetSelector.GetTarget(R.Range, R.DamageType);
+
+                    if (target != null)
+                    {
+                        float totalDamage = R.GetDamage(target) + Q.GetDamage(target)*1.12f + E.GetDamage(target) * 1.25f * (E.Instance.Ammo + 1) * 1.12f;
+
+                        if (totalDamage > target.Health && totalDamage*0.7f < target.Health)
+                        {
+                            R.Cast(target.Position);
+                        }
+                    }
+                }
+            }
+
+            if (E.IsReady() && E.UseOnCombo)
+            {
+                target = TargetSelector.GetTarget(E.Range, E.DamageType);
+
+                if (target != null)
+                {
+                    E.Cast();
+                }
+            }
+
+            if (Q.IsReady() && Q.UseOnCombo)
+            {
+                target = TargetSelector.GetTarget(Q.Range, Q.DamageType);
+
+                if (target != null)
+                {
+                    Q.Cast(target);
+                }
+            }
+
+            if (W.IsReady() && W.UseOnCombo)
+            {
+                if (HeroManager.Enemies.Any(enemy => enemy.Distance(champion.Player) < 180 && !enemy.IsDead))
+                {
+                    W.Cast();
                 }
             }
         }

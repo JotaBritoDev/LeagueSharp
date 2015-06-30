@@ -61,6 +61,8 @@
   <ItemGroup>
     <Compile Include="Core.cs" />
     <Compile Include="CustomMenu.cs" />
+    <Compile Include="Draws.cs" />
+    <Compile Include="FuckinAntiGapCloser.cs" />
     <Compile Include="KeepEAlive.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

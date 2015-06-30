@@ -12,16 +12,17 @@ namespace KoreanVladimir
 
     class Vladimir : CommonChampion
     {
+        public Core VladCore;
+
         public Vladimir(string menuDisplay) : base(menuDisplay)
         {
             KoreanVladimir.Spells.Load(this);
             CustomMenu.Load(this);
             VladCore = new Core(this);
-            KeepEAlive = new KeepEAlive(this);
             ForceUltimate.ForceUltimate = VladCore.Ultimate;
+            var keepKillingYourself = new KeepEAlive(this);
+            var cmonBaby = new FuckinAntiGapCloser(this);
+            var draws = new Draws(this);
         }
-
-        public Core VladCore;
-        public KeepEAlive KeepEAlive;
     }
 }

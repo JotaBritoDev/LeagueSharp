@@ -17,7 +17,10 @@
             DrawDamage.AmountOfDamage = Spells.MaxComboDamage;
             DrawDamage.Active = true;
             commonEvolveUltimate = new CommonEvolveUltimate();
+            DisableAA = new CommonDisableAA(this);
         }
+
+        private CommonDisableAA DisableAA { get; set; }
 
         private CommonEvolveUltimate commonEvolveUltimate;
 

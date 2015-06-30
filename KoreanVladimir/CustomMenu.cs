@@ -25,6 +25,7 @@ namespace KoreanVladimir
             var menu = vladimir.MainMenu;
 
             menu.HarasMenu.Items.Remove(KoreanUtils.GetParam(menu, "manalimittoharas"));
+            KoreanUtils.GetParam(menu, "usewtoharas").SetValue(false);
             menu.HarasMenu.Items.Remove(KoreanUtils.GetParam(menu, "usewtoharas"));
         }
 
@@ -65,6 +66,8 @@ namespace KoreanVladimir
             autoStackMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(menu, "autostackehealthregen"),
                     "Health regen per 5sec to start stackin ").SetValue(new Slider(15, 10, 30)));
+
+            menu.MiscMenu.AddItem(new MenuItem(KoreanUtils.ParamName(menu, "antigapcloser"), "Anti GapCloser").SetValue(true));
         }
     }
 }

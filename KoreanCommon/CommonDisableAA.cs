@@ -1,4 +1,6 @@
-﻿namespace KoreanCommon
+﻿using System;
+
+namespace KoreanCommon
 {
     using LeagueSharp;
     using LeagueSharp.Common;
@@ -31,7 +33,14 @@
         {
             get
             {
-                return (CommonDisableAAMode)KoreanUtils.GetParamStringList(champion.MainMenu, "disableaa");
+                if (KoreanUtils.GetParam(champion.MainMenu, "disableaa") != null)
+                {
+                    return (CommonDisableAAMode) KoreanUtils.GetParamStringList(champion.MainMenu, "disableaa");
+                }
+                else
+                {
+                    return CommonDisableAAMode.Never;
+                }
             }
         }
 

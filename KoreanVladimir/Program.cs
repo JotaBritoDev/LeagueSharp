@@ -19,7 +19,7 @@ namespace KoreanVladimir
         {
             if (ObjectManager.Player.ChampionName.ToLowerInvariant() == "vladimir")
             {
-                var akali = new Vladimir("Korean Vladimir");
+                var SexyVlady = new Vladimir("Korean Vladimir");
             }
         }
     }

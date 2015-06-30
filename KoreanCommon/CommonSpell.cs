@@ -91,12 +91,20 @@
 
         public bool CanCast(int maxToggleState = 1)
         {
-            return ObjectManager.Player.Mana > Instance.ManaCost && Instance.ToggleState <= maxToggleState;
+            if (ObjectManager.Player.ChampionName.ToLowerInvariant() == "vladimir")
+            {
+                return true;
+            }
+            else
+            {
+                return ObjectManager.Player.Mana > Instance.ManaCost && Instance.ToggleState <= maxToggleState;
+            }
         }
 
         public bool IsReadyToCastOn(Obj_AI_Hero target, int maxToggleState = 1)
         {
             return this.IsReady() && CanCast(maxToggleState) && CanCast(target) && target.IsValidTarget(Range) && !target.IsDead;
         }
+
     }
 }
