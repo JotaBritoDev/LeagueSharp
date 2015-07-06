@@ -65,7 +65,7 @@
 
         public GameObjectCombatType CombatType()
         {
-            if (player.SkinName.ToLowerInvariant() == "jayce")
+            if (player.SkinName.ToLowerInvariant() == "jayce") //Checking here cuz common is bugged... jayce swaps between melee / ranged and the Player.CombatType is always "Melee"
             {
                 return player.HasBuff("jaycestancegun") ? GameObjectCombatType.Ranged : GameObjectCombatType.Melee;
             }
@@ -208,7 +208,7 @@
             if (CombatType() == GameObjectCombatType.Ranged)
             {
                 var speed = player.BasicAttack.MissileSpeed;
-                speed *= player.SkinName.ToLowerInvariant() == "jayce" ? (float)Math.PI * 2 : 1;
+                speed *= player.SkinName.ToLowerInvariant() == "jayce" ? (float)Math.PI * 2 : 1; //Checking here cuz common is bugged... jayce swaps between melee / ranged and the Player.CombatType is always "Melee"
 
                 result += (int)((player.Distance(minion) / speed) * 1000);
             }
