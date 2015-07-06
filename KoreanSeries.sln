@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Akali", "KoreanAkali
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Korean Vladimir", "KoreanVladimir\Korean Vladimir.csproj", "{F5A8BA06-4D32-4903-8855-850AF45087D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoreanOrbwalker", "KoreanSeries2\KoreanOrbwalker\KoreanOrbwalker.csproj", "{9E750D45-53DF-4FB9-A373-06A47307E556}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoreanOrbwalker", "KoreanOrbwalker\KoreanOrbwalker.csproj", "{9E750D45-53DF-4FB9-A373-06A47307E556}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
