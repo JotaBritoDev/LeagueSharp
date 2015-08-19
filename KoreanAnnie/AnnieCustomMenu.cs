@@ -60,7 +60,7 @@
                 mainMenu.MiscMenu.AddSubMenu(
                     new Menu("Flash-Ultimate", KoreanUtils.ParamName(mainMenu, "flashtibbersmenu")));
             flashTibbers.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashtibbers"), "key").SetValue(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashtibbers"), "Key").SetValue(
                     new KeyBind('T', KeyBindType.Press)));
             flashTibbers.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "minenemiestoflashr"), "Only Use if X or More Enemies Hit")
