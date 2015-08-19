@@ -130,12 +130,12 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetocombo", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Use R if it will hit at least").SetValue(
+                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Use R if it Will Hit at Least").SetValue(
                     new Slider(3, 1, 5)));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(
+                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA When").SetValue(
                     new StringList(
-                        new[] { "Never", "Always", "Some skills ready", "Harass combo ready", "Full combo ready" })));
+                        new[] { "Never", "Always", "Some Skills Ready", "Harass-Combo Ready", "Full-Combo Ready" })));
             newMenu.AddItem(
                 new MenuItem(
                     string.Format("{0}.forceultusingmouse", MenuName),
@@ -168,7 +168,7 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetoharas", MenuName), "Use E").SetValue(true));
 
             MenuItem manaLimitToHaras =
-                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana Limit").SetValue(
+                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana % Limit").SetValue(
                     new Slider(0, 0, 100));
             newMenu.AddItem(manaLimitToHaras);
 
@@ -184,10 +184,10 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana Limit").SetValue(
+                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana % Limit").SetValue(
                     new Slider(50, 0, 100)));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Harass enemies").SetValue(true));
+                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Harass Enemies in Lane Clear").SetValue(true));
 
             return newMenu;
         }
