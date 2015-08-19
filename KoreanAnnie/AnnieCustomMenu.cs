@@ -66,7 +66,7 @@
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "minenemiestoflashr"), "Only Use if X or More Enemies Hit")
                     .SetValue(new Slider(2, 1, 5)));
             flashTibbers.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashtibbers"), "Orbwalk").SetValue(false));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashtibbers"), "Allow Movement with Key Pressed").SetValue(false));
 
             mainMenu.MiscMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "supportmode"), "Support Mode").SetValue(false));
