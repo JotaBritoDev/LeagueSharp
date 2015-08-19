@@ -139,7 +139,7 @@
             newMenu.AddItem(
                 new MenuItem(
                     string.Format("{0}.forceultusingmouse", MenuName),
-                    "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
+                    "Force Ultimate Using Mouse-buttons (Cursor Sprite)").SetValue(true));
 
             return newMenu;
         }
