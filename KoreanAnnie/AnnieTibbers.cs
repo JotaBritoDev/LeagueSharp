@@ -103,7 +103,7 @@
 
         private void ControlTibbers(EventArgs args)
         {
-            if ((Tibbers == null) || (!Tibbers.IsValid))
+            if ((Tibbers == null) || (!Tibbers.IsValid) || (!annie.GetParamBool("autotibbers")))
             {
                 return;
             }

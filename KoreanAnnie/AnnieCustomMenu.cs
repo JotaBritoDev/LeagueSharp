@@ -45,8 +45,8 @@
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "manalimitforstacking"), "Mana % Limit for Stacking")
                     .SetValue(new Slider(30, 0, 100)));
             passiveStunMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "savestunforcombo"), "Save Stun for Combo/Harass").SetValue(
-                    false));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "savestunforcombo"), "Save Stun for Combo/Harass").SetValue
+                    (false));
             passiveStunMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "showeeasybutton"), "Show Stun-Button").SetValue(true));
             passiveStunMenu.AddItem(
@@ -81,6 +81,8 @@
                 new MenuItem(
                     KoreanUtils.ParamName(mainMenu, "interruptspells"),
                     "Interrupt dangerous spells if possible").SetValue(true));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "autotibbers"), "Tibbers - Auto Pilot").SetValue(true));
 
             Menu DontUseComboMenu = mainMenu.MiscMenu.AddSubMenu(new Menu("Don't Harass/Combo Against", "dontusecomboon"));
 
