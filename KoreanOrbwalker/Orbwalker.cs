@@ -319,6 +319,7 @@
 
         private void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            // HELLO ME NOMBRE ES JQUERY AND VAI VAI VAI VAI VAI aeHOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
             if (sender.IsMe && args.SData.IsAutoAttack())
             {
                 attack = true;
