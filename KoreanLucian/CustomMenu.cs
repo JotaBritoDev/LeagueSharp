@@ -52,7 +52,7 @@
             Menu SemiAutoE = menu.AddSubMenu(new Menu("Semi-Automatic E", "semiautoe"));
 
             MenuItem semiAutomaticE =
-                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "dashmode"), "Active").SetValue(true);
+                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "dashmode"), "Active").SetValue(false);
 
             SemiAutoE.AddItem(semiAutomaticE);
             semiAutomaticE.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)

@@ -1,5 +1,6 @@
 ﻿namespace KoreanLucian
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -287,25 +288,22 @@
             {
                 target = TargetSelector.GetTarget(champion.Player, W.Range, TargetSelector.DamageType.Physical);
 
-                if (target != null
-                    && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
+                PredictionOutput wPrediction = W.GetPrediction(target);
+
+                if (wPrediction != null && wPrediction.Hitchance >= HitChance.VeryHigh
+                    && wPrediction.CastPosition != Vector3.Zero)
                 {
-                    if (W.Cast(target.Position))
+                    if (W.Cast(wPrediction.CastPosition))
                     {
                         ProcessSpell();
                     }
                 }
-                else
+                else if (target != null
+                         && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
                 {
-                    PredictionOutput wPrediction = W.GetPrediction(target);
-
-                    if (wPrediction != null && wPrediction.Hitchance >= HitChance.VeryHigh
-                        && wPrediction.CastPosition != Vector3.Zero)
+                    if (W.Cast(target.Position))
                     {
-                        if (W.Cast(wPrediction.CastPosition))
-                        {
-                            ProcessSpell();
-                        }
+                        ProcessSpell();
                     }
                 }
             }
@@ -331,13 +329,15 @@
                 }
             }
 
-            if (E.UseOnCombo && lucian.semiAutomaticE.Holding && !CheckPassive() && E.IsReady() && E.CanCast())
+            if (E.UseOnCombo && !CheckPassive() && E.IsReady() && E.CanCast()
+                && (!KoreanUtils.GetParamBool(champion.MainMenu, "dashmode")
+                    || (KoreanUtils.GetParamBool(champion.MainMenu, "dashmode") && lucian.semiAutomaticE.Holding)))
             {
                 target = TargetSelector.GetTarget(
                     E.Range + Orbwalking.GetRealAutoAttackRange(champion.Player) - 25f,
                     TargetSelector.DamageType.Physical);
 
-                if (target != null && lucian.semiAutomaticE.Cast(target))
+                if (target != null && target.IsEnemy && target.IsValid && !target.IsDead && lucian.semiAutomaticE.Cast(target))
                 {
                     ProcessSpell();
                 }
