@@ -95,11 +95,11 @@
             }
 
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel1"), "--------------------"));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel1"), "------------------------------"));
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel2"), "IMPORTANT: Targets set to OFF will..."));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel2"), "IMPORTANT: Targets set to OFF will be..."));
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel3"), "...be attacked if alone or low HP"));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel3"), "...attacked if alone or are at low HP"));
         }
 
         private static void RemoveItems(CommonMenu mainMenu)
