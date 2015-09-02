@@ -67,10 +67,20 @@
 
                 if (KoreanUtils.GetParamBool(champion.MainMenu, "lockr"))
                 {
-                    Obj_AI_Hero target = TargetSelector.GetTarget(
-                        champion.Player,
-                        R.Range + 400f,
-                        TargetSelector.DamageType.Physical);
+                    Obj_AI_Hero target = null;
+
+                    if (TargetSelector.SelectedTarget != null
+                        && TargetSelector.SelectedTarget.Distance(champion.Player.Position) < R.Range + 400F)
+                    {
+                        target = TargetSelector.SelectedTarget;
+                    }
+                    else
+                    {
+                        target = TargetSelector.GetTarget(
+                            champion.Player,
+                            R.Range + 400f,
+                            TargetSelector.DamageType.Physical);
+                    }
 
                     if (target != null)
                     {
