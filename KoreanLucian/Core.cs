@@ -69,7 +69,7 @@
                 {
                     Obj_AI_Hero target = TargetSelector.GetTarget(
                         champion.Player,
-                        R.Range + 200f,
+                        R.Range + 400f,
                         TargetSelector.DamageType.Physical);
 
                     if (target != null)
