@@ -290,7 +290,7 @@
 
                 PredictionOutput wPrediction = W.GetPrediction(target);
 
-                if (wPrediction != null && wPrediction.Hitchance >= HitChance.VeryHigh
+                if (wPrediction != null && wPrediction.Hitchance >= HitChance.High
                     && wPrediction.CastPosition != Vector3.Zero)
                 {
                     if (W.Cast(wPrediction.CastPosition))
@@ -301,7 +301,7 @@
                 else if (target != null
                          && target.Distance(champion.Player) <= Orbwalking.GetRealAutoAttackRange(champion.Player))
                 {
-                    if (W.Cast(target.Position))
+                    if (W.Cast(target.ServerPosition))
                     {
                         ProcessSpell();
                     }
