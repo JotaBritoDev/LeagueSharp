@@ -77,7 +77,7 @@
 
             MenuItem extendedQ =
                 extendedQMenu.AddItem(
-                    new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "toggleextendedq"), "Auto Haras").SetValue(
+                    new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "toggleextendedq"), "Auto Harass").SetValue(
                         new KeyBind('T', KeyBindType.Toggle)));
 
             extendedQ.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
@@ -94,12 +94,12 @@
 
             menu.AddItem(new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "lockr"), "Lock R").SetValue(true));
             menu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "useyoumuu"), "Use Youmuu before R").SetValue(
+                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "useyoumuu"), "Use Youmuu's before R").SetValue(
                     true));
 
             MenuItem ksOption =
                 menu.AddItem(
-                    new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "killsteal"), "Smart KillSteal").SetValue(
+                    new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "killsteal"), "Smart Killsteal").SetValue(
                         true));
 
             ksOption.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)
