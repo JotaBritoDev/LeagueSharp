@@ -45,7 +45,7 @@
         private void ProcessSpell()
         {
             hasPassive = true;
-            Utility.DelayAction.Add(200, Orbwalking.ResetAutoAttackTimer);
+            Utility.DelayAction.Add(250, Orbwalking.ResetAutoAttackTimer);
         }
 
         private void LockR(Spellbook sender, SpellbookCastSpellEventArgs args)
@@ -296,6 +296,7 @@
             if (champion.Player.IsChannelingImportantSpell())
             {
                 Orbwalking.MoveTo(Game.CursorPos);
+                return;
             }
 
             Obj_AI_Hero target;
