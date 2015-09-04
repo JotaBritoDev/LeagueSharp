@@ -175,10 +175,6 @@
                 new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(
                     new Slider(3, 1, 5)));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA when").SetValue(
-                    new StringList(
-                        new[] { "Never", "Always", "Some skill ready", "Haras combo ready", "Full combo ready" })));
-            newMenu.AddItem(
                 new MenuItem(
                     string.Format("{0}.forceultusingmouse", MenuName),
                     "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));

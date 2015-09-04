@@ -40,9 +40,6 @@
             menu.Items.Remove(useRToCombo);
 
             menu.Items.Remove(menu.Item(KoreanUtils.ParamName(champion.MainMenu, "minenemiestor")));
-
-            menu.Item(KoreanUtils.ParamName(champion.MainMenu, "disableaa")).SetValue(CommonDisableAAMode.Never);
-            menu.Items.Remove(menu.Item(KoreanUtils.ParamName(champion.MainMenu, "disableaa")));
         }
 
         private static void LoadMiscMenu(CommonChampion champion)

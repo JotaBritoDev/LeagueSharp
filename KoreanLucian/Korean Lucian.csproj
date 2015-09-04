@@ -60,7 +60,6 @@
     <Compile Include="Common\CommonChamp.cs" />
     <Compile Include="Common\CommonCore.cs" />
     <Compile Include="Common\CommonDamageDrawing.cs" />
-    <Compile Include="Common\CommonDisableAA.cs" />
     <Compile Include="Common\CommonEvolveUltimate.cs" />
     <Compile Include="Common\CommonForceUltimate.cs" />
     <Compile Include="Common\CommonMenu.cs" />

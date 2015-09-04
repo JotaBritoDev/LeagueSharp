@@ -45,7 +45,7 @@
         private void ProcessSpell()
         {
             hasPassive = true;
-            Utility.DelayAction.Add(100, Orbwalking.ResetAutoAttackTimer);
+            Utility.DelayAction.Add(200, Orbwalking.ResetAutoAttackTimer);
         }
 
         private void LockR(Spellbook sender, SpellbookCastSpellEventArgs args)
