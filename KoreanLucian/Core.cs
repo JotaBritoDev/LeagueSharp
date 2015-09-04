@@ -292,6 +292,12 @@
 
         public override void ComboMode()
         {
+            //IDK why but i need this code since the patch 5.17
+            if (champion.Player.IsChannelingImportantSpell())
+            {
+                Orbwalking.MoveTo(Game.CursorPos);
+            }
+
             Obj_AI_Hero target;
 
             if (W.UseOnCombo && !CheckPassive() && W.IsReady() && W.CanCast())
