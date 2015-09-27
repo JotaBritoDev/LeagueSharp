@@ -116,7 +116,7 @@
                     new StringList(new string[] { "Max Range", "Max Damage" })));
             eHarasUsage.AddItem(
                 new MenuItem(eUsagePrefix + ".dontuseagainst", "Don't Use if Laning Against X Enemies").SetValue(
-                    new Slider(7, 2, 7)));
+                    new Slider(7, 2, 6)));
             eHarasUsage.AddItem(
                 new MenuItem(eUsagePrefix + ".dontuselowlife", "Don't Use if HP % Below").SetValue(
                     new Slider(0, 0, 100)));
