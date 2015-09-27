@@ -59,13 +59,18 @@
 
         private void DrawDamage(EventArgs args)
         {
-            Color color = Color.FromArgb(100, Color.Black);
-            Color barColor = Color.Lime;
+            Color color = Color.Gray;
+            Color barColor = Color.White;
 
             if (zedMenu.GetParamStringList("koreanzed.drawing.damageindicatorcolor") == 1)
             {
                 color = Color.Gold;
                 barColor = Color.Olive;
+            }
+            else if (zedMenu.GetParamStringList("koreanzed.drawing.damageindicatorcolor") == 2)
+            {
+                color = Color.FromArgb(100, Color.Black);
+                barColor = Color.Lime;
             }
 
             if (Enabled())
@@ -101,9 +106,9 @@
 
                             float diff = (posCurrHealthX - posDamageX) + 3;
 
-                            float pos1 = pos.X + 9 + (107 * healthAfterDamage);
+                            float pos1 = pos.X + 8 + (107 * healthAfterDamage);
 
-                            for (int i = 0; i < diff; i++)
+                            for (int i = 0; i < diff-3; i++)
                             {
                                 Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, color);
                             }

@@ -267,7 +267,7 @@
             drawingMenu.AddItem(new MenuItem(prefix + ".damageindicator", "Damage Indicator").SetValue(true));
             drawingMenu.AddItem(
                 new MenuItem(prefix + ".damageindicatorcolor", "Color Scheme").SetValue(
-                    new StringList(new string[] { "Normal", "Colorblind" })));
+                    new StringList(new string[] { "Normal", "Colorblind", "Sexy (Beta)" })));
             drawingMenu.AddItem(new MenuItem(prefix + ".killableindicator", "Killable Indicator").SetValue(true));
             drawingMenu.AddItem(new MenuItem(prefix + ".skillranges", "Skill Ranges").SetValue(true));
 
