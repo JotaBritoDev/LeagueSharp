@@ -82,7 +82,7 @@
                     KoreanUtils.ParamName(mainMenu, "interruptspells"),
                     "Interrupt Dangerous Spells if Possible").SetValue(true));
             mainMenu.MiscMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "autotibbers"), "Automatically Control Tibbers").SetValue(true));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "autotibbers"), "Tibbles - Auto-Pilot").SetValue(true));
 
             Menu DontUseComboMenu = mainMenu.MiscMenu.AddSubMenu(new Menu("Don't Harass/Combo Against", "dontusecomboon"));
 
