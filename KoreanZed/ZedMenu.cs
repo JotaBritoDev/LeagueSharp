@@ -82,7 +82,7 @@
                         objAiHero.SkinName).SetValue(true));
             }
 
-            comboMenu.AddItem(new MenuItem("koreanzed.combo.ronselected", "Ult only on selected target").SetValue(false));
+            comboMenu.AddItem(new MenuItem("koreanzed.combo.ronselected", "ONLY ULT selected target").SetValue(false));
 
             comboMenu.AddSubMenu(useItems);
             comboMenu.AddSubMenu(rBlockSettings);
