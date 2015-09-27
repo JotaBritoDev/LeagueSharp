@@ -77,13 +77,18 @@
                 return;
             }
 
-            Color color = Color.FromArgb(150, Color.Black);
-            Color barColor = Color.Lime;
+            Color color = Color.Gray;
+            Color barColor = Color.White;
 
             if (KoreanUtils.GetParamStringList(champion.MainMenu, "damageindicatorcolor") == 1)
             {
                 color = Color.Gold;
                 barColor = Color.Olive;
+            }
+            if (KoreanUtils.GetParamStringList(champion.MainMenu, "damageindicatorcolor") == 2)
+            {
+                color = Color.FromArgb(100, Color.Black);
+                barColor = Color.Lime;
             }
 
             foreach (
@@ -117,9 +122,9 @@
 
                         float diff = (posCurrHealthX - posDamageX) + 3;
 
-                        float pos1 = pos.X + 9 + (107 * healthAfterDamage);
+                        float pos1 = pos.X + 8 + (107 * healthAfterDamage);
 
-                        for (int i = 0; i < diff; i++)
+                        for (int i = 0; i < diff - 3; i++)
                         {
                             Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, color);
                         }
