@@ -70,7 +70,7 @@
 
             useItems.AddItem(new MenuItem(useItemsPrefix + ".bilgewater", "Use Bilgewater Cutlass").SetValue(true));
             useItems.AddItem(new MenuItem(useItemsPrefix + ".botrk", "Use BotRK").SetValue(true));
-            useItems.AddItem(new MenuItem(useItemsPrefix + ".yomuus", "Use Yoomuu's GhostBlade").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".yomuus", "Use Youmuu's GhostBlade").SetValue(true));
 
             Menu rBlockSettings = new Menu("Use R Against", prefix + ".neverultmenu");
             string blockUltPrefix = prefix + ".blockult";
@@ -149,7 +149,7 @@
                         zedSpells.Q.UseOnLaneClear = args.GetNewValue<bool>();
                     };
 
-            laneClearMenu.AddItem(new MenuItem(prefix + ".useqif", "Min. Minions to Q").SetValue(new Slider(3, 1, 6)));
+            laneClearMenu.AddItem(new MenuItem(prefix + ".useqif", "Min. Minions to Use Q").SetValue(new Slider(3, 1, 6)));
 
             laneClearMenu.AddItem(new MenuItem(prefix + ".usee", "Use E").SetValue(true)).ValueChanged +=
                 (sender, args) =>
@@ -157,7 +157,7 @@
                         zedSpells.E.UseOnLaneClear = args.GetNewValue<bool>();
                     };
 
-            laneClearMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to E").SetValue(new Slider(3, 1, 6)));
+            laneClearMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to Use E").SetValue(new Slider(3, 1, 6)));
 
             laneClearMenu.AddItem(new MenuItem(prefix + ".saveenergy", "Save Energy (%)").SetValue(new Slider(40, 0, 100)));
 
@@ -181,7 +181,7 @@
                         zedSpells.E.UseOnLastHit = args.GetNewValue<bool>();
                     };
 
-            lastHitMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to E").SetValue(new Slider(3, 1, 6)));
+            lastHitMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to Use E").SetValue(new Slider(3, 1, 6)));
 
             MainMenu.AddSubMenu(lastHitMenu);
         }
@@ -207,18 +207,18 @@
         private void MiscMenu()
         {
             string prefix = "koreanzed.miscmenu";
-            Menu miscMenu = new Menu("Misc Menu", prefix);
+            Menu miscMenu = new Menu("Miscellaneous", prefix);
 
             string gcPrefix = prefix + ".gc";
             Menu antiGapCloserMenu = new Menu("Gapcloser Options", gcPrefix);
             antiGapCloserMenu.AddItem(new MenuItem(prefix + ".usewantigc", "Use W to Escape").SetValue(true));
-            antiGapCloserMenu.AddItem(new MenuItem(prefix + ".useeantigc", "Use E Against").SetValue(true));
+            antiGapCloserMenu.AddItem(new MenuItem(prefix + ".useeantigc", "Use E to Slow").SetValue(true));
 
             string rDodgePrefix = prefix + ".rdodge";
             Menu rDodgeMenu = new Menu("Use R to Dodge", rDodgePrefix);
             rDodgeMenu.AddItem(new MenuItem(rDodgePrefix + ".user", "Active").SetValue(true));
             rDodgeMenu.AddItem(new MenuItem(rDodgePrefix + ".dodgeifhealf", "Only if % HP Below").SetValue(new Slider(90, 0, 100)));
-            rDodgeMenu.AddItem(new MenuItem(rDodgePrefix + ".label", "=======   SPELLS TO DODGE   ======="));
+            rDodgeMenu.AddItem(new MenuItem(rDodgePrefix + ".label", "Dangerous Spells to Dodge:"));
 
             string[] neverDodge =
                 {
@@ -249,7 +249,7 @@
             string potPrefix = prefix + ".pot";
             Menu usePotionMenu = new Menu("Use Health Potion", potPrefix);
             usePotionMenu.AddItem(new MenuItem(potPrefix + ".active", "Active").SetValue(true));
-            usePotionMenu.AddItem(new MenuItem(potPrefix + ".when", "Health trigger").SetValue(new Slider(65)));
+            usePotionMenu.AddItem(new MenuItem(potPrefix + ".when", "Use Potion at % HP").SetValue(new Slider(65)));
 
             miscMenu.AddItem(new MenuItem(prefix + ".forceultimate", "Force R Using Mouse Buttons (Cursor Sprite)").SetValue(true));
 
