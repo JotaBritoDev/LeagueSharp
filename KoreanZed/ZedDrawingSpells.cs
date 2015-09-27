@@ -21,6 +21,11 @@
 
         private void Drawing_OnDraw(System.EventArgs args)
         {
+            if (!zedMenu.GetParamBool("koreanzed.drawing.skillranges"))
+            {
+                return;
+            }
+
             ZedSpell zedSpell = null;
 
             if (zedSpells.R.UseOnCombo && zedSpells.R.IsReady() && zedSpells.R.Instance.ToggleState == 0)
