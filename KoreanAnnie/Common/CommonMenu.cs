@@ -153,6 +153,9 @@
             newMenu.AddItem(
                 new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage Indicator").SetValue(true));
             newMenu.AddItem(
+                new MenuItem(string.Format("{0}.damageindicatorcolor", MenuName), "Color Scheme").SetValue(
+                    new StringList(new string[] { "Normal", "Colorblind" })));
+            newMenu.AddItem(
                 new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable Indicator").SetValue(true));
 
             return newMenu;
