@@ -24,11 +24,7 @@
 
         public bool Active = true;
 
-        private readonly Color barColor = Color.Lime;
-
         private readonly ICommonChampion champion;
-
-        private readonly Color comboDamageColor = Color.FromArgb(100, Color.Black);
 
         private readonly Render.Text text = new Render.Text(0, 0, "KILLABLE", 20, new ColorBGRA(255, 0, 0, 255));
 
@@ -81,6 +77,20 @@
                 return;
             }
 
+            Color color = Color.Gray;
+            Color barColor = Color.White;
+
+            if (KoreanUtils.GetParamStringList(champion.MainMenu, "damageindicatorcolor") == 1)
+            {
+                color = Color.Gold;
+                barColor = Color.Olive;
+            }
+            if (KoreanUtils.GetParamStringList(champion.MainMenu, "damageindicatorcolor") == 2)
+            {
+                color = Color.FromArgb(100, Color.Black);
+                barColor = Color.Lime;
+            }
+
             foreach (
                 Obj_AI_Hero champ in
                     ObjectManager.Get<Obj_AI_Hero>()
@@ -110,16 +120,16 @@
                         float posDamageX = pos.X + 12f + Width * healthAfterDamage;
                         float posCurrHealthX = pos.X + 12f + Width * champ.Health / champ.MaxHealth;
 
-                        Drawing.DrawLine(posDamageX, posY, posDamageX, posY + Height, 2, barColor);
-
                         float diff = (posCurrHealthX - posDamageX) + 3;
 
-                        float pos1 = pos.X + 9 + (107 * healthAfterDamage);
+                        float pos1 = pos.X + 8 + (107 * healthAfterDamage);
 
-                        for (int i = 0; i < diff; i++)
+                        for (int i = 0; i < diff - 3; i++)
                         {
-                            Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, comboDamageColor);
+                            Drawing.DrawLine(pos1 + i, posY, pos1 + i, posY + Height, 1, color);
                         }
+
+                        Drawing.DrawLine(posDamageX, posY, posDamageX, posY + Height, 2, barColor);
                     }
                 }
             }

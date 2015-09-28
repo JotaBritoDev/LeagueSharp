@@ -45,8 +45,8 @@
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "manalimitforstacking"), "Mana % Limit for Stacking")
                     .SetValue(new Slider(30, 0, 100)));
             passiveStunMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "savestunforcombo"), "Save Stun for Combo/Harass").SetValue(
-                    false));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "savestunforcombo"), "Save Stun for Combo/Harass").SetValue
+                    (false));
             passiveStunMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "showeeasybutton"), "Show Stun-Button").SetValue(true));
             passiveStunMenu.AddItem(
@@ -60,13 +60,13 @@
                 mainMenu.MiscMenu.AddSubMenu(
                     new Menu("Flash-Ultimate", KoreanUtils.ParamName(mainMenu, "flashtibbersmenu")));
             flashTibbers.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashtibbers"), "key").SetValue(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "flashtibbers"), "Key").SetValue(
                     new KeyBind('T', KeyBindType.Press)));
             flashTibbers.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "minenemiestoflashr"), "Only Use if X or More Enemies Hit")
                     .SetValue(new Slider(2, 1, 5)));
             flashTibbers.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashtibbers"), "Orbwalk").SetValue(false));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "orbwalktoflashtibbers"), "Allow Movement with Key Pressed").SetValue(false));
 
             mainMenu.MiscMenu.AddItem(
                 new MenuItem(KoreanUtils.ParamName(mainMenu, "supportmode"), "Support Mode").SetValue(false));
@@ -81,6 +81,8 @@
                 new MenuItem(
                     KoreanUtils.ParamName(mainMenu, "interruptspells"),
                     "Interrupt dangerous spells if possible").SetValue(true));
+            mainMenu.MiscMenu.AddItem(
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "autotibbers"), "Tibbers - Auto Pilot").SetValue(true));
 
             Menu DontUseComboMenu = mainMenu.MiscMenu.AddSubMenu(new Menu("Don't Harass/Combo Against", "dontusecomboon"));
 
@@ -93,11 +95,11 @@
             }
 
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel1"), "--------------------"));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel1"), "------------------------------"));
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel2"), "IMPORTANT: Targets set to OFF will..."));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel2"), "IMPORTANT: Targets set to OFF will be..."));
             DontUseComboMenu.AddItem(
-                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel3"), "...be attacked if alone or low HP"));
+                new MenuItem(KoreanUtils.ParamName(mainMenu, "dontuselabel3"), "...attacked if alone or are at low HP"));
         }
 
         private static void RemoveItems(CommonMenu mainMenu)

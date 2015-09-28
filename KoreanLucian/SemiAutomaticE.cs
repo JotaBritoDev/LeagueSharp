@@ -50,22 +50,8 @@
                 return false;
             }
 
-            bool result = false;
-
-            if (target.Distance(Game.CursorPos) <= lucian.Player.Distance(target)
-                || target.Distance(Game.CursorPos) <= Orbwalking.GetRealAutoAttackRange(lucian.Player)
-                || target.Distance(lucian.Player) + E.Range <= Orbwalking.GetRealAutoAttackRange(lucian.Player))
-            {
-                Process(false);
-                result = E.Cast(Game.CursorPos);
-            }
-            else
-            {
-                Process(false);
-                result = E.Cast(Vector3.SmoothStep(lucian.Player.Position, Game.CursorPos, 0.001f));
-            }
-
-            return result;
+            Process(false);
+            return E.Cast(Game.CursorPos);
         }
 
         private void Process(bool b)

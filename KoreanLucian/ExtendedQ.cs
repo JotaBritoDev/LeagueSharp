@@ -21,10 +21,14 @@
                 champ.Distance(ObjectManager.Player) - (minion.Distance(ObjectManager.Player) + minion.Distance(champ)))
             <= 2;
 
-        private static readonly Func<Vector3, Vector3, Vector3, bool> CheckLine =
-            (v1, v2, v3) =>
-            Math.Abs((v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X))
-            <= 20000;
+        private static readonly Func<Vector3, Vector3, Vector3, bool> CheckLine = (v1, v2, v3) =>
+            {
+                float valor =
+                    Math.Abs(
+                        (v1.X * v2.Y) + (v1.Y * v3.X) + (v2.X * v3.Y) - (v1.Y * v2.X) - (v1.X * v3.Y) - (v2.Y * v3.X));
+
+                return valor > 500 && valor <= 2000;
+            };
 
         public static void Load(CommonChampion lucian)
         {

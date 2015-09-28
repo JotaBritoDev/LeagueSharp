@@ -40,9 +40,6 @@
             menu.Items.Remove(useRToCombo);
 
             menu.Items.Remove(menu.Item(KoreanUtils.ParamName(champion.MainMenu, "minenemiestor")));
-
-            menu.Item(KoreanUtils.ParamName(champion.MainMenu, "disableaa")).SetValue(CommonDisableAAMode.Never);
-            menu.Items.Remove(menu.Item(KoreanUtils.ParamName(champion.MainMenu, "disableaa")));
         }
 
         private static void LoadMiscMenu(CommonChampion champion)
@@ -52,7 +49,7 @@
             Menu SemiAutoE = menu.AddSubMenu(new Menu("Semi-Automatic E", "semiautoe"));
 
             MenuItem semiAutomaticE =
-                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "dashmode"), "Active").SetValue(true);
+                new MenuItem(KoreanUtils.ParamName(champion.MainMenu, "dashmode"), "Active").SetValue(false);
 
             SemiAutoE.AddItem(semiAutomaticE);
             semiAutomaticE.ValueChanged += delegate(object sender, OnValueChangeEventArgs e)

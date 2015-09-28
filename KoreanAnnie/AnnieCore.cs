@@ -77,7 +77,7 @@
             {
                 int minEnemiesToR = annie.GetParamSlider("minenemiestor");
 
-                if (minEnemiesToR == 1)
+                if (minEnemiesToR == 1 && annie.CheckStun())
                 {
                     spells.R.Cast(target.Position);
                 }

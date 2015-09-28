@@ -130,7 +130,7 @@
 
         private Menu addHarasMenu(Menu RootMenu)
         {
-            Menu newMenu = new Menu("Harass", string.Format("{0}.haras", MenuName));
+            Menu newMenu = new Menu("Haras", string.Format("{0}.haras", MenuName));
             RootMenu.AddSubMenu(newMenu);
 
             newMenu.AddItem(new MenuItem(string.Format("{0}.useqtoharas", MenuName), "Use Q").SetValue(true));
@@ -138,7 +138,7 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetoharas", MenuName), "Use E").SetValue(true));
 
             MenuItem ManaLimitToHaras =
-                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Min. % Mana to Harass").SetValue(
+                new MenuItem(string.Format("{0}.manalimittoharas", MenuName), "Mana limit").SetValue(
                     new Slider(0, 0, 100));
             newMenu.AddItem(ManaLimitToHaras);
 
@@ -154,10 +154,10 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.usewtolaneclear", MenuName), "Use W").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetolaneclear", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Min. % Mana to LC").SetValue(
+                new MenuItem(string.Format("{0}.manalimittolaneclear", MenuName), "Mana limit").SetValue(
                     new Slider(50, 0, 100)));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Harass Enemies in LC").SetValue(true));
+                new MenuItem(string.Format("{0}.harasonlaneclear", MenuName), "Haras enemies").SetValue(true));
 
             return newMenu;
         }
@@ -172,16 +172,12 @@
             newMenu.AddItem(new MenuItem(string.Format("{0}.useetocombo", MenuName), "Use E").SetValue(true));
             newMenu.AddItem(new MenuItem(string.Format("{0}.usertocombo", MenuName), "Use R").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if X Enemies Hit").SetValue(
+                new MenuItem(string.Format("{0}.minenemiestor", MenuName), "Only R if will hit at least").SetValue(
                     new Slider(3, 1, 5)));
-            newMenu.AddItem(
-                new MenuItem(string.Format("{0}.disableaa", MenuName), "Disable AA When").SetValue(
-                    new StringList(
-                        new[] { "Never", "Always", "Some Skills Ready", "Harass Combo Ready", "Full Combo Ready" })));
             newMenu.AddItem(
                 new MenuItem(
                     string.Format("{0}.forceultusingmouse", MenuName),
-                    "Force R Using Mouse-buttons (Cursor Sprite)").SetValue(true));
+                    "Force ultimate using mouse buttons (cursor sprite)").SetValue(true));
 
             return newMenu;
         }
@@ -199,11 +195,11 @@
             Menu newMenu = new Menu("Drawings", string.Format("{0}.drawings", MenuName));
             RootMenu.AddSubMenu(newMenu);
 
-            newMenu.AddItem(new MenuItem(string.Format("{0}.drawskillranges", MenuName), "Draw Skill Ranges").SetValue(true));
+            newMenu.AddItem(new MenuItem(string.Format("{0}.drawskillranges", MenuName), "Skill ranges").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.damageindicator", MenuName), "Draw Damage Indicator").SetValue(true));
+                new MenuItem(string.Format("{0}.damageindicator", MenuName), "Damage indicator").SetValue(true));
             newMenu.AddItem(
-                new MenuItem(string.Format("{0}.killableindicator", MenuName), "Draw Killable Enemy").SetValue(true));
+                new MenuItem(string.Format("{0}.killableindicator", MenuName), "Killable indicator").SetValue(true));
 
             return newMenu;
         }
