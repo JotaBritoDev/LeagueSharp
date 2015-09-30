@@ -21,7 +21,7 @@
 
         private bool rightButtonDown;
 
-        private Render.Text Text = new Render.Text(0, 0, "No enemies found", 20, new ColorBGRA(255, 0, 0, 255));
+        private Render.Text Text = new Render.Text(0, 0, "No Enemies Found", 20, new ColorBGRA(255, 0, 0, 255));
 
         public CommonForceUltimate(CommonChampion champion)
         {
