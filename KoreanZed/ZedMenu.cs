@@ -70,7 +70,7 @@
 
             useItems.AddItem(new MenuItem(useItemsPrefix + ".bilgewater", "Use Bilgewater Cutlass").SetValue(true));
             useItems.AddItem(new MenuItem(useItemsPrefix + ".botrk", "Use BotRK").SetValue(true));
-            useItems.AddItem(new MenuItem(useItemsPrefix + ".yomuus", "Use Youmuu's GhostBlade").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".yomuus", "Use Youmuu's Ghostblade").SetValue(true));
 
             Menu rBlockSettings = new Menu("Use R Against", prefix + ".neverultmenu");
             string blockUltPrefix = prefix + ".blockult";
@@ -118,7 +118,7 @@
                 new MenuItem(eUsagePrefix + ".dontuseagainst", "Don't Use if Laning Against X Enemies").SetValue(
                     new Slider(7, 2, 6)));
             eHarasUsage.AddItem(
-                new MenuItem(eUsagePrefix + ".dontuselowlife", "Don't Use if HP % Below").SetValue(
+                new MenuItem(eUsagePrefix + ".dontuselowlife", "Don't Use if % HP Below").SetValue(
                     new Slider(0, 0, 100)));
 
             string blackListPrefix = prefix + ".blacklist";
