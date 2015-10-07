@@ -17,7 +17,7 @@
             float qRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.CastRange;
             float qDelay = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.SpellCastTime;
             float qWidth = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.LineWidth;
-            float qSpeed = 550F;//ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.MissileSpeed;
+            float qSpeed = 1500F; //ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.MissileSpeed;
 
             Q = new OlafSpell(SpellSlot.Q, qRange, TargetSelector.DamageType.Physical);
             Q.SetSkillshot(qDelay, qWidth, qSpeed, false, SkillshotType.SkillshotLine);
