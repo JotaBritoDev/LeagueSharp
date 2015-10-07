@@ -95,7 +95,7 @@
 
                     if (predictionOutput.Hitchance >= HitChance.VeryHigh)
                     {
-                        q.Cast(predictionOutput.CastPosition);
+                        q.Cast(predictionOutput.CastPosition.Extend(target.ServerPosition, 100F));
                         return;
                     }
                 }
@@ -150,7 +150,7 @@
 
                     if (predictionOutput.Hitchance >= HitChance.VeryHigh)
                     {
-                        q.Cast(predictionOutput.CastPosition);
+                        q.Cast(predictionOutput.CastPosition.Extend(target.ServerPosition, 50F));
                         return;
                     }
                 }
