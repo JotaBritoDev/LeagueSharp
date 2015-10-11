@@ -77,6 +77,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QueueActions\ActionQueue.cs" />
+    <Compile Include="QueueActions\ActionQueueCheckAutoAttack.cs" />
     <Compile Include="QueueActions\ActionQueueItem.cs" />
     <Compile Include="QueueActions\ActionQueueList.cs" />
   </ItemGroup>
