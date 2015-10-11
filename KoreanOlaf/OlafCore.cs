@@ -37,6 +37,8 @@
 
         private readonly ActionQueue actionQueue;
 
+        private readonly ActionQueueCheckAutoAttack autoAttackCheck;
+
         public OlafCore(OlafSpells olafSpells, Orbwalking.Orbwalker olafOrbwalker, OlafMenu olafMenu)
         {
             q = olafSpells.Q;
@@ -52,10 +54,11 @@
             harasQueue = new ActionQueueList();
             comboQueue = new ActionQueueList();
             laneClearQueue = new ActionQueueList();
+            autoAttackCheck = new ActionQueueCheckAutoAttack();
             olafItems = new OlafOffensiveItems(olafMenu);
 
             Game.OnUpdate += Game_OnUpdate;
-        }
+        }  
 
         private void Game_OnUpdate(EventArgs args)
         {
@@ -78,6 +81,50 @@
             }
         }
 
+        private bool CastQ(bool combo, IEnumerable<Obj_AI_Hero> blackList = null)
+        {
+            if ((q.IsReady()) && ((combo && q.UseOnCombo) || (!combo && q.UseOnHarass)))
+            {
+                Obj_AI_Hero target = TargetSelector.GetTarget(q.Range, q.DamageType, true, blackList);
+
+                if (target != null)
+                {
+                    PredictionOutput predictionOutput = q.GetPrediction(target);
+
+                    if (predictionOutput.Hitchance >= HitChance.Medium)
+                    {
+
+                        float distance1 = predictionOutput.CastPosition.Distance(player.Position);
+                        float distance2 = target.Distance(player.Position);
+
+                        float extension = -50;
+                        if (distance2 < 150F)
+                        {
+                            extension = 75F;
+                        }
+                        if (distance1 > 500F)
+                        {
+                            extension = -100F;
+                        }
+                        else if (distance1 > 850F)
+                        {
+                            extension = -150F;
+                        }
+
+                        q.Cast(predictionOutput.CastPosition.Extend(player.Position, extension));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void CastE(Obj_AI_Base target)
+        {
+            e.Cast(target);
+            Orbwalking.ResetAutoAttackTimer();
+        }
+
         private void Combo()
         {
             if (actionQueue.ExecuteNextAction(comboQueue))
@@ -87,17 +134,9 @@
 
             if (q.UseOnCombo && q.IsReady())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(q.Range, q.DamageType);
-
-                if (target != null)
+                if (CastQ(true))
                 {
-                    PredictionOutput predictionOutput = q.GetPrediction(target);
-
-                    if (predictionOutput.Hitchance >= HitChance.VeryHigh)
-                    {
-                        q.Cast(predictionOutput.CastPosition.Extend(target.ServerPosition, 100F));
-                        return;
-                    }
+                    return;
                 }
             }
 
@@ -110,7 +149,12 @@
                 {
                     actionQueue.EnqueueAction(comboQueue, () => true, () => w.Cast(), () => !w.IsReady());
                     actionQueue.EnqueueAction(comboQueue, () => true, () => olafItems.UseItems(target), () => true);
-                    actionQueue.EnqueueAction(comboQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(
+                        comboQueue,
+                        () => true,
+                        () => player.IssueOrder(GameObjectOrder.AttackUnit, target),
+                        () =>
+                        autoAttackCheck.Status || player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target));
                     return;
                 }
             }
@@ -121,10 +165,19 @@
 
                 if (target != null)
                 {
-                    actionQueue.EnqueueAction(comboQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(
+                        comboQueue,
+                        () => true,
+                        () => player.IssueOrder(GameObjectOrder.AttackUnit, target),
+                        () => autoAttackCheck.Status);
                     actionQueue.EnqueueAction(comboQueue, () => true, () => olafItems.UseItems(target), () => true);
-                    actionQueue.EnqueueAction(comboQueue, () => true, () => e.Cast(target), () => !e.IsReady());
-                    actionQueue.EnqueueAction(comboQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(comboQueue, () => true, () => CastE(target), () => !e.IsReady());
+                    actionQueue.EnqueueAction(
+                        comboQueue,
+                        () => true,
+                        () => player.IssueOrder(GameObjectOrder.AttackUnit, target),
+                        () =>
+                        autoAttackCheck.Status || player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target));
                 }
             }
         }
@@ -142,17 +195,9 @@
 
             if (q.UseOnHarass && q.IsReady() && CheckManaToHaras())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(q.Range, q.DamageType, true, blackList);
-
-                if (target != null)
+                if (CastQ(false, blackList))
                 {
-                    PredictionOutput predictionOutput = q.GetPrediction(target);
-
-                    if (predictionOutput.Hitchance >= HitChance.VeryHigh)
-                    {
-                        q.Cast(predictionOutput.CastPosition.Extend(target.ServerPosition, 50F));
-                        return;
-                    }
+                    return;
                 }
             }
 
@@ -165,7 +210,7 @@
                 {
                     actionQueue.EnqueueAction(harasQueue, () => true, () => w.Cast(), () => !w.IsReady());
                     actionQueue.EnqueueAction(harasQueue, () => true, () => olafItems.UseHarasItems(), () => true);
-                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => autoAttackCheck.Status || player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target));
                 }
             }
 
@@ -175,10 +220,13 @@
 
                 if (target != null)
                 {
-                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => autoAttackCheck.Status);
                     actionQueue.EnqueueAction(harasQueue, () => true, () => olafItems.UseHarasItems(), () => true);
-                    actionQueue.EnqueueAction(harasQueue, () => true, () => e.Cast(target), () => !e.IsReady());
-                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => false);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.MoveTo, target.Position), () => true);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => CastE(target), () => !e.IsReady());
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => Orbwalking.ResetAutoAttackTimer(), () => true);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.MoveTo, target.Position), () => true);
+                    actionQueue.EnqueueAction(harasQueue, () => true, () => player.IssueOrder(GameObjectOrder.AttackUnit, target), () => autoAttackCheck.Status);
                 }
             }
         }
@@ -203,11 +251,7 @@
 
                 if (farmLocation.MinionsHit >= olafMenu.GetParamSlider("koreanolaf.laneclearmenu.useqif"))
                 {
-                    actionQueue.EnqueueAction(
-                        laneClearQueue,
-                        () => true,
-                        () => q.Cast(farmLocation.Position),
-                        () => !q.IsReady());
+                    q.Cast(farmLocation.Position);
                     return;
                 }
                 else
@@ -249,7 +293,7 @@
 
                 if (target != null)
                 {
-                    actionQueue.EnqueueAction(laneClearQueue, () => true, () => e.Cast(target), () => !e.IsReady());
+                    actionQueue.EnqueueAction(laneClearQueue, () => true, () => CastE(target), () => !e.IsReady());
                     return;
                 }
             }
@@ -268,7 +312,7 @@
         {
             return player.ManaPercent > olafMenu.GetParamSlider("koreanolaf.laneclearmenu.manalimit");
         }
-
+         
         private bool CheckHealthToLaneClear()
         {
             return player.HealthPercent > olafMenu.GetParamSlider("koreanolaf.laneclearmenu.healthlimit");
@@ -293,7 +337,7 @@
                 }
             }
 
-            if (e.UseOnLastHit && e.IsReady() && CheckManaToLastHit())
+            if (e.UseOnLastHit && e.IsReady())
             {
                 Obj_AI_Base target =
                     MinionManager.GetMinions(e.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth)
