@@ -19,6 +19,20 @@
             UseYomuusBlade();
             UseBilgewaterCutlass(target);
             UseBOTRK(target);
+            UseHydra();
+            UseTiamat();
+        }
+
+        public void UseItemsLaneClear()
+        {
+            UseHydraLaneClear();
+            UseTiamatLaneClear();
+        }
+
+        public void UseHarasItems()
+        {
+            UseHydraHaras();
+            UseTiamatHaras();
         }
 
         private void UseBilgewaterCutlass(Obj_AI_Hero target)
@@ -47,6 +61,60 @@
                 && ItemData.Youmuus_Ghostblade.GetItem().IsReady())
             {
                 ItemData.Youmuus_Ghostblade.GetItem().Cast();
+            }
+        }
+
+        private void UseHydra()
+        {
+            if (zedMenu.GetParamBool("koreanzed.combomenu.items.hydra")
+                && ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Ravenous_Hydra_Melee_Only.GetItem().Cast();
+            }
+        }
+
+        private void UseTiamat()
+        {
+            if (zedMenu.GetParamBool("koreanzed.combomenu.items.tiamat")
+                && ItemData.Tiamat_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Tiamat_Melee_Only.GetItem().Cast();
+            }
+        }
+
+        private void UseHydraLaneClear()
+        {
+            if (zedMenu.GetParamBool("koreanzed.laneclearmenu.items.hydra")
+                && ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Ravenous_Hydra_Melee_Only.GetItem().Cast();
+            }
+        }
+
+        private void UseTiamatLaneClear()
+        {
+            if (zedMenu.GetParamBool("koreanzed.laneclearmenu.items.tiamat")
+                && ItemData.Tiamat_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Tiamat_Melee_Only.GetItem().Cast();
+            }
+        }
+
+        private void UseHydraHaras()
+        {
+            if (zedMenu.GetParamBool("koreanzed.harasmenu.items.hydra")
+                && ItemData.Ravenous_Hydra_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Ravenous_Hydra_Melee_Only.GetItem().Cast();
+            }
+        }
+
+        private void UseTiamatHaras()
+        {
+            if (zedMenu.GetParamBool("koreanzed.harasmenu.items.tiamat")
+                && ItemData.Tiamat_Melee_Only.GetItem().IsReady())
+            {
+                ItemData.Tiamat_Melee_Only.GetItem().Cast();
             }
         }
     }

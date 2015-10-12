@@ -26,24 +26,31 @@
                 return;
             }
 
-            ZedSpell zedSpell = null;
+            float range = 0F;
 
             if (zedSpells.R.UseOnCombo && zedSpells.R.IsReady() && zedSpells.R.Instance.ToggleState == 0)
             {
-                zedSpell = zedSpells.R;
+                range = zedSpells.R.Range;
             }
             else if (zedSpells.Q.UseOnCombo && zedSpells.Q.IsReady())
             {
-                zedSpell = zedSpells.Q;
+                if (zedSpells.W.UseOnCombo && zedSpells.W.Instance.ToggleState == 0 && zedSpells.W.IsReady())
+                {
+                    range = zedSpells.E.Range + zedSpells.W.Range;
+                }
+                else
+                {
+                    range = zedSpells.Q.Range;
+                }
             }
             else if (zedSpells.E.UseOnCombo && zedSpells.E.IsReady())
             {
-                zedSpell = zedSpells.E;
+                range = zedSpells.E.Range + (zedSpells.W.UseOnCombo ? zedSpells.W.IsReady() ? zedSpells.W.Range : 0F : 0F);
             }
 
-            if (zedSpell != null)
+            if (range > 0F)
             {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, zedSpell.Range, Color.FromArgb(150, Color.DarkGreen), 5);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, range, Color.FromArgb(150, Color.DarkGreen), 5);
             }
         }
     }

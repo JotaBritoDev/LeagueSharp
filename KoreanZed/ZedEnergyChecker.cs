@@ -26,6 +26,15 @@
             }
         }
 
+        public bool ReadyToLastHit
+        {
+            get
+            {
+                return ObjectManager.Player.ManaPercent
+                       > zedMenu.GetParamSlider("koreanzed.lasthitmenu.saveenergy");
+            }
+        }
+
         public ZedEnergyChecker(ZedMenu menu)
         {
             zedMenu = menu;

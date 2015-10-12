@@ -22,14 +22,26 @@
         {
             if (list.Count > 0)
             {
+                if (Game.Time > list[0].Time + 1F)
+                {
+                    list.Remove(list[0]);
+                    return true;
+                }
+
                 if (list[0].PreConditionFunc.Invoke())
                 {
                     list[0].ComboAction.Invoke();
                 }
 
-                if (list[0].ConditionToRemoveFunc.Invoke() || Game.Time > list[0].Time + 0.75F)
+                if (list[0].ConditionToRemoveFunc.Invoke() || Game.Time > list[0].Time + 0.5F)
                 {
                     list.Remove(list[0]);
+                    if (list.Count > 0)
+                    {
+                        var nextItem = list[0];
+                        nextItem.Time = Game.Time;
+                        list[0] = nextItem;
+                    }
                 }
                 return true;
             }

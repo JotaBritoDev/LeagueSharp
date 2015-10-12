@@ -71,6 +71,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="QueueActions\ActionQueueCheckAutoAttack.cs" />
     <Compile Include="ZedDrawingSpells.cs" />
     <Compile Include="ZedSpellDodge.cs" />
     <Compile Include="Enumerators\BlockListType.cs" />

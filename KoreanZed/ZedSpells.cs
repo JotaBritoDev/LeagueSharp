@@ -14,10 +14,10 @@
 
         public ZedSpells()
         {
-            float qRange = 800F; //ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.CastRange; <<BUGGED
-            float qDelay = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.SpellCastTime;
-            float qWidth = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.LineWidth;
-            float qSpeed = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.MissileSpeed;
+            float qRange = 925F;
+            float qDelay = 0.25F;
+            float qWidth = 50F;
+            float qSpeed = 1600F;
 
             Q = new ZedSpell(SpellSlot.Q, qRange, TargetSelector.DamageType.Physical);
             Q.SetSkillshot(qDelay, qWidth, qSpeed, false, SkillshotType.SkillshotLine);

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Remoting.Channels;
 
     using LeagueSharp;
     using LeagueSharp.Common;
@@ -71,6 +72,8 @@
             useItems.AddItem(new MenuItem(useItemsPrefix + ".bilgewater", "Use Bilgewater Cutlass").SetValue(true));
             useItems.AddItem(new MenuItem(useItemsPrefix + ".botrk", "Use BotRK").SetValue(true));
             useItems.AddItem(new MenuItem(useItemsPrefix + ".yomuus", "Use Youmuu's Ghostblade").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".hydra", "Use Hydra").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".tiamat", "Use Tiamat").SetValue(true));
 
             Menu rBlockSettings = new Menu("Use R Against", prefix + ".neverultmenu");
             string blockUltPrefix = prefix + ".blockult";
@@ -116,7 +119,7 @@
                     new StringList(new string[] { "Max Range", "Max Damage" })));
             eHarasUsage.AddItem(
                 new MenuItem(eUsagePrefix + ".dontuseagainst", "Don't Use if Laning Against X Enemies").SetValue(
-                    new Slider(7, 2, 6)));
+                    new Slider(6, 2, 6)));
             eHarasUsage.AddItem(
                 new MenuItem(eUsagePrefix + ".dontuselowlife", "Don't Use if % HP Below").SetValue(
                     new Slider(0, 0, 100)));
@@ -131,9 +134,15 @@
                         objAiHero.SkinName).SetValue(true));
             }
 
+            string useItemsPrefix = prefix + ".items";
+            Menu useItems = new Menu("Use Items", useItemsPrefix);
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".hydra", "Use Hydra").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".tiamat", "Use Tiamat").SetValue(true));
+
             harasMenu.AddItem(new MenuItem(prefix + ".saveenergy", "Save Energy (%)").SetValue(new Slider(50, 0, 100)));
 
             harasMenu.AddSubMenu(blackListHaras);
+            harasMenu.AddSubMenu(useItems);
             harasMenu.AddSubMenu(eHarasUsage);
             MainMenu.AddSubMenu(harasMenu);
         }
@@ -151,6 +160,13 @@
 
             laneClearMenu.AddItem(new MenuItem(prefix + ".useqif", "Min. Minions to Use Q").SetValue(new Slider(3, 1, 6)));
 
+            laneClearMenu.AddItem(new MenuItem(prefix + ".usew", "Use W").SetValue(true)).ValueChanged +=
+                (sender, args) =>
+                    {
+                        zedSpells.W.UseOnLaneClear = args.GetNewValue<bool>();
+                    };
+            laneClearMenu.AddItem(new MenuItem(prefix + ".dontuseeif", "Don't Use if Laning Against X Enemies").SetValue(new Slider(6, 1, 6)));
+
             laneClearMenu.AddItem(new MenuItem(prefix + ".usee", "Use E").SetValue(true)).ValueChanged +=
                 (sender, args) =>
                     {
@@ -160,6 +176,15 @@
             laneClearMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to Use E").SetValue(new Slider(3, 1, 6)));
 
             laneClearMenu.AddItem(new MenuItem(prefix + ".saveenergy", "Save Energy (%)").SetValue(new Slider(40, 0, 100)));
+
+            string useItemsPrefix = prefix + ".items";
+            Menu useItems = new Menu("Use Items", useItemsPrefix);
+
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".hydra", "Use Hydra").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".tiamat", "Use Tiamat").SetValue(true));
+            useItems.AddItem(new MenuItem(useItemsPrefix + ".when", "When will hit X minions").SetValue(new Slider(3, 1, 10)));
+
+            laneClearMenu.AddSubMenu(useItems);
 
             MainMenu.AddSubMenu(laneClearMenu);
         }
@@ -183,6 +208,8 @@
 
             lastHitMenu.AddItem(new MenuItem(prefix + ".useeif", "Min. Minions to Use E").SetValue(new Slider(3, 1, 6)));
 
+            lastHitMenu.AddItem(new MenuItem(prefix + ".saveenergy", "Save Energy (%)").SetValue(new Slider(0)));
+
             MainMenu.AddSubMenu(lastHitMenu);
         }
 
@@ -201,6 +228,7 @@
             zedSpells.E.UseOnLastHit = GetParamBool("koreanzed.lasthitmenu.usee");
 
             zedSpells.Q.UseOnLaneClear = GetParamBool("koreanzed.laneclearmenu.useq");
+            zedSpells.W.UseOnLaneClear = GetParamBool("koreanzed.laneclearmenu.usew");
             zedSpells.E.UseOnLaneClear = GetParamBool("koreanzed.laneclearmenu.usee");
         }
 

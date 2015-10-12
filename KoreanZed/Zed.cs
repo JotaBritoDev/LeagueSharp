@@ -33,14 +33,17 @@
         private readonly CommonForceUltimate forceUltimate;
 
         private readonly ZedUnderTurretFarm zedUnderTurretFarm;
-        
+
+        private readonly ZedEnergyChecker energy;
+
         public Zed()
         {
             zedSpells = new ZedSpells();
             zedMenu = new ZedMenu(zedSpells, out zedOrbwalker);
-            zedShadows = new ZedShadows(zedMenu, zedSpells);
-            zedCore = new ZedCore(zedSpells, zedOrbwalker, zedMenu, zedShadows);
-            zedAntiGapCloser = new ZedAntiGapCloser(zedMenu, zedSpells);
+            energy = new ZedEnergyChecker(zedMenu);
+            zedShadows = new ZedShadows(zedMenu, zedSpells, energy);
+            zedCore = new ZedCore(zedSpells, zedOrbwalker, zedMenu, zedShadows, energy);
+            zedAntiGapCloser = new ZedAntiGapCloser(zedMenu, zedSpells, zedShadows);
             zedPotions = new ZedPotions(zedMenu);
             zedKs = new ZedKS(zedSpells, zedOrbwalker, zedShadows);
             zedSpellDodge = new ZedSpellDodge(zedSpells, zedMenu);

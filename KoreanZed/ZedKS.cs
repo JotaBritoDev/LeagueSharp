@@ -68,22 +68,18 @@
             }
 
             List<Obj_AI_Hero> heroList = ObjectManager.Player.GetEnemiesInRange(2000F);
-
             if (heroList.Count() == 1)
             {
                 Obj_AI_Hero target = heroList.FirstOrDefault();
 
-                if (target != null && w.IsReady() && player.Distance(target) < w.Range + Orbwalking.GetRealAutoAttackRange(target))
+                if (target != null && zedShadows.CanCast && player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target) 
+                    && player.Distance(target) < w.Range + Orbwalking.GetRealAutoAttackRange(target)
+                    && player.GetAutoAttackDamage(target) > target.Health && player.Mana > w.ManaCost)
                 {
-                    if ((player.GetAutoAttackDamage(target) > target.Health && player.Mana > w.ManaCost)
-                        || (e.IsReady() && e.GetDamage(target) + player.GetAutoAttackDamage(target) > target.Health
-                        && player.Mana > w.ManaCost + e.ManaCost))
-                    {
-                        zedShadows.Cast(target);
-                    }
+                    zedShadows.Cast(target.Position);
+                    zedShadows.Switch();
                 }
             }
-
         }
     }
 }
