@@ -220,7 +220,7 @@
             drawingMenu.AddItem(new MenuItem(prefix + ".legacysaxe", "Legacy's axe indicator").SetValue(true));
             drawingMenu.AddItem(new MenuItem(prefix + ".legacysaxecolor", "Axe indicator color").SetValue(
                     new StringList(new string[] { "Green", "Red", "White" })));
-            drawingMenu.AddItem(new MenuItem(prefix + ".legacysaxewidth", "Axe indicator widht").SetValue(new Slider(1, 1, 3)));
+            drawingMenu.AddItem(new MenuItem(prefix + ".legacysaxewidth", "Axe indicator width").SetValue(new Slider(1, 1, 3)));
 
             MainMenu.AddSubMenu(drawingMenu);
         }
