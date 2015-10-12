@@ -97,18 +97,26 @@
                         float distance1 = predictionOutput.CastPosition.Distance(player.Position);
                         float distance2 = target.Distance(player.Position);
 
-                        float extension = -50;
-                        if (distance2 < 150F)
+                        float extension = -75F;
+                        if (distance2 < player.AttackRange)
                         {
-                            extension = 75F;
+                            extension = 50F;
+                        }
+                        if (distance1 > 250F)
+                        {
+                            extension = -100;
                         }
                         if (distance1 > 500F)
                         {
-                            extension = -100F;
+                            extension = -130F;
+                        }
+                        if (distance1 > 700)
+                        {
+                            extension = -150F;
                         }
                         else if (distance1 > 850F)
                         {
-                            extension = -150F;
+                            extension = -175F;
                         }
 
                         q.Cast(predictionOutput.CastPosition.Extend(player.Position, extension));

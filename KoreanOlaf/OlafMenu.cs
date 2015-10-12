@@ -58,8 +58,8 @@
             comboMenu.AddItem(new MenuItem(prefix + ".usee", "Use E").SetValue(true)).ValueChanged += (sender, args) =>
             { olafSpells.E.UseOnCombo = args.GetNewValue<bool>(); };
 
-            comboMenu.AddItem(new MenuItem(prefix + ".user", "Use R").SetValue(true)).ValueChanged += (sender, args) =>
-            { olafSpells.R.UseOnCombo = args.GetNewValue<bool>(); };
+            //comboMenu.AddItem(new MenuItem(prefix + ".user", "Use R").SetValue(true)).ValueChanged += (sender, args) =>
+            //{ olafSpells.R.UseOnCombo = args.GetNewValue<bool>(); };
 
             string useItemsPrefix = prefix + ".items";
             Menu useItems = new Menu("Use Items", useItemsPrefix);
@@ -177,7 +177,7 @@
             olafSpells.Q.UseOnCombo = GetParamBool("koreanolaf.combomenu.useq");
             olafSpells.W.UseOnCombo = GetParamBool("koreanolaf.combomenu.usew");
             olafSpells.E.UseOnCombo = GetParamBool("koreanolaf.combomenu.usee");
-            olafSpells.R.UseOnCombo = GetParamBool("koreanolaf.combomenu.user");
+            //olafSpells.R.UseOnCombo = GetParamBool("koreanolaf.combomenu.user");
 
             olafSpells.Q.UseOnHarass = GetParamBool("koreanolaf.harasmenu.useq");
             olafSpells.W.UseOnHarass = GetParamBool("koreanolaf.harasmenu.usew");
