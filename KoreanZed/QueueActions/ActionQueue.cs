@@ -22,7 +22,7 @@
         {
             if (list.Count > 0)
             {
-                if (Game.Time > list[0].Time + 1F)
+                if (Game.Time > list[0].Time + 20F)
                 {
                     list.Remove(list[0]);
                     return true;
@@ -33,7 +33,9 @@
                     list[0].ComboAction.Invoke();
                 }
 
-                if (list[0].ConditionToRemoveFunc.Invoke() || Game.Time > list[0].Time + 0.5F)
+                if (list[0].ConditionToRemoveFunc.Invoke() 
+                    //|| Game.Time > list[0].Time + 10F
+                    )
                 {
                     list.Remove(list[0]);
                     if (list.Count > 0)

@@ -27,10 +27,11 @@
         {
             get
             {
-                return (!ObjectManager.Player.HasBuff("zedwhandler") 
-                        && w.IsReady()
-                        && Game.Time > lastTimeCast + 0.3F
-                        && Game.Time > buffTime + 1F);
+                int currentShadows = GetShadows().Count();
+                return ((!ObjectManager.Player.HasBuff("zedwhandler") && w.IsReady() && Game.Time > lastTimeCast + 0.3F
+                         && Game.Time > buffTime + 1F) && w.IsReady() && w.Instance.ToggleState == 0
+                        && !ObjectManager.Player.HasBuff("zedwhandler")
+                        && ((ObjectManager.Player.HasBuff("zedr2") && currentShadows == 1) || currentShadows == 0));
             }
         }
 
@@ -85,10 +86,7 @@
 
         public void Cast(Vector3 position)
         {
-            int currentShadows = GetShadows().Count();
-            if (CanCast && w.IsReady() && w.Instance.ToggleState == 0
-                && !ObjectManager.Player.HasBuff("zedwhandler")
-                && ((ObjectManager.Player.HasBuff("zedr2") && currentShadows == 1) || currentShadows == 0))
+            if (CanCast)
             {
                 w.Cast(position);
                 lastTimeCast = Game.Time;

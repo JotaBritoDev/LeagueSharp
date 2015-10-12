@@ -14,16 +14,12 @@
 
         public ZedSpells()
         {
-            float qRange = 925F;
-            float qDelay = 0.25F;
-            float qWidth = 50F;
-            float qSpeed = 1600F;
-
-            Q = new ZedSpell(SpellSlot.Q, qRange, TargetSelector.DamageType.Physical);
-            Q.SetSkillshot(qDelay, qWidth, qSpeed, false, SkillshotType.SkillshotLine);
+            Q = new ZedSpell(SpellSlot.Q, 925F, TargetSelector.DamageType.Physical);
+            Q.SetSkillshot(0.25F, 50F, 1600F, false, SkillshotType.SkillshotLine);
 
             float wRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).SData.CastRange;
             W = new ZedSpell(SpellSlot.W, wRange, TargetSelector.DamageType.Physical);
+            W.SetSkillshot(0.75F, 75F, 900F, false, SkillshotType.SkillshotLine);
 
             float eRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange;
             E = new ZedSpell(SpellSlot.E, eRange, TargetSelector.DamageType.Physical);
