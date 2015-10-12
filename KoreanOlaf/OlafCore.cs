@@ -248,11 +248,17 @@
             if (q.UseOnLaneClear && q.IsReady() && CheckManaToLaneClear())
             {
                 MinionManager.FarmLocation farmLocation = q.GetLineFarmLocation(MinionManager.GetMinions(q.Range));
-
                 if (farmLocation.MinionsHit >= olafMenu.GetParamSlider("koreanolaf.laneclearmenu.useqif"))
                 {
-                    q.Cast(farmLocation.Position);
-                    return;
+                    var target = q.GetCollision(player.Position.To2D(), new List<Vector2>() { farmLocation.Position })
+                        .OrderByDescending(minion => player.Distance(minion))
+                        .FirstOrDefault();
+
+                    if (target != null)
+                    {
+                        q.Cast(target.Position);
+                        return;
+                    }
                 }
                 else
                 {
