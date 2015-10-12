@@ -28,6 +28,7 @@
             get
             {
                 return (!ObjectManager.Player.HasBuff("zedwhandler") 
+                        && w.IsReady()
                         && Game.Time > lastTimeCast + 0.3F
                         && Game.Time > buffTime + 1F);
             }
