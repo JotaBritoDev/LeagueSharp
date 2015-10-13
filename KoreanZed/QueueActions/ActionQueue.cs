@@ -1,7 +1,6 @@
 ﻿namespace KoreanZed.QueueActions
 {
     using System;
-    using System.Collections.Generic;
 
     using LeagueSharp;
 
@@ -22,7 +21,7 @@
         {
             if (list.Count > 0)
             {
-                if (Game.Time > list[0].Time + 20F)
+                if (Game.Time > list[0].Time + 5F)
                 {
                     list.Remove(list[0]);
                     return true;
@@ -33,9 +32,7 @@
                     list[0].ComboAction.Invoke();
                 }
 
-                if (list[0].ConditionToRemoveFunc.Invoke() 
-                    //|| Game.Time > list[0].Time + 10F
-                    )
+                if (list[0].ConditionToRemoveFunc.Invoke())
                 {
                     list.Remove(list[0]);
                     if (list.Count > 0)

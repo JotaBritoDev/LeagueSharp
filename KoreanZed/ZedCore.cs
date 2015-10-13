@@ -49,6 +49,8 @@
 
         private readonly ActionQueue actionQueue;
 
+        private readonly ZedComboSelector zedComboSelector;
+
         public ZedCore(ZedSpells zedSpells, Orbwalking.Orbwalker zedOrbwalker, ZedMenu zedMenu, ZedShadows zedShadows, ZedEnergyChecker zedEnergy)
         {
             q = zedSpells.Q;
@@ -69,6 +71,7 @@
             checkAutoAttack = new ActionQueueCheckAutoAttack();
             zedItems = new ZedOffensiveItems(zedMenu);
             shadows = zedShadows;
+            zedComboSelector = new ZedComboSelector(zedMenu);
 
             Game.OnUpdate += Game_OnUpdate;
         }
@@ -117,7 +120,7 @@
                 {
                     actionQueue.EnqueueAction(comboQueue,
                         () => true,
-                        () => shadows.Cast(target.Position.Extend(player.Position, -200F)),
+                        () => shadows.Cast(w.GetPrediction(target).CastPosition),
                         () => true);
                     return;
                 }
@@ -146,27 +149,15 @@
 
                 if (target != null)
                 {
-                    actionQueue.EnqueueAction(
-                        comboQueue,
-                        () => r.IsReady() && r.Instance.ToggleState == 0,
-                        () => r.Cast(target),
-                        () => r.Instance.ToggleState != 0);
-                    actionQueue.EnqueueAction(comboQueue, () => true, () => zedItems.UseItems(target), () => true);
-                    actionQueue.EnqueueAction(
-                        comboQueue,
-                        () => w.UseOnCombo && shadows.CanCast,
-                        () => shadows.Cast(target.ServerPosition.Extend(target.ServerPosition, 200F)),
-                        () => w.Instance.ToggleState != 0);
-                    actionQueue.EnqueueAction(
-                        comboQueue,
-                        () => shadows.CanSwitch && q.UseOnCombo && q.IsReady(),
-                        () => q.Cast(q.GetPrediction(target).CastPosition),
-                        () => !shadows.CanSwitch || !q.IsReady() || !q.UseOnCombo);
-                    actionQueue.EnqueueAction(
-                        comboQueue,
-                        () => shadows.CanSwitch && e.UseOnCombo && e.IsReady() && e.CanCast(target),
-                        () => e.Cast(),
-                        () => !shadows.CanSwitch || !e.IsReady() || !e.UseOnCombo || !e.CanCast(target));
+                    switch (zedMenu.GetCombo())
+                    {
+                        case ComboType.AllStar:
+                            AllStarCombo(target);
+                            break;
+                        case ComboType.TheLine:
+                            TheLineCombo(target);
+                            break;
+                    }
                     return;
                 }
             }
@@ -180,7 +171,7 @@
                     actionQueue.EnqueueAction(
                         comboQueue,
                         () => shadows.CanCast,
-                        () => shadows.Cast(target.ServerPosition),
+                        () => shadows.Cast(w.GetPrediction(target).CastPosition),
                         () => !shadows.CanCast);
                     actionQueue.EnqueueAction(
                         comboQueue,
@@ -196,7 +187,7 @@
                         comboQueue,
                         () => player.Distance(target) <= Orbwalking.GetRealAutoAttackRange(target),
                         () => player.IssueOrder(GameObjectOrder.AttackUnit, target),
-                        () => player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target) || checkAutoAttack.Status);
+                        () => target.IsDead || target.IsZombie || player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target) || checkAutoAttack.Status);
                     return;
                 }
             }
@@ -243,6 +234,64 @@
                     }
                 }
             }
+        }
+
+        private void AllStarCombo(Obj_AI_Hero target)
+        {
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => r.IsReady() && r.Instance.ToggleState == 0 && player.IsVisible,
+                () =>
+                    {
+                        zedComboSelector.AllStarAnimation();
+                        r.Cast(target);
+                    },
+                () => r.IsReady() && r.Instance.ToggleState != 0 && player.IsVisible);
+            actionQueue.EnqueueAction(comboQueue, () => true, () => zedItems.UseItems(target), () => true);
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => w.UseOnCombo && shadows.CanCast && player.Mana > w.ManaCost,
+                () => shadows.Cast(w.GetPrediction(target).CastPosition),
+                () => target.IsDead || target.IsZombie || w.Instance.ToggleState != 0 || !w.UseOnCombo || player.Mana <= w.ManaCost);
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => w.Instance.ToggleState != 0 && q.UseOnCombo && q.IsReady(),
+                () => q.Cast(q.GetPrediction(target).CastPosition),
+                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo);
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => w.Instance.ToggleState != 0 && e.UseOnCombo && e.IsReady() && e.CanCast(target),
+                () => e.Cast(),
+                () => target.IsDead || target.IsZombie || w.Instance.ToggleState == 0 || !e.IsReady() || !e.UseOnCombo || !e.CanCast(target));
+        }
+
+        private void TheLineCombo(Obj_AI_Hero target)
+        {
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => r.IsReady() && r.Instance.ToggleState == 0 && player.IsVisible,
+                () =>
+                {
+                    zedComboSelector.TheLineAnimation();
+                    r.Cast(target);
+                },
+                () => r.IsReady() && r.Instance.ToggleState != 0 && player.IsVisible);
+            actionQueue.EnqueueAction(comboQueue, () => true, () => zedItems.UseItems(target), () => true);
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => w.UseOnCombo && shadows.CanCast && player.Mana > w.ManaCost,
+                () => shadows.Cast(player.Position.Extend(shadows.Instance.Position, -20000F)),
+                () => target.IsDead || target.IsZombie || w.Instance.ToggleState != 0 || !w.UseOnCombo || player.Mana <= w.ManaCost);
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => e.UseOnCombo && e.IsReady() && e.CanCast(target),
+                () => e.Cast(),
+                () => target.IsDead || target.IsZombie || !e.IsReady() || !e.UseOnCombo || !e.CanCast(target));
+            actionQueue.EnqueueAction(
+                comboQueue,
+                () => q.UseOnCombo && q.IsReady() && q.CanCast(target),
+                () => q.Cast(q.GetPrediction(target).CastPosition),
+                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo || !q.CanCast(target));
         }
 
         private void Harass()
@@ -296,7 +345,7 @@
                             harasQueue,
                             () => true,
                             () => shadows.Harass(),
-                            () => false);
+                            () => true);
                         return;
                     }
                 }
@@ -317,7 +366,7 @@
                             harasQueue,
                             () => true,
                             () => shadows.Harass(),
-                            () => false);
+                            () => true);
                         return;
                     }
                 }

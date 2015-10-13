@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Common\ForceUltimate.cs" />
     <Compile Include="Common\DamageDrawing.cs" />
+    <Compile Include="Enumerators\ComboType.cs" />
     <Compile Include="Enumerators\ShadowHarassTrigger.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -72,6 +73,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QueueActions\ActionQueueCheckAutoAttack.cs" />
+    <Compile Include="ZedComboSelector.cs" />
     <Compile Include="ZedDrawingSpells.cs" />
     <Compile Include="ZedSpellDodge.cs" />
     <Compile Include="Enumerators\BlockListType.cs" />
@@ -107,6 +109,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\mouse2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZedTheLine.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZedStar.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

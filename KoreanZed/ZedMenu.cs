@@ -87,6 +87,12 @@
 
             comboMenu.AddItem(new MenuItem("koreanzed.combo.ronselected", "Use R ONLY on Selected Target").SetValue(false));
 
+            comboMenu.AddItem(new MenuItem(prefix + ".labelcombo1", "To switch the combo style:"));
+            comboMenu.AddItem(new MenuItem(prefix + ".labelcombo2", "1 - Hold SHIFT; 2 - LEFT Click on Zed;"));
+            comboMenu.AddItem(
+                new MenuItem(prefix + ".combostyle", "Combo Style").SetValue(
+                    new StringList(new string[] { "All Star", "The Line" })));
+
             comboMenu.AddSubMenu(useItems);
             comboMenu.AddSubMenu(rBlockSettings);
             MainMenu.AddSubMenu(comboMenu);
@@ -345,6 +351,19 @@
         public int GetParamStringList(string paramName)
         {
             return MainMenu.Item(paramName).GetValue<StringList>().SelectedIndex;
+        }
+
+        public ComboType GetCombo()
+        {
+            return (ComboType)GetParamStringList("koreanzed.combomenu.combostyle");
+        }
+
+        public void SetCombo(ComboType comboStyle)
+        {
+            var teste =
+                MainMenu.Item("koreanzed.combomenu.combostyle")
+                    .SetValue<StringList>(
+                        new StringList(new string[] { "All Star", "The Line" }) { SelectedIndex = (int)comboStyle });
         }
 
         public Color GetParamColor(string paramName)
