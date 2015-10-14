@@ -73,8 +73,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QueueActions\ActionQueueCheckAutoAttack.cs" />
+    <Compile Include="ZedAutoE.cs" />
     <Compile Include="ZedComboSelector.cs" />
     <Compile Include="ZedDrawingSpells.cs" />
+    <Compile Include="ZedFlee.cs" />
     <Compile Include="ZedSpellDodge.cs" />
     <Compile Include="Enumerators\BlockListType.cs" />
     <Compile Include="Program.cs" />

@@ -247,17 +247,21 @@
                         r.Cast(target);
                     },
                 () => r.IsReady() && r.Instance.ToggleState != 0 && player.IsVisible);
-            actionQueue.EnqueueAction(comboQueue, () => true, () => zedItems.UseItems(target), () => true);
+            actionQueue.EnqueueAction(
+                comboQueue, 
+                () => true, 
+                () => zedItems.UseItems(target), 
+                () => true);
             actionQueue.EnqueueAction(
                 comboQueue,
                 () => w.UseOnCombo && shadows.CanCast && player.Mana > w.ManaCost,
-                () => shadows.Cast(w.GetPrediction(target).CastPosition),
+                () => shadows.Cast(target.ServerPosition),
                 () => target.IsDead || target.IsZombie || w.Instance.ToggleState != 0 || !w.UseOnCombo || player.Mana <= w.ManaCost);
             actionQueue.EnqueueAction(
                 comboQueue,
                 () => w.Instance.ToggleState != 0 && q.UseOnCombo && q.IsReady(),
                 () => q.Cast(q.GetPrediction(target).CastPosition),
-                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo);
+                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo || player.Mana <= q.ManaCost);
             actionQueue.EnqueueAction(
                 comboQueue,
                 () => w.Instance.ToggleState != 0 && e.UseOnCombo && e.IsReady() && e.CanCast(target),
@@ -276,11 +280,15 @@
                     r.Cast(target);
                 },
                 () => r.IsReady() && r.Instance.ToggleState != 0 && player.IsVisible);
-            actionQueue.EnqueueAction(comboQueue, () => true, () => zedItems.UseItems(target), () => true);
+            actionQueue.EnqueueAction(
+                comboQueue, 
+                () => true, 
+                () => zedItems.UseItems(target), 
+                () => true);
             actionQueue.EnqueueAction(
                 comboQueue,
                 () => w.UseOnCombo && shadows.CanCast && player.Mana > w.ManaCost,
-                () => shadows.Cast(player.Position.Extend(shadows.Instance.Position, -20000F)),
+                () => shadows.Cast(target.Position.Extend(shadows.Instance.Position, -1000F)),
                 () => target.IsDead || target.IsZombie || w.Instance.ToggleState != 0 || !w.UseOnCombo || player.Mana <= w.ManaCost);
             actionQueue.EnqueueAction(
                 comboQueue,
@@ -291,7 +299,7 @@
                 comboQueue,
                 () => q.UseOnCombo && q.IsReady() && q.CanCast(target),
                 () => q.Cast(q.GetPrediction(target).CastPosition),
-                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo || !q.CanCast(target));
+                () => target.IsDead || target.IsZombie || !q.IsReady() || !q.UseOnCombo || !q.CanCast(target) || player.Mana <= q.ManaCost);
         }
 
         private void Harass()

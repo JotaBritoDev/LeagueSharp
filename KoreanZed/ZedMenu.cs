@@ -285,6 +285,10 @@
             usePotionMenu.AddItem(new MenuItem(potPrefix + ".active", "Active").SetValue(true));
             usePotionMenu.AddItem(new MenuItem(potPrefix + ".when", "Use Potion at % HP").SetValue(new Slider(65)));
 
+            miscMenu.AddItem(new MenuItem(prefix + ".flee", "Flee").SetValue(new KeyBind('G', KeyBindType.Press)));
+
+            miscMenu.AddItem(new MenuItem(prefix + ".autoe", "Auto E if any enemy is on range").SetValue(true));
+
             miscMenu.AddItem(new MenuItem(prefix + ".forceultimate", "Force R Using Mouse Buttons (Cursor Sprite)").SetValue(true));
 
             miscMenu.AddSubMenu(antiGapCloserMenu);
@@ -336,6 +340,11 @@
             }
 
             return blackList;
+        }
+
+        public bool GetParamKeyBind(string paramName)
+        {
+            return MainMenu.Item(paramName).GetValue<KeyBind>().Active;
         }
 
         public int GetParamSlider(string paramName)

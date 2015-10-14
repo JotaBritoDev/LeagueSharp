@@ -36,6 +36,10 @@
 
         private readonly ZedEnergyChecker energy;
 
+        private readonly ZedAutoE zedAutoE;
+
+        private readonly ZedFlee zedFlee;
+
         public Zed()
         {
             zedSpells = new ZedSpells();
@@ -51,6 +55,8 @@
             zedUnderTurretFarm = new ZedUnderTurretFarm(zedSpells, zedOrbwalker);
             damageDrawing = new CommonDamageDrawing(zedMenu) { AmountOfDamage = zedCore.ComboDamage };
             forceUltimate = new CommonForceUltimate(zedMenu, zedSpells, zedOrbwalker) { ForceUltimate = zedCore.ForceUltimate };
+            zedAutoE = new ZedAutoE(zedMenu, zedShadows, zedSpells);
+            zedFlee = new ZedFlee(zedMenu, zedShadows);
         }
     }
 }
