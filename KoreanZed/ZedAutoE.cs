@@ -30,7 +30,7 @@
                 return;
             }
 
-            if (HeroManager.Enemies.Any(enemy => enemy.Distance(ObjectManager.Player) < e.Range)
+            if (HeroManager.Enemies.Any(enemy => enemy.Distance(ObjectManager.Player) < e.Range && enemy.IsValidTarget())
                 || zedShadows.GetShadows()
                        .Any(shadow => HeroManager.Enemies.Any(enemy => enemy.Distance(shadow) < e.Range)))
             {
