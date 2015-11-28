@@ -30,9 +30,18 @@
                 return;
             }
 
-            if (HeroManager.Enemies.Any(enemy => enemy.Distance(ObjectManager.Player) < e.Range && enemy.IsValidTarget())
+            if (
+                HeroManager.Enemies.Any(
+                    enemy =>
+                    !enemy.IsDead && !enemy.IsZombie && enemy.Distance(ObjectManager.Player) < e.Range
+                    && enemy.IsValidTarget())
                 || zedShadows.GetShadows()
-                       .Any(shadow => HeroManager.Enemies.Any(enemy => enemy.Distance(shadow) < e.Range)))
+                       .Any(
+                           shadow =>
+                           HeroManager.Enemies.Any(
+                               enemy =>
+                               !enemy.IsDead && !enemy.IsZombie && enemy.Distance(shadow) < e.Range
+                               && enemy.IsValidTarget())))
             {
                 e.Cast();
             }

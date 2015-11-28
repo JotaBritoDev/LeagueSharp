@@ -688,11 +688,18 @@
             result += e.UseOnCombo && e.IsReady() ? e.GetDamage(target) : 0F;
 
             result += w.UseOnCombo && w.IsReady() && player.Distance(target) < w.Range + Orbwalking.GetRealAutoAttackRange(target)
-                          ? (float) player.GetAutoAttackDamage(target, true)
+                          ? (float)player.GetAutoAttackDamage(target, true)
                           : 0F;
 
+            float multiplier = 0.3F;
+            if (r.Instance.Level == 2) multiplier = 0.4F;
+            else if (r.Instance.Level == 3) multiplier = 0.5F;
+
             result += r.UseOnCombo && r.IsReady()
-                          ? (float)(r.GetDamage(target) + player.GetAutoAttackDamage(target, true))
+                          ? (float)
+                            (r.GetDamage(target) + player.GetAutoAttackDamage(target, true)
+                             + (q.IsReady() ? q.GetDamage(target) * multiplier : 0F)
+                             + (e.IsReady() ? e.GetDamage(target) * multiplier : 0F))
                           : 0F;
 
             return result;

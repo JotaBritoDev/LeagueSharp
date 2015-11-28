@@ -19,9 +19,9 @@
 
             float wRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).SData.CastRange;
             W = new ZedSpell(SpellSlot.W, wRange, TargetSelector.DamageType.Physical);
-            W.SetSkillshot(0.75F, 75F, 900F, false, SkillshotType.SkillshotLine);
+            W.SetSkillshot(0.75F, 75F, 1000F, false, SkillshotType.SkillshotLine);
 
-            float eRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange;
+            float eRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange - 10;
             E = new ZedSpell(SpellSlot.E, eRange, TargetSelector.DamageType.Physical);
 
             float rRange = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).SData.CastRange;
