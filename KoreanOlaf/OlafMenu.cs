@@ -202,8 +202,6 @@
             Menu usePotionMenu = new Menu("Use Potion", potPrefix);
             usePotionMenu.AddItem(new MenuItem(potPrefix + ".healthactive", "Health Potion").SetValue(true));
             usePotionMenu.AddItem(new MenuItem(potPrefix + ".healthwhen", "Health trigger").SetValue(new Slider(45)));
-            usePotionMenu.AddItem(new MenuItem(potPrefix + ".manaactive", "Mana Potion").SetValue(true));
-            usePotionMenu.AddItem(new MenuItem(potPrefix + ".manawhen", "Mana trigger").SetValue(new Slider(35)));
 
             miscMenu.AddItem(new MenuItem(prefix + ".forceultimate", "Force R Using Mouse Buttons (Cursor Sprite)").SetValue(true));
 

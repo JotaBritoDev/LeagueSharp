@@ -28,15 +28,6 @@
             {
                 ItemData.Health_Potion.GetItem().Cast();
             }
-
-            if (olafMenu.GetParamBool("koreanolaf.miscmenu.pot.manaactive")
-                && ObjectManager.Player.ManaPercent
-                < olafMenu.GetParamSlider("koreanolaf.miscmenu.pot.manawhen")
-                && !ObjectManager.Player.HasBuff("FlaskOfCrystalWater")
-                && !ObjectManager.Player.InShop())
-            {
-                ItemData.Mana_Potion.GetItem().Cast();
-            }
         }
     }
 }
